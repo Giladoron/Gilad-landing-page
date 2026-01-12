@@ -28,6 +28,21 @@
         },
       };
     </script>
+    <script>
+      // Set base URL for CSS background images (works with GitHub Pages base path)
+      (function() {
+        // Detect base path from current location
+        const pathname = window.location.pathname;
+        const base = pathname.includes('/Gilad-landing-page/') ? '/Gilad-landing-page' : '';
+        // Set full paths for each background image
+        document.documentElement.style.setProperty('--hero-bg', `url('${base}/assets/backgrounds/bg-hero.webp')`);
+        document.documentElement.style.setProperty('--reflection-bg', `url('${base}/assets/backgrounds/bg-reflection.webp')`);
+        document.documentElement.style.setProperty('--confusion-bg', `url('${base}/assets/backgrounds/bg-confusion.webp')`);
+        document.documentElement.style.setProperty('--process-bg', `url('${base}/assets/backgrounds/bg-process.webp')`);
+        document.documentElement.style.setProperty('--commitment-bg', `url('${base}/assets/backgrounds/bg-commitment.webp')`);
+        document.documentElement.style.setProperty('--cta-bg', `url('${base}/assets/backgrounds/bg-cta.webp')`);
+      })();
+    </script>
     <style>
       body {
         background-color: #0A0A0A;
@@ -329,7 +344,7 @@
 
       /* Background Image Layers */
       .hero-bg-layer {
-        background-image: url('/assets/backgrounds/bg-hero.webp');
+        background-image: var(--hero-bg, url('/assets/backgrounds/bg-hero.webp'));
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -346,7 +361,7 @@
       }
 
       .reflection-bg-layer {
-        background-image: url('/assets/backgrounds/bg-reflection.webp');
+        background-image: var(--reflection-bg, url('/assets/backgrounds/bg-reflection.webp'));
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -365,7 +380,7 @@
       }
 
       .confusion-bg-layer {
-        background-image: url('/assets/backgrounds/bg-confusion.webp');
+        background-image: var(--confusion-bg, url('/assets/backgrounds/bg-confusion.webp'));
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -382,7 +397,7 @@
       }
 
       .process-bg-layer {
-        background-image: url('/assets/backgrounds/bg-process.webp');
+        background-image: var(--process-bg, url('/assets/backgrounds/bg-process.webp'));
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -399,7 +414,7 @@
       }
 
       .commitment-bg-layer {
-        background-image: url('/assets/backgrounds/bg-commitment.webp');
+        background-image: var(--commitment-bg, url('/assets/backgrounds/bg-commitment.webp'));
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -416,7 +431,7 @@
       }
 
       .cta-bg-layer {
-        background-image: url('/assets/backgrounds/bg-cta.webp');
+        background-image: var(--cta-bg, url('/assets/backgrounds/bg-cta.webp'));
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;

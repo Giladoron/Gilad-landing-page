@@ -1457,7 +1457,7 @@ export default function App() {
               <div className="space-y-4">
                 <div className="relative rounded-2xl overflow-hidden bg-brandGray border border-white/10">
                   <img 
-                    src="/assets/results/result-01.webp" 
+                    src={`${import.meta.env.BASE_URL}assets/results/result-01.webp`}
                     alt="תוצאות לפני ואחרי - דניאל ב."
                     className="w-full h-auto object-cover"
                     loading="lazy"
@@ -1497,7 +1497,7 @@ export default function App() {
               <div className="space-y-4 order-2 md:order-1">
                 <div className="relative rounded-2xl overflow-hidden bg-brandGray border border-white/10">
                   <img 
-                    src="/assets/results/result-02.webp" 
+                    src={`${import.meta.env.BASE_URL}assets/results/result-02.webp`}
                     alt="תוצאות לפני ואחרי - אורי כ."
                     className="w-full h-auto object-cover"
                     loading="lazy"
