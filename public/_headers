@@ -1,0 +1,22 @@
+# Cache Control Headers for GitHub Pages
+# This file is automatically served by GitHub Pages to set HTTP headers
+
+# HTML files - always check for updates (no cache)
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# JavaScript and CSS files - immutable (Vite hashes these, so they're safe to cache forever)
+/assets/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static assets (images, videos) - cache for 1 year (can be updated by changing filename)
+/assets/*
+  Cache-Control: public, max-age=31536000
+
+# Root level files
+/*
+  Cache-Control: public, max-age=3600
+
