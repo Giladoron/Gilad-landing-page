@@ -555,13 +555,10 @@ const VideoPlayer: React.FC = () => {
                 try {
                   if (playerRef.current && isVisibleRef.current) {
                     await playerRef.current.play();
+                    // Get initial mute state (video starts muted per browser requirements)
                     try {
                       const muted = await playerRef.current.getMuted();
                       setIsMuted(muted);
-                      if (muted) {
-                        await playerRef.current.setMuted(false);
-                        setIsMuted(false);
-                      }
                     } catch (err) {
                       // Ignore
                     }
@@ -650,7 +647,7 @@ const VideoPlayer: React.FC = () => {
           clearTimeout(playTimeoutRef.current);
         }
 
-        // Debounce play call to prevent rapid toggling during scroll snap
+        // Debounce play call to prevent rapid toggling
         playTimeoutRef.current = setTimeout(async () => {
           // Double-check visibility hasn't changed back during delay
           if (!playerRef.current || !isVisibleRef.current) {
@@ -666,19 +663,15 @@ const VideoPlayer: React.FC = () => {
               isPlayingRef.current = true;
             }
             
-            // Update mute state and try to unmute after play starts
+            // Update mute state (video stays muted - user must manually unmute via button)
             setTimeout(async () => {
               try {
                 if (playerRef.current && isVisibleRef.current) {
                   const muted = await playerRef.current.getMuted();
                   setIsMuted(muted);
-                  if (muted) {
-                    await playerRef.current.setMuted(false);
-                    setIsMuted(false);
-                  }
                 }
               } catch (err) {
-                // If unmute fails, user can use button
+                // Ignore errors
               }
             }, 300);
           } catch (err) {
@@ -699,7 +692,7 @@ const VideoPlayer: React.FC = () => {
           }
           
           playTimeoutRef.current = null;
-        }, 300); // 300ms debounce to let scroll snap complete
+        }, 300); // 300ms debounce
       } else {
         // Clear any pending play timeouts
         if (playTimeoutRef.current) {
@@ -728,7 +721,7 @@ const VideoPlayer: React.FC = () => {
             }
           }
           pauseTimeoutRef.current = null;
-        }, 800); // 800ms delay to allow scroll snap to complete
+        }, 800); // 800ms delay before pausing
       }
     };
 
@@ -878,12 +871,6 @@ const VideoPlayer: React.FC = () => {
 export default function App() {
   const [activeStage, setActiveStage] = useState('hero');
   const [modalType, setModalType] = useState<ModalType>(null);
-  const snapTimeoutRef = useRef<number | null>(null);
-  const isSnappingRef = useRef(false);
-  const isUserScrollingRef = useRef(false);
-  const lastScrollTimeRef = useRef<number>(0);
-  const scrollVelocityRef = useRef<number>(0);
-  const lastScrollYRef = useRef<number>(0);
 
   const activeStageIndex = STAGES.findIndex(s => s.id === activeStage);
 
@@ -925,151 +912,9 @@ export default function App() {
 
     document.querySelectorAll('[data-snap="true"]').forEach((el) => stageObserver.observe(el));
 
-    // 3. Track wheel events for active scrolling detection
-    const handleWheel = () => {
-      const now = Date.now();
-      const scrollY = window.pageYOffset || window.scrollY || 0;
-      
-      // Calculate scroll velocity
-      const timeDelta = now - lastScrollTimeRef.current;
-      const scrollDelta = Math.abs(scrollY - lastScrollYRef.current);
-      
-      if (timeDelta > 0) {
-        scrollVelocityRef.current = scrollDelta / timeDelta;
-      }
-      
-      lastScrollTimeRef.current = now;
-      lastScrollYRef.current = scrollY;
-      isUserScrollingRef.current = true;
-      
-      // Clear the flag after scroll stops (longer delay for snap)
-      clearTimeout(snapTimeoutRef.current);
-      snapTimeoutRef.current = window.setTimeout(() => {
-        isUserScrollingRef.current = false;
-      }, 150);
-    };
-
-    // 4. Robust Magnet Snapping + Active Section Update
-    const handleScroll = () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName || '')) return;
-
-      // Update scroll position tracking
-      const scrollY = window.pageYOffset || window.scrollY || 0;
-      const now = Date.now();
-      
-      if (lastScrollTimeRef.current > 0) {
-        const timeDelta = now - lastScrollTimeRef.current;
-        const scrollDelta = Math.abs(scrollY - lastScrollYRef.current);
-        if (timeDelta > 0) {
-          scrollVelocityRef.current = scrollDelta / timeDelta;
-        }
-      }
-      
-      lastScrollTimeRef.current = now;
-      lastScrollYRef.current = scrollY;
-
-      // Clear existing timeout
-      if (snapTimeoutRef.current) clearTimeout(snapTimeoutRef.current);
-
-      // Increased delay - wait for scroll to stop (700ms instead of 160ms)
-      snapTimeoutRef.current = window.setTimeout(() => {
-        // Don't snap if user is actively scrolling or just finished fast scroll
-        if (isSnappingRef.current || isUserScrollingRef.current) return;
-        
-        // Don't snap if scroll velocity was high (fast intentional scroll)
-        if (scrollVelocityRef.current > 2.0) return;
-
-        const sections = Array.from(document.querySelectorAll('[data-snap="true"]'));
-        const focusLine = window.innerHeight * 0.15;
-        const viewportHeight = window.innerHeight;
-        
-        let nearestSection: Element | null = null;
-        let minDistance = Infinity;
-        let currentSection: Element | null = null;
-
-        // Find nearest section and current section
-        sections.forEach((section) => {
-          const rect = section.getBoundingClientRect();
-          const distance = Math.abs(rect.top - focusLine);
-          
-          // Check if we're currently well within this section (dead zone)
-          // Dead zone: section top is below 20% of viewport AND section bottom is above 80% of viewport
-          // This means the section is well contained within the viewport, not near boundaries
-          const sectionTop = rect.top;
-          const sectionBottom = rect.bottom;
-          
-          // Check if section is well within viewport (dead zone - no snapping)
-          const topMargin = viewportHeight * 0.2;
-          const bottomMargin = viewportHeight * 0.8;
-          const isInDeadZone = sectionTop > topMargin && sectionBottom < bottomMargin;
-          
-          if (isInDeadZone) {
-            currentSection = section;
-          }
-          
-          if (distance < minDistance) {
-            minDistance = distance;
-            nearestSection = section;
-          }
-        });
-
-        // Update active section highlighting (always do this)
-        if (nearestSection) {
-          const stageId = nearestSection.getAttribute('data-stage');
-          if (stageId) {
-            setActiveStage(stageId);
-            document.querySelectorAll('[data-snap="true"]').forEach(s => s.classList.remove('active-section'));
-            nearestSection.classList.add('active-section');
-            
-            if (stageId === 'guarantee') {
-              nearestSection.classList.add('guarantee-revealed');
-            }
-          }
-        }
-
-        // Only snap if NOT in dead zone (well within a section)
-        if (currentSection) {
-          // We're in a dead zone - don't snap, allow free scrolling
-          return;
-        }
-
-        // Only snap when near section boundaries
-        if (nearestSection) {
-          const rect = nearestSection.getBoundingClientRect();
-          const sectionTop = rect.top;
-          const sectionBottom = rect.bottom;
-          const viewportHeight = window.innerHeight;
-          
-          // Check if we're near top boundary (within 20% of viewport top) or bottom boundary (within 20% of viewport bottom)
-          const nearTopBoundary = sectionTop > -50 && sectionTop < viewportHeight * 0.2;
-          const nearBottomBoundary = sectionBottom > viewportHeight * 0.8 && sectionBottom < viewportHeight + 50;
-          
-          // Only snap if near a boundary and within reasonable distance
-          if ((nearTopBoundary || nearBottomBoundary) && Math.abs(sectionTop) > 50 && Math.abs(sectionTop) < viewportHeight * 0.6) {
-            isSnappingRef.current = true;
-            window.scrollTo({
-              top: window.pageYOffset + sectionTop,
-              behavior: 'smooth'
-            });
-
-            setTimeout(() => {
-              isSnappingRef.current = false;
-            }, 850);
-          }
-        }
-      }, 700); // Increased from 160ms to 700ms
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: true });
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
     return () => {
       revealObserver.disconnect();
       stageObserver.disconnect();
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('scroll', handleScroll);
-      if (snapTimeoutRef.current) clearTimeout(snapTimeoutRef.current);
     };
   }, []);
 
