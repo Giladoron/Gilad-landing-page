@@ -62,13 +62,13 @@ const RECIPIENT_EMAIL = 'gilad042@gmail.com';
 const STAGES = [
   { id: 'hero', label: 'התחלה' },
   { id: 'diagnosis', label: 'איפה אתה היום' },
+  { id: 'proof', label: 'התוצאות' },
   { id: 'about', label: 'מי אני' },
   // { id: 'stuck', label: 'למה זה קורה' }, // DRAFT MODE - HIDDEN
-  { id: 'waiting', label: 'המחיר' },
   { id: 'guarantee', label: 'ההתחייבות' },
   { id: 'get', label: 'הפתרון' },
   { id: 'how', label: 'הדרך' },
-  { id: 'proof', label: 'התוצאות' },
+  { id: 'waiting', label: 'המחיר' },
   { id: 'faq', label: 'שאלות נפוצות' },
   { id: 'action', label: 'הצטרפות' }
 ];
@@ -824,7 +824,7 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
   };
 
   return (
-    <div className={`${isFooter ? 'bg-brandGray/50 backdrop-blur-md border border-white/10' : 'bg-white/95 backdrop-blur-sm text-brandDark'} p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-md mx-auto`}>
+    <div className={`${isFooter ? 'bg-brandGray/50 backdrop-blur-md border border-white/10' : 'bg-white/95 backdrop-blur-sm text-brandDark'} p-4 md:p-6 rounded-2xl shadow-2xl w-full max-w-md mx-auto`}>
       {submitted ? (
         <div className="text-center space-y-6 animate-in fade-in zoom-in duration-500" aria-live="polite">
           <div className={`${isFooter ? 'bg-green-900/30' : 'bg-green-100'} w-16 h-16 rounded-full flex items-center justify-center mx-auto`}>
@@ -855,7 +855,7 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
               </div>
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label htmlFor="fullName" className={`block text-xs font-bold mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>שם מלא</label>
               <input 
@@ -1658,24 +1658,46 @@ export default function App() {
     const stageOptions = {
       root: null,
       rootMargin: "-20% 0px -55% 0px",
-      threshold: [0, 0.1, 0.2, 0.5]
+      threshold: [0, 0.1, 0.2, 0.5, 0.8, 1.0]
     };
 
+    // Track intersection ratios for all sections
+    const sectionRatios = new Map<Element, number>();
+
     const stageObserver = new IntersectionObserver((entries) => {
+      // Update the ratios map with current intersection data
       entries.forEach(entry => {
-        const stageId = entry.target.getAttribute('data-stage');
-        if (stageId) {
           if (entry.isIntersecting) {
+          sectionRatios.set(entry.target, entry.intersectionRatio);
+        } else {
+          sectionRatios.delete(entry.target);
+        }
+      });
+
+      // Find the section with the highest intersection ratio (most visible)
+      let maxRatio = 0;
+      let mostVisibleElement: Element | null = null;
+      
+      sectionRatios.forEach((ratio, element) => {
+        if (ratio > maxRatio) {
+          maxRatio = ratio;
+          mostVisibleElement = element;
+        }
+      });
+
+      // Only update if we found a visible section
+      if (mostVisibleElement) {
+        const stageId = mostVisibleElement.getAttribute('data-stage');
+        if (stageId) {
             setActiveStage(stageId);
             document.querySelectorAll('[data-snap="true"]').forEach(s => s.classList.remove('active-section'));
-            entry.target.classList.add('active-section');
+          mostVisibleElement.classList.add('active-section');
 
             if (stageId === 'guarantee') {
-              entry.target.classList.add('guarantee-revealed');
+            mostVisibleElement.classList.add('guarantee-revealed');
             }
           }
         }
-      });
     }, stageOptions);
 
     document.querySelectorAll('[data-snap="true"]').forEach((el) => stageObserver.observe(el));
@@ -1821,222 +1843,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* STAGE 3: ABOUT */}
-        <section id="about" data-stage="about" data-snap="true" className="stage reveal">
-          <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
-            <StoryHeader text="מי עומד מאחורי התהליך" />
-            <div className="grid md:grid-cols-2 gap-8 items-center mt-4">
-              <div className="space-y-4 text-center md:text-right">
-                <div className="space-y-2">
-                  <p className="text-accent font-bold tracking-[0.2em] uppercase text-sm">המאמן שלך</p>
-                  <h2 className="text-4xl md:text-5xl font-black heading-font leading-tight">גילעד דורון</h2>
-                </div>
-                <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-                  אני מלווה גברים בתהליכים משמעותיים כבר שנים. הליווי שלי הוא לא עוד תפריט גנרי, הוא דרך חיים שתביא אותך לתוצאה שאתה מחפש, בלי לנחש.
-                </p>
-                <div className="bg-brandGray/20 backdrop-blur-sm p-6 rounded-2xl border border-white/5 space-y-4">
-                  <h3 className="font-bold flex items-center gap-2 text-white justify-center md:justify-start"><ShieldCheck className="text-accent" size={20} aria-hidden="true" /> ההבטחה שלי:</h3>
-                  <p className="text-sm text-gray-400">אני לא מוכר הבטחות ריקות. אני מוכר תהליך. אם תעבוד לפי התוכנית ולא תראה תוצאות - אני איתך עד שזה קורה.</p>
-                </div>
-              </div>
-              <div className="relative w-full">
-                {/* Quiet depth card - purely visual, behind video */}
-                <div 
-                  className="absolute -bottom-8 -left-8 w-[108%] h-[108%] rounded-[2.5rem] bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] -z-0 pointer-events-none hidden md:block"
-                  style={{ 
-                    backdropFilter: 'blur(8px)',
-                    WebkitBackdropFilter: 'blur(8px)'
-                  }}
-                  aria-hidden="true"
-                />
-                {/* Video container */}
-                <div 
-                  className="w-full rounded-3xl overflow-hidden shadow-2xl relative z-10 border border-white/10" 
-                  style={{ 
-                    aspectRatio: '4/5',
-                    minHeight: '400px',
-                    maxWidth: '100%'
-                  }}
-                >
-                  <div style={{ height: '100%', width: '100%', position: 'relative' }}>
-                    <VideoPlayer />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* STAGE 4: STUCK - DRAFT MODE (HIDDEN) */}
-        {/* <section id="stuck" data-stage="stuck" data-snap="true" className="stage reveal confusion-bg">
-          <div className="absolute inset-0 z-0 confusion-bg-layer"></div>
-          <div className="absolute inset-0 z-0 confusion-overlay"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10">
-            <StoryHeader text="איפה רוב האנשים נתקעים" />
-            <div className="grid md:grid-cols-2 gap-12 items-center mt-12">
-              <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-[700px] rounded-3xl overflow-hidden shadow-2xl bg-brandGray/20 backdrop-blur-sm flex items-center justify-center">
-                <img 
-                  src="/assets/about/whynoprogress.webp" 
-                  alt="אדם מרוכז באימון" 
-                  className="w-full h-full object-contain" 
-                  loading="lazy"
-                />
-              </div>
-              <div className="space-y-6">
-                <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight">למה אתה עומד במקום?</h2>
-                <div className="space-y-6">
-                  <p className="text-xl text-gray-300 leading-relaxed">רוב המתאמנים שמגיעים אלי משקיעים. הם מתאמנים מנסים ומשקיעים זמן ואנרגיה אבל לא רואים תוצאות</p>
-                  <p className="text-xl font-bold text-white">זה קורה בדרך כלל בגלל:</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {[{icon:<Target />, t:"חוסר בהירות"}, {icon:<Zap />, t:"קפיצה בין שיטות"}, {icon:<User />, t:"תהליך לא מתאים"}, {icon:<ShieldCheck />, t:"אין עין מקצועית"}].map((item, idx) => (
-                      <div key={idx} className="bg-brandGray/20 backdrop-blur-sm p-5 rounded-2xl flex items-center gap-3">
-                        <span className="text-accent">{React.cloneElement(item.icon as React.ReactElement, { size: 20, "aria-hidden": "true" })}</span>
-                        <span className="font-medium">{item.t}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> */}
-
-        {/* STAGE 5: WAITING COST */}
-        <section id="waiting" data-stage="waiting" data-snap="true" className="stage stage-alt-2 text-center">
-          <div className="absolute inset-0 z-0 waiting-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 relative z-10 max-w-4xl reveal">
-            <StoryHeader text="זה הרגע שרוב האנשים עוצרים" />
-            <h2 className="text-4xl md:text-6xl font-black heading-font mb-4">המחיר של להמשיך לחכות?</h2>
-            <div className="text-5xl md:text-7xl font-black text-accent mb-12 block animate-pulse">הוא גבוה מדי.</div>
-            <div className="space-y-6 text-xl md:text-2xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
-              <p>כל חודש שעובר בלי תוכנית ברורה זה עוד חודש שאתה משקיע — ולא מתקדם.</p>
-              <div className="py-4 font-bold text-white uppercase tracking-[0.2em] space-y-2">
-                <div>עוד אימונים.</div>
-                <div>עוד ניסיונות.</div>
-              </div>
-              <p className="text-white font-medium">לא כי אתה לא רוצה מספיק. אלא כי בלי דרך נכונה — רוב האנשים פשוט נתקעים.</p>
-            </div>
-            <div className="flex justify-center mt-6 md:mt-8 mb-4">
-              <a
-                href="#action"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const actionSection = document.getElementById('action');
-                  if (actionSection) {
-                    actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105"
-              >
-                בוא נבדוק אם זה מתאים לך
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* STAGE 6: GUARANTEE */}
-        <section id="guarantee" data-stage="guarantee" data-snap="true" className="stage stage-guarantee">
-          <div className="absolute inset-0 z-0 commitment-overlay" aria-hidden="true"></div>
-          <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
-            <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
-            
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
-              <span className="guarantee-part-1">התוצאה שלך </span>
-              <span className="guarantee-part-2"> – <span className="underline-responsibility">האחריות</span> שלי.</span>
-            </h2>
-
-            <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
-              <p className="font-medium text-white">אני לא מוכר ליווי.</p>
-              <p>
-                אני לוקח אחריות על תוצאה שסיכמנו עליה מראש — <span className="text-white font-medium">ביחד.</span>
-              </p>
-              <p className="text-base md:text-lg">
-                אם עמדת בתהליך, יישמת את מה שבנינו, <br className="hidden md:block" />
-                ועדיין לא הגעת לתוצאה שסיכמנו עליה —
-              </p>
-              <p className="text-white font-bold text-xl md:text-2xl">אני לא משאיר אותך לבד עם זה.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto">
-              <div className="bg-white/5 border border-white/10 p-4 md:p-6 rounded-2xl transition-all hover:border-accent/40 group">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                  <CheckCircle2 size={18} aria-hidden="true" />
-                </div>
-                <p className="text-white text-sm md:text-base font-bold">המשך ליווי מלא, ללא עלות, עד הגעה לתוצאה</p>
-              </div>
-              <div className="bg-white/5 border border-white/10 p-4 md:p-6 rounded-2xl transition-all hover:border-accent/40 group">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                  <ShieldCheck size={18} aria-hidden="true" />
-                </div>
-                <p className="text-white text-sm md:text-base font-bold">או החזר כספי מלא</p>
-              </div>
-            </div>
-
-            <div className="pt-2 md:pt-4">
-              <p className="text-base md:text-lg font-medium text-gray-400 italic">
-                "כי כשאני לוקח מתאמן — השם שלי והאחריות שלי על הקו."
-              </p>
-              <div className="w-16 h-px bg-accent/30 mx-auto mt-2"></div>
-            </div>
-          </div>
-        </section>
-
-        {/* STAGE 7: SOLUTION (GET) */}
-        <section id="get" data-stage="get" className="stage stage-alt-1 reveal">
-          <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
-            <StoryHeader text="מכאן מתחיל הסדר" />
-            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4" id="get-cards-container">
-              {[
-                { i: <Dumbbell />, t: "תוכנית אימונים אישית" },
-                { i: <Apple />, t: "תזונה מותאמת אישית" },
-                { i: <MessageCircle />, t: "ליווי ומענה בוואטסאפ" },
-                { i: <BarChart3 />, t: "מעקב והתאמות שבועיות" },
-                { i: <Clock />, t: "סדר ובהירות בתהליך" }
-              ].map((item, idx) => (
-                <div 
-                  key={idx} 
-                  className="get-card bg-brandDark/20 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-white/5 flex flex-col items-center text-center gap-4 transition-all hover:-translate-y-2"
-                  style={{ opacity: 0, transform: 'translateY(20px)' }}
-                  data-card-index={idx}
-                >
-                  <div className="text-accent">{React.cloneElement(item.i as React.ReactElement, { size: 32, "aria-hidden": "true" })}</div>
-                  <h3 className="text-sm md:text-lg font-bold leading-tight">{item.t}</h3>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* STAGE 8: SOLUTION (HOW) */}
-        <section id="how" data-stage="how" data-snap="true" className="stage reveal">
-          <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
-            <StoryHeader text="ככה נראה תהליך שעובד" />
-            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-8 md:mb-10">4 צעדים לתוצאה</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 relative mt-4">
-              <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true"></div>
-              {[
-                { s: "01", t: "בדיקת התאמה", d: "שיחה קצרה להבין איפה אתה נמצא ולאן אתה רוצה להגיע." },
-                { s: "02", t: "אבחון ואסטרטגיה", d: "איסוף כל הנתונים ובניית אסטרטגיה מותאמת אישית." },
-                { s: "03", t: "ליווי ומעקב", d: "עבודה שוטפת, וואטסאפ זמין, ובדיקות התקדמות." },
-                { s: "04", t: "תוצאה במראה", d: "התאמות בזמן אמת עד שרואים את השינוי שרצית." }
-              ].map((item, idx) => (
-                <div key={idx} className="relative z-10 flex flex-col items-center text-center group">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-2xl font-black mb-6 group-hover:bg-accent group-hover:text-white transition-all" aria-hidden="true">
-                    {item.s}
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{item.t}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed px-2">{item.d}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* STAGE 9: PROOF */}
+        {/* STAGE 3: PROOF */}
         <section id="proof" data-stage="proof" data-snap="true" className="stage stage-alt-1 reveal">
           <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-2 md:py-4 h-full flex flex-col">
@@ -2231,6 +2038,221 @@ export default function App() {
                   </div>
         </section>
 
+        {/* STAGE 4: ABOUT */}
+        <section id="about" data-stage="about" data-snap="true" className="stage reveal">
+          <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
+            <StoryHeader text="מי עומד מאחורי התהליך" />
+            <div className="grid md:grid-cols-2 gap-8 items-center mt-4">
+              <div className="space-y-4 text-center md:text-right">
+                <div className="space-y-2">
+                  <p className="text-accent font-bold tracking-[0.2em] uppercase text-sm">המאמן שלך</p>
+                  <h2 className="text-4xl md:text-5xl font-black heading-font leading-tight">גילעד דורון</h2>
+                </div>
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                  אני מלווה גברים בתהליכים משמעותיים כבר שנים. הליווי שלי הוא לא עוד תפריט גנרי, הוא דרך חיים שתביא אותך לתוצאה שאתה מחפש, בלי לנחש.
+                </p>
+                <div className="bg-brandGray/20 backdrop-blur-sm p-6 rounded-2xl border border-white/5 space-y-4">
+                  <h3 className="font-bold flex items-center gap-2 text-white justify-center md:justify-start"><ShieldCheck className="text-accent" size={20} aria-hidden="true" /> ההבטחה שלי:</h3>
+                  <p className="text-sm text-gray-400">אני לא מוכר הבטחות ריקות. אני מוכר תהליך. אם תעבוד לפי התוכנית ולא תראה תוצאות - אני איתך עד שזה קורה.</p>
+                </div>
+              </div>
+              <div className="relative w-full">
+                {/* Quiet depth card - purely visual, behind video */}
+                <div 
+                  className="absolute -bottom-8 -left-8 w-[108%] h-[108%] rounded-[2.5rem] bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] -z-0 pointer-events-none hidden md:block"
+                  style={{ 
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)'
+                  }}
+                  aria-hidden="true"
+                />
+                {/* Video container */}
+                <div 
+                  className="w-full rounded-3xl overflow-hidden shadow-2xl relative z-10 border border-white/10" 
+                  style={{ 
+                    aspectRatio: '4/5',
+                    minHeight: '400px',
+                    maxWidth: '100%'
+                  }}
+                >
+                  <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+                    <VideoPlayer />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* STAGE 4: STUCK - DRAFT MODE (HIDDEN) */}
+        {/* <section id="stuck" data-stage="stuck" data-snap="true" className="stage reveal confusion-bg">
+          <div className="absolute inset-0 z-0 confusion-bg-layer"></div>
+          <div className="absolute inset-0 z-0 confusion-overlay"></div>
+          <div className="container mx-auto px-4 md:px-12 relative z-10">
+            <StoryHeader text="איפה רוב האנשים נתקעים" />
+            <div className="grid md:grid-cols-2 gap-12 items-center mt-12">
+              <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-[700px] rounded-3xl overflow-hidden shadow-2xl bg-brandGray/20 backdrop-blur-sm flex items-center justify-center">
+                <img 
+                  src="/assets/about/whynoprogress.webp" 
+                  alt="אדם מרוכז באימון" 
+                  className="w-full h-full object-contain" 
+                  loading="lazy"
+                />
+              </div>
+              <div className="space-y-6">
+                <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight">למה אתה עומד במקום?</h2>
+                <div className="space-y-6">
+                  <p className="text-xl text-gray-300 leading-relaxed">רוב המתאמנים שמגיעים אלי משקיעים. הם מתאמנים מנסים ומשקיעים זמן ואנרגיה אבל לא רואים תוצאות</p>
+                  <p className="text-xl font-bold text-white">זה קורה בדרך כלל בגלל:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {[{icon:<Target />, t:"חוסר בהירות"}, {icon:<Zap />, t:"קפיצה בין שיטות"}, {icon:<User />, t:"תהליך לא מתאים"}, {icon:<ShieldCheck />, t:"אין עין מקצועית"}].map((item, idx) => (
+                      <div key={idx} className="bg-brandGray/20 backdrop-blur-sm p-5 rounded-2xl flex items-center gap-3">
+                        <span className="text-accent">{React.cloneElement(item.icon as React.ReactElement, { size: 20, "aria-hidden": "true" })}</span>
+                        <span className="font-medium">{item.t}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section> */}
+
+        {/* STAGE 6: GUARANTEE */}
+        <section id="guarantee" data-stage="guarantee" data-snap="true" className="stage stage-guarantee">
+          <div className="absolute inset-0 z-0 commitment-overlay" aria-hidden="true"></div>
+          <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
+            <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
+            
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
+              <span className="guarantee-part-1">התוצאה שלך </span>
+              <span className="guarantee-part-2"> – <span className="underline-responsibility">האחריות</span> שלי.</span>
+            </h2>
+
+            <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
+              <p className="font-medium text-white">אני לא מוכר ליווי.</p>
+              <p>
+                אני לוקח אחריות על תוצאה שסיכמנו עליה מראש — <span className="text-white font-medium">ביחד.</span>
+              </p>
+              <p className="text-base md:text-lg">
+                אם עמדת בתהליך, יישמת את מה שבנינו, <br className="hidden md:block" />
+                ועדיין לא הגעת לתוצאה שסיכמנו עליה —
+              </p>
+              <p className="text-white font-bold text-xl md:text-2xl">אני לא משאיר אותך לבד עם זה.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto">
+              <div className="bg-white/5 border border-white/10 p-4 md:p-6 rounded-2xl transition-all hover:border-accent/40 group">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                  <CheckCircle2 size={18} aria-hidden="true" />
+                </div>
+                <p className="text-white text-sm md:text-base font-bold">המשך ליווי מלא, ללא עלות, עד הגעה לתוצאה</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 p-4 md:p-6 rounded-2xl transition-all hover:border-accent/40 group">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                  <ShieldCheck size={18} aria-hidden="true" />
+                </div>
+                <p className="text-white text-sm md:text-base font-bold">או החזר כספי מלא</p>
+              </div>
+            </div>
+
+            <div className="pt-2 md:pt-4">
+              <p className="text-base md:text-lg font-medium text-gray-400 italic">
+                "כי כשאני לוקח מתאמן — השם שלי והאחריות שלי על הקו."
+              </p>
+              <div className="w-16 h-px bg-accent/30 mx-auto mt-2"></div>
+            </div>
+          </div>
+        </section>
+
+        {/* STAGE 7: SOLUTION (GET) */}
+        <section id="get" data-stage="get" data-snap="true" className="stage stage-alt-1 reveal">
+          <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
+            <StoryHeader text="מכאן מתחיל הסדר" />
+            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4" id="get-cards-container">
+              {[
+                { i: <Dumbbell />, t: "תוכנית אימונים אישית" },
+                { i: <Apple />, t: "תזונה מותאמת אישית" },
+                { i: <MessageCircle />, t: "ליווי ומענה בוואטסאפ" },
+                { i: <BarChart3 />, t: "מעקב והתאמות שבועיות" },
+                { i: <Clock />, t: "סדר ובהירות בתהליך" }
+              ].map((item, idx) => (
+                <div 
+                  key={idx} 
+                  className="get-card bg-brandDark/20 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-white/5 flex flex-col items-center text-center gap-4 transition-all hover:-translate-y-2"
+                  style={{ opacity: 0, transform: 'translateY(20px)' }}
+                  data-card-index={idx}
+                >
+                  <div className="text-accent">{React.cloneElement(item.i as React.ReactElement, { size: 32, "aria-hidden": "true" })}</div>
+                  <h3 className="text-sm md:text-lg font-bold leading-tight">{item.t}</h3>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* STAGE 8: SOLUTION (HOW) */}
+        <section id="how" data-stage="how" data-snap="true" className="stage reveal">
+          <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
+            <StoryHeader text="ככה נראה תהליך שעובד" />
+            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-8 md:mb-10">4 צעדים לתוצאה</h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 relative mt-4">
+              <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true"></div>
+              {[
+                { s: "01", t: "בדיקת התאמה", d: "שיחה קצרה להבין איפה אתה נמצא ולאן אתה רוצה להגיע." },
+                { s: "02", t: "אבחון ואסטרטגיה", d: "איסוף כל הנתונים ובניית אסטרטגיה מותאמת אישית." },
+                { s: "03", t: "ליווי ומעקב", d: "עבודה שוטפת, וואטסאפ זמין, ובדיקות התקדמות." },
+                { s: "04", t: "תוצאה במראה", d: "התאמות בזמן אמת עד שרואים את השינוי שרצית." }
+              ].map((item, idx) => (
+                <div key={idx} className="relative z-10 flex flex-col items-center text-center group">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-2xl font-black mb-6 group-hover:bg-accent group-hover:text-white transition-all" aria-hidden="true">
+                    {item.s}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{item.t}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed px-2">{item.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* STAGE 9: WAITING COST */}
+        <section id="waiting" data-stage="waiting" data-snap="true" className="stage stage-alt-2 text-center">
+          <div className="absolute inset-0 z-0 waiting-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 relative z-10 max-w-4xl reveal">
+            <StoryHeader text="זה הרגע שרוב האנשים עוצרים" />
+            <h2 className="text-4xl md:text-6xl font-black heading-font mb-4">המחיר של להמשיך לחכות?</h2>
+            <div className="text-5xl md:text-7xl font-black text-accent mb-12 block animate-pulse">הוא גבוה מדי.</div>
+            <div className="space-y-6 text-xl md:text-2xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
+              <p>כל חודש שעובר בלי תוכנית ברורה זה עוד חודש שאתה משקיע — ולא מתקדם.</p>
+              <div className="py-4 font-bold text-white uppercase tracking-[0.2em] space-y-2">
+                <div>עוד אימונים.</div>
+                <div>עוד ניסיונות.</div>
+            </div>
+              <p className="text-white font-medium">לא כי אתה לא רוצה מספיק. אלא כי בלי דרך נכונה — רוב האנשים פשוט נתקעים.</p>
+                  </div>
+            <div className="flex justify-center mt-6 md:mt-8 mb-4">
+              <a
+                href="#action"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const actionSection = document.getElementById('action');
+                  if (actionSection) {
+                    actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105"
+              >
+                בוא נבדוק אם זה מתאים לך
+              </a>
+                  </div>
+                  </div>
+        </section>
+
         {/* STAGE 10: FAQ */}
         <section id="faq" data-stage="faq" data-snap="true" className="stage stage-alt-1 reveal">
           <div className="absolute inset-0 z-0 faq-overlay" aria-hidden="true"></div>
@@ -2306,19 +2328,19 @@ export default function App() {
         {/* STAGE 11: ACTION */}
         <section id="action" data-stage="action" data-snap="true" className="stage stage-alt-1 reveal">
           <div className="absolute inset-0 z-0 cta-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center">
             <StoryHeader text="הצעד האחרון בדרך שלך" />
-            <div className="grid md:grid-cols-2 gap-8 items-center mt-4">
-              <div className="space-y-6">
-                <h2 className="text-4xl md:text-6xl font-black heading-font leading-tight">מוכן <br /> <span className="text-accent underline decoration-accent underline-offset-8">להתחיל?</span></h2>
-                <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 text-xl">
-                    <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><Phone size={24} /></div>
+            <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
+              <div className="space-y-4 md:space-y-6">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מוכן <br /> <span className="text-accent underline decoration-accent underline-offset-8">להתחיל?</span></h2>
+                <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
+                <div className="space-y-3 md:space-y-4">
+                  <div className="flex items-center gap-3 md:gap-4 text-base md:text-xl">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><Phone size={20} className="md:w-6 md:h-6" /></div>
                     <span>שיחה קצרה לתיאום ציפיות</span>
                   </div>
-                  <div className="flex items-center gap-4 text-xl">
-                    <div className="w-12 h-12 bg-[#25D366]/10 text-[#25D366] rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><MessageCircle size={24} /></div>
+                  <div className="flex items-center gap-3 md:gap-4 text-base md:text-xl">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-[#25D366]/10 text-[#25D366] rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><MessageCircle size={20} className="md:w-6 md:h-6" /></div>
                     <span>מענה מהיר בוואטסאפ</span>
                   </div>
                 </div>
