@@ -35,7 +35,7 @@
         const pathname = window.location.pathname;
         const base = pathname.includes('/Gilad-landing-page/') ? '/Gilad-landing-page' : '';
         // Set unified background image for parallax effect
-        document.documentElement.style.setProperty('--unified-bg', `url('${base}/assets/backgrounds/ChatGPT Image Jan 13, 2026, 06_06_51 PM.png')`);
+        document.documentElement.style.setProperty('--unified-bg', `url('${base}/assets/backgrounds/WhatsApp Image 2026-01-13 at 01.29.03.jpeg')`);
       })();
       
     </script>
@@ -332,7 +332,235 @@
       @media (max-width: 768px) {
         .journey-rail { display: none; }
         .mobile-progress-container { display: block; }
-        .stage { padding-top: 4rem; padding-bottom: 4rem; }
+        .stage { 
+          padding-top: 4rem; 
+          padding-bottom: 4rem;
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+        }
+        
+        /* Hero section - ensure text visibility */
+        #hero {
+          padding-top: 6rem !important;
+        }
+        #hero h1 {
+          margin-top: 0.75rem;
+          line-height: 1.2;
+        }
+        header.absolute {
+          padding-top: 0.75rem;
+          padding-bottom: 0.75rem;
+        }
+        
+        /* Section 1: Hero Form - Mobile Fixes */
+        #hero .bg-white\/95 {
+          max-height: calc(100vh - 13rem);
+          overflow-y: auto;
+          padding: 1rem;
+          margin-top: -0.5rem;
+        }
+        #hero .bg-white\/95 h3 {
+          font-size: 1rem;
+          margin-bottom: 1rem;
+        }
+        #hero .bg-white\/95 input,
+        #hero .bg-white\/95 label {
+          font-size: 0.875rem;
+        }
+        #hero .bg-white\/95 button {
+          padding: 0.75rem;
+          font-size: 0.875rem;
+        }
+        #hero input,
+        #hero select {
+          padding: 0.75rem;
+          margin-bottom: 1rem;
+        }
+        /* WhatsApp button z-index fix - prevent overlap with form */
+        button[aria-label*="וואטסאפ"] {
+          z-index: 40 !important;
+        }
+        
+        /* Section 2: Confusion/Diagnosis - Section Boundary Fix */
+        #diagnosis {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+          padding-bottom: 3rem;
+        }
+        #diagnosis .space-y-4 li {
+          margin-bottom: 0.75rem;
+        }
+        #diagnosis button,
+        #diagnosis a[href*="#action"] {
+          margin-top: 2rem;
+        }
+        /* Prevent About section content from bleeding into Diagnosis */
+        #diagnosis + #about {
+          margin-top: 0;
+        }
+        
+        /* Section 3: About - Video and Text Spacing */
+        #about {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+          padding-bottom: 2rem;
+        }
+        #about video,
+        #about iframe {
+          max-height: 45vh;
+        }
+        #about .bg-brandGray\/60 {
+          margin-bottom: 1.5rem;
+        }
+        #about .space-y-4 {
+          margin-bottom: 1rem;
+        }
+        
+        /* Section 4: Waiting - Section Boundary Fix */
+        #waiting {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+          padding-bottom: 3rem;
+        }
+        #waiting .space-y-6 {
+          margin-bottom: 1.5rem;
+        }
+        #waiting a[href*="#action"],
+        #waiting button {
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+        }
+        /* Prevent Guarantee section content from bleeding into Waiting */
+        #waiting + #guarantee {
+          margin-top: 0;
+        }
+        
+        /* Section 5: Guarantee - Spacing Fixes */
+        #guarantee {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+          padding-bottom: 2rem;
+        }
+        #guarantee .grid {
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+        }
+        #guarantee .bg-brandGray\/40 {
+          margin-bottom: 1.5rem;
+        }
+        #guarantee .pt-2 {
+          margin-bottom: 1.5rem;
+        }
+        #guarantee button,
+        #guarantee a[href*="#action"] {
+          margin-top: 1.5rem;
+        }
+        
+        /* Section 6: Process Steps - Step 04 Visibility */
+        #how {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+          padding-bottom: 2rem;
+        }
+        #how .grid {
+          gap: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+        #how .flex.flex-col.items-center {
+          margin-bottom: 0.5rem;
+        }
+        #how h3 {
+          margin-bottom: 0.5rem;
+        }
+        #how p {
+          font-size: 0.875rem;
+          line-height: 1.5;
+        }
+        #how button,
+        #how a[href*="#action"] {
+          margin-top: 1.5rem;
+        }
+        
+        /* Section 7: Features Grid - Card Spacing */
+        #get {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+        }
+        #get .grid {
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+        }
+        #get button {
+          margin-top: 1rem;
+        }
+        
+        /* Section 8: Testimonials - Spacing and Arrow Positioning */
+        #proof {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+        }
+        #proof .carousel-container {
+          max-height: 67vh;
+        }
+        #proof button[aria-label*="לקוח"] {
+          z-index: 30;
+          width: 2.5rem;
+          height: 2.5rem;
+        }
+        #proof .flex.justify-center.gap-2[role="tablist"] {
+          margin-top: 1.5rem;
+          margin-bottom: 1rem;
+        }
+        #proof a[href*="#action"],
+        #proof button[aria-label*="תוצאות"] {
+          margin-top: 1.5rem;
+          z-index: 20;
+        }
+        
+        /* Section 9: Action Form - Form Height and Chat Overlap */
+        #action {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+        }
+        #action .bg-brandGray\/50 {
+          max-height: calc(100vh - 10rem);
+          overflow-y: auto;
+          padding: 1.25rem;
+        }
+        #action input {
+          padding: 0.75rem;
+          margin-bottom: 1rem;
+        }
+        
+        /* Section 10: FAQ - Section Boundary Fix */
+        #faq {
+          height: 100vh;
+          height: 100svh;
+          overflow: hidden;
+          padding-bottom: 3rem;
+        }
+        #faq .max-w-4xl {
+          max-height: calc(100vh - 14rem);
+          overflow-y: auto;
+          padding-bottom: 1rem;
+        }
+        #faq a[href*="#action"],
+        #faq button {
+          margin-top: 2rem;
+        }
+        /* Prevent Action section content from bleeding into FAQ */
+        #faq + #action {
+          margin-top: 0;
+        }
       }
 
       /* Compact Guarantee on Desktop */
@@ -422,7 +650,7 @@
       /* Background Image Layers - Fixed sticky background */
       #main-content {
         position: relative;
-        background-image: var(--unified-bg, url('/Gilad-landing-page/assets/backgrounds/ChatGPT Image Jan 13, 2026, 06_06_51 PM.png'));
+        background-image: var(--unified-bg, url('/Gilad-landing-page/assets/backgrounds/WhatsApp Image 2026-01-13 at 01.29.03.jpeg'));
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center center;

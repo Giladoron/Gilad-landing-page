@@ -481,7 +481,7 @@ const MobileProgressBar: React.FC<{ activeStageIndex: number }> = ({ activeStage
 };
 
 const StoryHeader: React.FC<{ text: string }> = ({ text }) => (
-  <div className="text-center mb-4 md:mb-6">
+  <div className="text-center mb-4 md:mb-6 mt-16 md:mt-0 pt-4 md:pt-0">
     <span className="story-header-text text-gray-400 text-sm md:text-lg font-medium tracking-wide">
       {text}
     </span>
@@ -512,6 +512,17 @@ const JourneyRail: React.FC<{ activeStage: string }> = ({ activeStage }) => {
 };
 
 const WhatsAppButton: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const handleClick = () => {
     window.open('https://wa.me/972528765992?text=היי גילעד, ראיתי את האתר שלך ואשמח לשמוע פרטים על הליווי', '_blank');
   };
@@ -519,10 +530,14 @@ const WhatsAppButton: React.FC = () => {
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-6 right-6 md:right-auto md:left-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 group flex items-center gap-2"
+      className="fixed bottom-6 right-6 md:right-auto md:left-6 z-40 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 group flex items-center gap-2 max-w-fit md:max-w-none"
       aria-label="צור קשר בוואטסאפ"
+      style={isMobile ? { 
+        bottom: '1.5rem',
+        right: '1.5rem'
+      } : undefined}
     >
-      <span className="hidden group-hover:block font-bold pr-2">דברו איתי בוואטסאפ</span>
+      <span className="hidden group-hover:block font-bold pr-2 whitespace-nowrap">דברו איתי בוואטסאפ</span>
       <MessageCircle size={32} aria-hidden="true" />
     </button>
   );
@@ -579,7 +594,7 @@ const FloatingCTA: React.FC = () => {
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-20 right-6 md:right-8 z-40 bg-accent text-white px-6 py-3 rounded-full shadow-2xl hover:brightness-110 transition-all duration-300 font-bold text-sm md:text-base flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-300"
+      className="fixed bottom-6 left-6 md:bottom-20 md:left-auto md:right-8 z-50 bg-accent text-white px-6 py-3 rounded-full shadow-2xl hover:brightness-110 transition-all duration-300 font-bold text-sm md:text-base flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-300"
       aria-label="מעבר לבדיקת התאמה"
     >
       בדיקת התאמה
@@ -720,7 +735,7 @@ const ExitIntentPopup: React.FC = () => {
 };
 
 const Navbar: React.FC = () => (
-  <header className="absolute top-0 left-0 right-0 z-50 py-6 px-4 md:px-12 flex justify-between items-center bg-transparent">
+  <header className="absolute top-0 left-0 right-0 z-50 py-3 md:py-6 px-4 md:px-12 flex justify-between items-center bg-transparent">
     <div className="text-2xl font-black heading-font tracking-tighter text-white">
       גילעד <span className="text-accent">דורון</span>
     </div>
@@ -1709,25 +1724,25 @@ export default function App() {
         <section id="hero" data-stage="hero" data-snap="true" className="stage reveal">
           <div className="absolute inset-0 z-0 hero-overlay" aria-hidden="true"></div>
 
-          <div className="container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col md:grid md:grid-cols-2 gap-8 items-center justify-center">
-            <div className="space-y-6">
-              <h1 className="text-4xl md:text-6xl font-black heading-font leading-[1.1]">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col md:grid md:grid-cols-2 gap-8 items-center justify-center pt-20 md:pt-0">
+            <div className="space-y-3 md:space-y-6">
+              <h1 className="text-3xl md:text-6xl font-black heading-font leading-[1.2] mt-4 md:mt-0">
                 מתאמן כבר תקופה <br /> 
                 <span className="text-accent underline decoration-4 underline-offset-8">ולא רואה תוצאות?</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 font-light max-w-xl">
+              <p className="text-lg md:text-2xl text-gray-300 font-light max-w-xl">
                 זה לא כי אתה צריך להשקיע יותר, <br className="hidden md:block" /> 
                 <strong>זה כי אתה צריך להיות אפקטיבי יותר</strong>
               </p>
-              <div className="space-y-4">
-                <p className="text-lg md:text-xl text-white font-medium">
+              <div className="space-y-2 md:space-y-4">
+                <p className="text-base md:text-xl text-white font-medium">
                   ליווי אונליין באימונים ותזונה למי שלא מפחדים לעבוד איתי קשה ולראות תוצאות אמיתיות
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-1.5 md:space-y-3">
                   {["תוכנית אימון ותזונה מותאמת אישית", "ליווי צמוד ומעקב שוטף", "תהליך ברור, מסודר, אפקטיבי"].map((item, idx) => (
-                    <li key={idx} className="flex items-center gap-3">
-                      <CheckCircle2 className="text-accent flex-shrink-0" size={20} aria-hidden="true" />
-                      <span className="text-gray-200 font-medium">{item}</span>
+                    <li key={idx} className="flex items-center gap-2 md:gap-3">
+                      <CheckCircle2 className="text-accent flex-shrink-0" size={18} aria-hidden="true" />
+                      <span className="text-sm md:text-base text-gray-200 font-medium">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -2186,7 +2201,7 @@ export default function App() {
                     onClick={() => goToSlide(index)}
                     className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
                       index === currentClientIndex
-                        ? 'bg-accent w-8 md:w-10'
+                        ? 'bg-accent w-6 md:w-10'
                         : 'bg-white/30 hover:bg-white/50'
                     }`}
                     aria-label={`מעבר לתוצאות לקוח ${index + 1}`}
@@ -2198,7 +2213,7 @@ export default function App() {
               </div>
 
             {/* CTA Button - Always visible at bottom */}
-            <div className="flex justify-center mt-6 md:mt-8 mb-2 flex-shrink-0 relative z-20">
+            <div className="flex justify-center mt-6 md:mt-8 mb-20 md:mb-2 flex-shrink-0 relative z-20">
               <a
                 href="#action"
                 onClick={(e) => {
