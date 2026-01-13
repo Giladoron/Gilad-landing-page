@@ -34,22 +34,34 @@
         // Detect base path from current location
         const pathname = window.location.pathname;
         const base = pathname.includes('/Gilad-landing-page/') ? '/Gilad-landing-page' : '';
-        // Set full paths for each background image
-        document.documentElement.style.setProperty('--hero-bg', `url('${base}/assets/backgrounds/bg-hero.webp')`);
-        document.documentElement.style.setProperty('--reflection-bg', `url('${base}/assets/backgrounds/bg-reflection.webp')`);
-        document.documentElement.style.setProperty('--confusion-bg', `url('${base}/assets/backgrounds/bg-confusion.webp')`);
-        document.documentElement.style.setProperty('--process-bg', `url('${base}/assets/backgrounds/bg-process.webp')`);
-        document.documentElement.style.setProperty('--commitment-bg', `url('${base}/assets/backgrounds/bg-commitment.webp')`);
-        document.documentElement.style.setProperty('--cta-bg', `url('${base}/assets/backgrounds/bg-cta.webp')`);
+        // Set unified background image for parallax effect
+        document.documentElement.style.setProperty('--unified-bg', `url('${base}/assets/backgrounds/WhatsApp Image 2026-01-13 at 01.29.03.jpeg')`);
       })();
+      
     </script>
     <style>
+      html {
+        scroll-snap-type: y proximity;
+        scroll-behavior: smooth;
+      }
+
       body {
         background-color: #0A0A0A;
         color: white;
         font-family: 'Heebo', sans-serif;
         scroll-behavior: smooth;
         overflow-x: hidden;
+      }
+      
+      /* Text shadows for better readability over background image */
+      h1, h2, h3, h4, h5, h6 {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+      .heading-font {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+      p, li, span {
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
       }
       .heading-font {
         font-family: 'Montserrat', sans-serif;
@@ -108,17 +120,36 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #444;
       }
+      /* Hide scrollbar for carousel */
+      .carousel-container::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Carousel stability improvements */
+      .carousel-container {
+        overscroll-behavior-x: contain; /* Only prevent horizontal overscroll */
+        overscroll-behavior-y: auto; /* Allow vertical scrolling */
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x; /* Allow horizontal panning, don't block vertical scroll */
+      }
+      
+      .carousel-container > * {
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+      }
 
       /* Stage / Scene Styles */
       .stage {
-        min-height: 100vh;
-        min-height: 100svh;
+        height: 100vh;
+        height: 100svh; /* Fallback for mobile */
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start; /* Changed from center */
         position: relative;
         overflow: hidden;
         width: 100%;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
       }
 
       /* Reveal Animation Styles */
@@ -135,24 +166,7 @@
 
       /* Section Focus Styling */
       [data-snap="true"] {
-        transition: filter 0.6s ease, opacity 0.45s ease-out;
-      }
-      [data-snap="true"]:not(.active-section) {
-        filter: brightness(0.7) grayscale(0.2);
-      }
-      .active-section {
-        filter: brightness(1) grayscale(0) !important;
-      }
-      /* Keep video section always bright */
-      #about {
-        filter: brightness(1) grayscale(0) !important;
-      }
-      /* Explicit rules for proof section */
-      #proof[data-snap="true"]:not(.active-section) {
-        filter: brightness(0.7) grayscale(0.2);
-      }
-      #proof[data-snap="true"].active-section {
-        filter: brightness(1) grayscale(0) !important;
+        transition: opacity 0.45s ease-out;
       }
 
       /* Headline Highlight Effect */
@@ -184,13 +198,6 @@
       }
       #guarantee.guarantee-revealed {
         opacity: 1;
-      }
-      /* Ensure guarantee section brightness filter works with opacity */
-      #guarantee.active-section.guarantee-revealed {
-        filter: brightness(1) grayscale(0);
-      }
-      #guarantee:not(.active-section).guarantee-revealed {
-        filter: brightness(0.7) grayscale(0.2);
       }
 
       .guarantee-part-1, .guarantee-part-2 {
@@ -328,11 +335,55 @@
         }
         .underline-responsibility::after { width: 100% !important; }
         [data-snap="true"] { filter: none !important; }
+        html {
+          scroll-snap-type: none !important;
+        }
       }
 
-      .stage-alt-1 { background-color: #0E0E0E; }
-      .stage-alt-2 { background-color: #080808; }
-      .stage-guarantee { background-color: #050505; }
+      .stage-alt-1 { background-color: transparent; }
+      .stage-alt-2 { background-color: transparent; }
+      .stage-guarantee { background-color: transparent; }
+      
+      /* Additional overlay classes for sections without specific overlays */
+      .about-overlay {
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
+      }
+      
+      .proof-overlay {
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
+      }
+      
+      .faq-overlay {
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
+      }
+      
+      .waiting-overlay {
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
+      }
+      
+      .get-overlay {
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
+      }
 
       /* Color Contrast Verification (WCAG 2.1 AA Compliance)
        * 
@@ -346,109 +397,66 @@
        * Target: 4.5:1 for normal text, 3:1 for large text (AA level)
        */
 
-      /* Background Image Layers */
-      .hero-bg-layer {
-        background-image: var(--hero-bg, url('/assets/backgrounds/bg-hero.webp'));
+      /* Background Image Layers - Fixed sticky background */
+      #main-content {
+        position: relative;
+        background-image: var(--unified-bg, url('/assets/backgrounds/WhatsApp Image 2026-01-13 at 01.29.03.jpeg'));
         background-size: cover;
         background-repeat: no-repeat;
-        background-position: center;
+        background-position: center center;
+        background-attachment: fixed;
       }
       .hero-overlay {
-        background-color: rgba(0, 0, 0, 0.70);
-        transition: background-color 0.6s ease;
-      }
-      .active-section .hero-overlay {
-        background-color: rgba(0, 0, 0, 0.50);
-      }
-      [data-snap="true"]:not(.active-section) .hero-overlay {
-        background-color: rgba(0, 0, 0, 0.80);
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
       }
 
-      .reflection-bg-layer {
-        background-image: var(--reflection-bg, url('/assets/backgrounds/bg-reflection.webp'));
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
+      /* reflection-bg-layer removed - using fixed background on body */
       .reflection-overlay {
-        background-color: rgba(0, 0, 0, 0.60);
-        transition: background-color 0.6s ease;
-      }
-      /* Make overlay lighter when section is active */
-      .active-section .reflection-overlay {
-        background-color: rgba(0, 0, 0, 0.40);
-      }
-      /* Make overlay darker when section is not active */
-      [data-snap="true"]:not(.active-section) .reflection-overlay {
-        background-color: rgba(0, 0, 0, 0.70);
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
       }
 
-      .confusion-bg-layer {
-        background-image: var(--confusion-bg, url('/assets/backgrounds/bg-confusion.webp'));
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
+      /* confusion-bg-layer removed - using fixed background on body */
       .confusion-overlay {
-        background-color: rgba(0, 0, 0, 0.65);
-        transition: background-color 0.6s ease;
-      }
-      .active-section .confusion-overlay {
-        background-color: rgba(0, 0, 0, 0.45);
-      }
-      [data-snap="true"]:not(.active-section) .confusion-overlay {
-        background-color: rgba(0, 0, 0, 0.75);
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
       }
 
-      .process-bg-layer {
-        background-image: var(--process-bg, url('/assets/backgrounds/bg-process.webp'));
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
+      /* process-bg-layer removed - using fixed background on body */
       .process-overlay {
-        background-color: rgba(0, 0, 0, 0.60);
-        transition: background-color 0.6s ease;
-      }
-      .active-section .process-overlay {
-        background-color: rgba(0, 0, 0, 0.40);
-      }
-      [data-snap="true"]:not(.active-section) .process-overlay {
-        background-color: rgba(0, 0, 0, 0.70);
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
       }
 
-      .commitment-bg-layer {
-        background-image: var(--commitment-bg, url('/assets/backgrounds/bg-commitment.webp'));
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
+      /* commitment-bg-layer removed - using fixed background on body */
       .commitment-overlay {
-        background-color: rgba(0, 0, 0, 0.70);
-        transition: background-color 0.6s ease;
-      }
-      .active-section .commitment-overlay {
-        background-color: rgba(0, 0, 0, 0.50);
-      }
-      [data-snap="true"]:not(.active-section) .commitment-overlay {
-        background-color: rgba(0, 0, 0, 0.80);
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
       }
 
-      .cta-bg-layer {
-        background-image: var(--cta-bg, url('/assets/backgrounds/bg-cta.webp'));
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
+      /* cta-bg-layer removed - using fixed background on body */
       .cta-overlay {
-        background-color: rgba(0, 0, 0, 0.65);
-        transition: background-color 0.6s ease;
-      }
-      .active-section .cta-overlay {
-        background-color: rgba(0, 0, 0, 0.45);
-      }
-      [data-snap="true"]:not(.active-section) .cta-overlay {
-        background-color: rgba(0, 0, 0, 0.75);
+        background: linear-gradient(to bottom, 
+          rgba(0, 0, 0, 0.15) 0%,
+          rgba(0, 0, 0, 0.40) 35%,
+          rgba(0, 0, 0, 0.40) 65%,
+          rgba(0, 0, 0, 0.15) 100%);
       }
 
       /* Scroll Indicator Animation */

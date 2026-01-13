@@ -11,6 +11,8 @@ import {
   BarChart3, 
   Clock, 
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   User,
   ShieldCheck,
   Zap,
@@ -67,7 +69,165 @@ const STAGES = [
   { id: 'get', label: 'הפתרון' },
   { id: 'how', label: 'הדרך' },
   { id: 'proof', label: 'התוצאות' },
+  { id: 'faq', label: 'שאלות נפוצות' },
   { id: 'action', label: 'הצטרפות' }
+];
+
+// --- Client Results Data ---
+interface ClientResult {
+  name: string;
+  profession: string;
+  age: number;
+  quote: string;
+  goals: string[];
+  duration: number;
+  commitment: number;
+  image: string;
+  imageAlt: string;
+  stats: {
+    weight: string;
+    muscleMass: string;
+    strength: string;
+  };
+}
+
+const CLIENT_RESULTS: ClientResult[] = [
+  {
+    name: 'דניאל ב.',
+    profession: 'מהנדס תוכנה',
+    age: 34,
+    quote: 'הפעם הראשונה שאני רואה תוצאות אמיתיות. התהליך היה ברור מהתחלה.',
+    goals: ['ירידה במשקל', 'עליה במסת שריר', 'שיפור בכושר'],
+    duration: 3,
+    commitment: 100,
+    image: 'result-01.webp',
+    imageAlt: 'תוצאות לפני ואחרי - דניאל ב.',
+    stats: {
+      weight: '12 ק"ג-',
+      muscleMass: '+2.5 ק"ג',
+      strength: '+40%'
+    }
+  },
+  {
+    name: 'אורי כ.',
+    profession: 'יזם',
+    age: 29,
+    quote: 'גילעד עזר לי להבין מה אני עושה לא נכון. התוצאות הגיעו מהר מהצפוי.',
+    goals: ['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'],
+    duration: 4,
+    commitment: 100,
+    image: 'result-02.webp',
+    imageAlt: 'תוצאות לפני ואחרי - אורי כ.',
+    stats: {
+      weight: '+3 ק"ג',
+      muscleMass: '+5 ק"ג',
+      strength: '+65%'
+    }
+  },
+  {
+    name: 'דניאל ב.',
+    profession: 'מהנדס תוכנה',
+    age: 34,
+    quote: 'הפעם הראשונה שאני רואה תוצאות אמיתיות. התהליך היה ברור מהתחלה.',
+    goals: ['ירידה במשקל', 'עליה במסת שריר', 'שיפור בכושר'],
+    duration: 3,
+    commitment: 100,
+    image: 'result-01.webp',
+    imageAlt: 'תוצאות לפני ואחרי - דניאל ב.',
+    stats: {
+      weight: '12 ק"ג-',
+      muscleMass: '+2.5 ק"ג',
+      strength: '+40%'
+    }
+  },
+  {
+    name: 'אורי כ.',
+    profession: 'יזם',
+    age: 29,
+    quote: 'גילעד עזר לי להבין מה אני עושה לא נכון. התוצאות הגיעו מהר מהצפוי.',
+    goals: ['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'],
+    duration: 4,
+    commitment: 100,
+    image: 'result-02.webp',
+    imageAlt: 'תוצאות לפני ואחרי - אורי כ.',
+    stats: {
+      weight: '+3 ק"ג',
+      muscleMass: '+5 ק"ג',
+      strength: '+65%'
+    }
+  }
+];
+
+// --- FAQ Data ---
+interface FAQItem {
+  question: string;
+  answer: JSX.Element | string;
+}
+
+const FAQ_ITEMS: FAQItem[] = [
+  {
+    question: 'איך עובד הליווי האונליין?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>הליווי האונליין כולל תוכנית אימונים ותזונה מותאמת אישית, מעקב שוטף, ותמיכה צמודה בוואטסאפ. אני בונה עבורך תוכנית מפורטת בהתאם ליעדים שלך, מצב הפיזי הנוכחי, והזמינות שלך.</p>
+        <p>במהלך התהליך נבדוק התקדמות, נעדכן את התוכנית לפי הצורך, ואני זמין לשאלות והכוונה בכל עת.</p>
+      </div>
+    )
+  },
+  {
+    question: 'מה המחיר של הליווי?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>המחיר משתנה בהתאם למשך התהליך והצרכים האישיים שלך. המחיר כולל תוכנית אימונים ותזונה מותאמת אישית, מעקב שבועי, ותמיכה שוטפת בוואטסאפ.</p>
+        <p>לפרטים מדויקים, מומלץ לשוחח איתי בבדיקת התאמה קצרה שבה נבין יחד מה הכי מתאים לך.</p>
+      </div>
+    )
+  },
+  {
+    question: 'כמה זמן צריך להשקיע בשבוע?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>התוכנית מותאמת לזמינות שלך. לרוב, מדובר על 3-4 אימונים בשבוע, כל אימון בין 45-60 דקות. בנוסף, יש מעקב שוטף של התזונה והתקדמות.</p>
+        <p>הרעיון הוא לא רק לעבוד קשה, אלא לעבוד נכון - ולכן התוכנית מותאמת גם לזמן שיש לך וגם ליעדים שלך.</p>
+      </div>
+    )
+  },
+  {
+    question: 'איזה ציוד נדרש?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>התוכנית מותאמת למה שיש לך. אם יש לך גישה לחדר כושר - מעולה. אם אתה מעדיף להתאמן בבית - גם זה אפשרי. אני בונה תוכנית שעובדת עם מה שיש.</p>
+        <p>לרוב, אפשר להתחיל גם עם מינימום ציוד (משקולות בסיסיות, מזרן) ולהתקדם בהדרגה.</p>
+      </div>
+    )
+  },
+  {
+    question: 'מתי אראה תוצאות?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>תוצאות משתנות מאדם לאדם ותלויות במחויבות, עקביות, והתמדה. לרוב, ניתן לראות שינויים ראשונים לאחר 4-6 שבועות, ותוצאות משמעותיות לאחר 3-4 חודשים של עבודה עקבית.</p>
+        <p>התהליך כולל מעקב שוטף כדי לוודא שאתה בכיוון הנכון ולבצע התאמות במידת הצורך.</p>
+      </div>
+    )
+  },
+  {
+    question: 'מה כוללת התזונה בתוכנית?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>התזונה מותאמת אישית לפי היעדים שלך, אורח החיים, וההעדפות שלך. התוכנית כוללת תפריט מפורט עם כמויות, זמנים, וגם גמישות לבחירות אישיות.</p>
+        <p>הרעיון הוא לא דיאטה קשיחה אלא דרך חיים שתאפשר לך להגיע ליעדים ולהישאר שם.</p>
+      </div>
+    )
+  },
+  {
+    question: 'איך מתקיים הקשר והמעקב?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>הקשר מתקיים בעיקר דרך וואטסאפ - אני זמין לשאלות, עדכונים, והכוונה. בנוסף, יש מעקב שבועי שבו נבדוק התקדמות, נעדכן את התוכנית לפי הצורך, ונוודא שאתה בדרך הנכונה.</p>
+        <p>התהליך הוא אישי ומותאם - אני כאן כדי שתתמיד ותגיע לתוצאות.</p>
+      </div>
+    )
+  }
 ];
 
 // --- Legal Content ---
@@ -130,27 +290,37 @@ const LEGAL_CONTENT = {
 // --- Modal Component ---
 
 const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, onClose }) => {
-  if (!type) return null;
-
   useEffect(() => {
+    if (!type) {
+      // Ensure scrolling is enabled when modal is closed
+      document.body.style.overflow = '';
+      return;
+    }
+
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleEsc);
+    
+    // Disable scrolling when modal is open
     document.body.style.overflow = 'hidden';
+    
     return () => {
       window.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'auto';
+      // Restore scrolling when modal closes
+      document.body.style.overflow = '';
     };
-  }, [onClose]);
+  }, [type, onClose]);
+
+  if (!type) return null;
 
   const { title, content } = LEGAL_CONTENT[type];
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
-      <div className="bg-brandGray border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
-        <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray py-2">
+      <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
+        <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
           <h2 id="modal-title" className="text-2xl font-bold heading-font text-white">{title}</h2>
           <button 
             onClick={onClose}
@@ -169,6 +339,128 @@ const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, 
             className="bg-accent text-white px-8 py-2 rounded-lg font-bold hover:brightness-110 transition-all"
           >
             הבנתי
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Client Story Modal Component ---
+const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => void }> = ({ clientIndex, onClose }) => {
+  useEffect(() => {
+    if (clientIndex === null) {
+      document.body.style.overflow = '';
+      return;
+    }
+
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = '';
+    };
+  }, [clientIndex, onClose]);
+
+  if (clientIndex === null) return null;
+
+  const client = CLIENT_RESULTS[clientIndex];
+  if (!client) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="client-story-title">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
+      <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
+        <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
+          <div>
+            <h2 id="client-story-title" className="text-2xl font-bold heading-font text-white mb-1">{client.name}</h2>
+            <p className="text-gray-400 text-sm">{client.profession}, גיל {client.age}</p>
+          </div>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            aria-label="סגור חלון"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        <div className="leading-relaxed space-y-6">
+          {/* Full Quote */}
+          <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-4 md:p-5">
+            <p className="text-gray-200 text-base md:text-lg leading-relaxed italic">
+              "{client.quote}"
+            </p>
+          </div>
+
+          {/* Before/After Image */}
+          <div className="relative rounded-2xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10">
+            <img 
+              src={`${import.meta.env.BASE_URL}assets/results/${client.image}`}
+              alt={client.imageAlt}
+              className="w-full h-auto object-cover scale-x-[-1]"
+              loading="lazy"
+            />
+            <div className="absolute top-4 left-4 right-4 flex justify-between">
+              <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-sm font-bold">לפני</div>
+              <div className="bg-accent text-white px-3 py-1.5 rounded-lg text-sm font-bold">אחרי</div>
+            </div>
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-bold">
+              {client.duration} חודשים
+            </div>
+          </div>
+
+          {/* Statistics */}
+          <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-4 grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.weight}</div>
+              <div className="text-xs text-gray-400">משקל</div>
+            </div>
+            <div>
+              <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.muscleMass}</div>
+              <div className="text-xs text-gray-400">מסת שריר</div>
+            </div>
+            <div>
+              <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.strength}</div>
+              <div className="text-xs text-gray-400">כוח</div>
+            </div>
+          </div>
+
+          {/* Goals Achieved */}
+          <div>
+            <h4 className="text-lg font-bold text-white mb-3">יעדים שהושגו:</h4>
+            <ul className="space-y-2">
+              {client.goals.map((goal, idx) => (
+                <li key={idx} className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle2 className="text-accent flex-shrink-0" size={18} aria-hidden="true" />
+                  <span>{goal}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Duration and Commitment */}
+          <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-4 md:p-5 flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="text-2xl md:text-3xl font-black text-accent mb-1">{client.duration}</div>
+              <div className="text-sm text-gray-400">חודשים משך התהליך</div>
+            </div>
+            <div className="flex-1">
+              <div className="text-2xl md:text-3xl font-black text-accent mb-1">{client.commitment}%</div>
+              <div className="text-sm text-gray-400">מחויבות לתוכנית</div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
+          <button 
+            onClick={onClose}
+            className="bg-accent text-white px-8 py-2 rounded-lg font-bold hover:brightness-110 transition-all"
+          >
+            סגור
           </button>
         </div>
       </div>
@@ -233,6 +525,197 @@ const WhatsAppButton: React.FC = () => {
       <span className="hidden group-hover:block font-bold pr-2">דברו איתי בוואטסאפ</span>
       <MessageCircle size={32} aria-hidden="true" />
     </button>
+  );
+};
+
+const FloatingCTA: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasReachedAction, setHasReachedAction] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const actionSection = document.getElementById('action');
+      
+      // Check if user has reached action section
+      if (actionSection) {
+        const actionRect = actionSection.getBoundingClientRect();
+        const actionTop = actionRect.top + window.scrollY;
+        
+        if (scrollY + window.innerHeight >= actionTop - 100) {
+          setHasReachedAction(true);
+          setIsVisible(false);
+          return;
+        } else {
+          setHasReachedAction(false);
+        }
+      }
+
+      // Show after scrolling 300px, hide before action section
+      if (scrollY > 300 && !hasReachedAction) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasReachedAction]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const actionSection = document.getElementById('action');
+    if (actionSection) {
+      actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <button
+      onClick={handleClick}
+      className="fixed bottom-20 right-6 md:right-8 z-40 bg-accent text-white px-6 py-3 rounded-full shadow-2xl hover:brightness-110 transition-all duration-300 font-bold text-sm md:text-base flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-300"
+      aria-label="מעבר לבדיקת התאמה"
+    >
+      בדיקת התאמה
+    </button>
+  );
+};
+
+const ExitIntentPopup: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const hasShownRef = useRef(false);
+
+  useEffect(() => {
+    // Check if already shown in this session
+    if (sessionStorage.getItem('exitIntentShown') === 'true') {
+      return;
+    }
+
+    let scrollDepth = 0;
+    let timeOnPage = 0;
+    const startTime = Date.now();
+    const isMobile = window.innerWidth < 768;
+
+    // Track scroll depth
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      scrollDepth = (scrollTop + windowHeight) / documentHeight;
+    };
+
+    // Track time on page
+    const timeInterval = setInterval(() => {
+      timeOnPage = (Date.now() - startTime) / 1000;
+    }, 1000);
+
+    // Desktop: Mouse leave detection
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (!isMobile && e.clientY <= 0 && !hasShownRef.current && scrollDepth > 0.3) {
+        hasShownRef.current = true;
+        setIsOpen(true);
+        sessionStorage.setItem('exitIntentShown', 'true');
+      }
+    };
+
+    // Mobile: Time or scroll depth trigger
+    const checkMobileTrigger = () => {
+      if (isMobile && !hasShownRef.current && (timeOnPage > 30 || scrollDepth > 0.7)) {
+        hasShownRef.current = true;
+        setIsOpen(true);
+        sessionStorage.setItem('exitIntentShown', 'true');
+      }
+    };
+
+    const mobileCheckInterval = setInterval(checkMobileTrigger, 1000);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      clearInterval(timeInterval);
+      clearInterval(mobileCheckInterval);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      const handleEsc = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setIsOpen(false);
+          document.body.style.overflow = '';
+        }
+      };
+      window.addEventListener('keydown', handleEsc);
+      return () => {
+        window.removeEventListener('keydown', handleEsc);
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    document.body.style.overflow = '';
+  };
+
+  const handleCTAClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleClose();
+    const actionSection = document.getElementById('action');
+    if (actionSection) {
+      setTimeout(() => {
+        actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="exit-intent-title">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={handleClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
+      <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-md relative z-10 p-6 md:p-8 shadow-2xl">
+        <button 
+          onClick={handleClose}
+          className="absolute top-4 left-4 p-2 hover:bg-white/10 rounded-full transition-colors"
+          aria-label="סגור חלון"
+        >
+          <X size={24} />
+        </button>
+        <div className="text-center space-y-6">
+          <h2 id="exit-intent-title" className="text-2xl md:text-3xl font-black heading-font text-white">
+            רגע לפני שאתה עוזב...
+          </h2>
+          <p className="text-gray-300 text-lg">
+            בוא נבדוק ביחד אם זה מתאים לך
+          </p>
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={handleCTAClick}
+              className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all shadow-lg"
+            >
+              בדיקת התאמה
+            </button>
+            <button 
+              onClick={handleClose}
+              className="text-gray-400 hover:text-white text-sm transition-colors"
+            >
+              אולי מאוחר יותר
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -326,7 +809,7 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
   };
 
   return (
-    <div className={`${isFooter ? 'bg-brandGray/50 border border-white/10' : 'bg-white text-brandDark'} p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-md mx-auto`}>
+    <div className={`${isFooter ? 'bg-brandGray/50 backdrop-blur-md border border-white/10' : 'bg-white/95 backdrop-blur-sm text-brandDark'} p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-md mx-auto`}>
       {submitted ? (
         <div className="text-center space-y-6 animate-in fade-in zoom-in duration-500" aria-live="polite">
           <div className={`${isFooter ? 'bg-green-900/30' : 'bg-green-100'} w-16 h-16 rounded-full flex items-center justify-center mx-auto`}>
@@ -871,8 +1354,278 @@ const VideoPlayer: React.FC = () => {
 export default function App() {
   const [activeStage, setActiveStage] = useState('hero');
   const [modalType, setModalType] = useState<ModalType>(null);
+  const [currentClientIndex, setCurrentClientIndex] = useState(0);
+  const [expandedFAQIndex, setExpandedFAQIndex] = useState<number | null>(null);
+  const [selectedClientIndex, setSelectedClientIndex] = useState<number | null>(null);
+  const [carouselInitialized, setCarouselInitialized] = useState(false);
+
+  const toggleFAQ = (index: number) => {
+    setExpandedFAQIndex(expandedFAQIndex === index ? null : index);
+  };
+
+  const openClientStory = (index: number) => {
+    setSelectedClientIndex(index);
+  };
+
+  const closeClientStory = () => {
+    setSelectedClientIndex(null);
+  };
 
   const activeStageIndex = STAGES.findIndex(s => s.id === activeStage);
+
+  // ============================================================================
+  // CAROUSEL REFACTOR: Pure CSS scroll-snap architecture
+  // ============================================================================
+  // ROOT CAUSE ANALYSIS:
+  // 1. Multiple competing scroll handlers (scroll event + IntersectionObserver + touch)
+  // 2. State updates during scroll causing re-renders mid-scroll
+  // 3. Infinite scroll logic directly manipulating scrollLeft during scroll events
+  // 4. Touch handlers triggering programmatic scrolls that fight native scroll-snap
+  // 5. Using index as key causing React remounts
+  // 6. Transform + scroll-snap conflicts
+  // 7. Image loading without reserved space causing layout shift
+  //
+  // SOLUTION: Pure CSS scroll-snap with minimal JS
+  // - Native scroll-snap handles all snapping (no JS transforms)
+  // - Single IntersectionObserver to detect active card (no scroll event handlers)
+  // - Touch events removed (native swipe works with scroll-snap)
+  // - Stable keys using client data (not index)
+  // - Fixed image containers prevent layout shift
+  // - RTL-aware scroll calculations
+  // ============================================================================
+
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const isProgrammaticScrollRef = useRef(false);
+  const activeIndexRef = useRef(0); // Track active index without triggering re-renders
+  
+  // Debug mode toggle (set to true to log carousel state changes)
+  const CAROUSEL_DEBUG = false;
+
+  // Create clone array for infinite scroll (3 sets: [set1][set2][set3])
+  const CLONE_ARRAY = [...CLIENT_RESULTS, ...CLIENT_RESULTS, ...CLIENT_RESULTS];
+  const ORIGINAL_COUNT = CLIENT_RESULTS.length;
+  const MIDDLE_START_INDEX = ORIGINAL_COUNT;
+
+  // Map clone index to actual client index
+  const getActualIndex = (cloneIndex: number) => cloneIndex % ORIGINAL_COUNT;
+
+  // Get clone index for a given actual index in the middle set
+  const getCloneIndex = (actualIndex: number) => MIDDLE_START_INDEX + actualIndex;
+
+  // Scroll to a specific card using native scroll-snap (no transforms)
+  const scrollToCard = (cloneIndex: number, smooth: boolean = true) => {
+    const container = carouselRef.current;
+    if (!container) return;
+
+    const cardElement = container.children[cloneIndex] as HTMLElement;
+    if (!cardElement) return;
+
+    isProgrammaticScrollRef.current = true;
+
+    // Use scrollIntoView which respects scroll-snap
+    cardElement.scrollIntoView({
+      behavior: smooth ? 'smooth' : 'auto',
+      block: 'nearest',
+      inline: 'center'
+    });
+
+    // Reset flag after scroll completes
+    setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, smooth ? 500 : 50);
+  };
+
+  const goToNext = () => {
+    const nextIndex = (currentClientIndex + 1) % ORIGINAL_COUNT;
+    setCurrentClientIndex(nextIndex);
+    scrollToCard(getCloneIndex(nextIndex));
+  };
+
+  const goToPrevious = () => {
+    const prevIndex = (currentClientIndex - 1 + ORIGINAL_COUNT) % ORIGINAL_COUNT;
+    setCurrentClientIndex(prevIndex);
+    scrollToCard(getCloneIndex(prevIndex));
+  };
+
+  const goToSlide = (actualIndex: number) => {
+    setCurrentClientIndex(actualIndex);
+    scrollToCard(getCloneIndex(actualIndex));
+  };
+
+  // ============================================================================
+  // SINGLE IntersectionObserver: Detects active card from scroll-snap
+  // ============================================================================
+  // Why this is stable:
+  // - Only ONE mechanism detects active card (no competing handlers)
+  // - Uses IntersectionObserver which fires AFTER scroll-snap completes
+  // - Updates state only when card actually changes (prevents re-render loops)
+  // - Debounced to prevent rapid updates
+  // ============================================================================
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container || !carouselInitialized) return; // Wait for initialization
+
+    let updateTimeout: NodeJS.Timeout | null = null;
+    const DEBOUNCE_DELAY = 150; // Debounce state updates
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Skip during programmatic scrolling
+        if (isProgrammaticScrollRef.current) return;
+
+        // Debounce updates to prevent rapid state changes
+        if (updateTimeout) clearTimeout(updateTimeout);
+
+        updateTimeout = setTimeout(() => {
+          if (isProgrammaticScrollRef.current || !container) return;
+
+          // Find the most centered card (highest intersection ratio)
+          let maxRatio = 0;
+          let activeCloneIndex = -1;
+
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+              maxRatio = entry.intersectionRatio;
+              const cloneIndex = Array.from(container.children).indexOf(entry.target as HTMLElement);
+              if (cloneIndex !== -1) {
+                activeCloneIndex = cloneIndex;
+              }
+            }
+          });
+
+          if (activeCloneIndex === -1) return;
+
+          const actualIndex = getActualIndex(activeCloneIndex);
+
+          // Only update if we're in the middle set (ignore first/third sets to prevent jumps)
+          const isInMiddleSet = activeCloneIndex >= MIDDLE_START_INDEX && activeCloneIndex < MIDDLE_START_INDEX + ORIGINAL_COUNT;
+          
+          if (isInMiddleSet && actualIndex !== activeIndexRef.current) {
+            activeIndexRef.current = actualIndex;
+            setCurrentClientIndex(actualIndex);
+            
+            // Debug logging
+            if (CAROUSEL_DEBUG) {
+              console.log('[Carousel] Active card changed:', {
+                actualIndex,
+                cloneIndex: activeCloneIndex,
+                containerWidth: container.clientWidth,
+                scrollLeft: container.scrollLeft
+              });
+            }
+          }
+        }, DEBOUNCE_DELAY);
+      },
+      {
+        root: container,
+        threshold: [0.5], // Single threshold - more stable
+        rootMargin: '0px'
+      }
+    );
+
+    // Observe all cards
+    const children = Array.from(container.children);
+    children.forEach((child) => observer.observe(child));
+
+    return () => {
+      observer.disconnect();
+      if (updateTimeout) clearTimeout(updateTimeout);
+    };
+  }, [carouselInitialized]); // Wait for initialization
+
+  // ============================================================================
+  // Initialize carousel: Center first card of middle set
+  // ============================================================================
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+
+    // Wait for layout to be ready
+    const initCarousel = () => {
+      const firstCardIndex = MIDDLE_START_INDEX;
+      const cardElement = container.children[firstCardIndex] as HTMLElement;
+
+      if (!cardElement || cardElement.offsetWidth === 0) {
+        // Retry if not ready
+        requestAnimationFrame(initCarousel);
+        return;
+      }
+
+      isProgrammaticScrollRef.current = true;
+      setCurrentClientIndex(0);
+
+      // Check if proof section is in viewport before scrolling
+      // This prevents page auto-scroll on reload
+      const proofSection = document.getElementById('proof');
+      let isInViewport = false;
+      
+      if (proofSection) {
+        const rect = proofSection.getBoundingClientRect();
+        // Section is in viewport if its top is visible
+        isInViewport = rect.top >= 0 && rect.top < window.innerHeight;
+      }
+
+      if (isInViewport) {
+        // Only scroll carousel if section is already visible
+        // Use scrollIntoView which respects scroll-snap
+        cardElement.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+      } else {
+        // Section not visible - just set scroll position without triggering page scroll
+        // Calculate center position manually
+        const cardLeft = cardElement.offsetLeft;
+        const cardWidth = cardElement.offsetWidth;
+        const containerWidth = container.clientWidth;
+        const scrollPosition = cardLeft - (containerWidth / 2) + (cardWidth / 2);
+        
+        // Set scroll position directly (no page scroll)
+        container.scrollLeft = scrollPosition;
+      }
+
+      // Mark as initialized after scroll completes
+      setTimeout(() => {
+        isProgrammaticScrollRef.current = false;
+        setCarouselInitialized(true);
+      }, 500); // Longer delay to ensure scroll completes
+    };
+
+    // Start initialization after a brief delay to ensure DOM is ready
+    const timer = setTimeout(initCarousel, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // ============================================================================
+  // Center carousel when proof section becomes active
+  // ============================================================================
+  useEffect(() => {
+    if (activeStage !== 'proof' || !carouselRef.current) return;
+
+    const timer = setTimeout(() => {
+      const currentCloneIndex = getCloneIndex(currentClientIndex);
+      scrollToCard(currentCloneIndex, false);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [activeStage, currentClientIndex]);
+
+  // Keyboard navigation for carousel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle keyboard navigation when results section is active
+      if (activeStage !== 'proof') return;
+      
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (e.key === 'ArrowRight') {
+          goToPrevious(); // Right arrow = previous (RTL)
+        } else {
+          goToNext(); // Left arrow = next (RTL)
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeStage, currentClientIndex]);
 
   useEffect(() => {
     // 1. Reveal Observer
@@ -912,6 +1665,30 @@ export default function App() {
 
     document.querySelectorAll('[data-snap="true"]').forEach((el) => stageObserver.observe(el));
 
+    // Staggered animation for get section cards
+    const getCardsContainer = document.getElementById('get-cards-container');
+    if (getCardsContainer) {
+      const getCardsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const cards = entry.target.querySelectorAll('.get-card');
+            cards.forEach((card, index) => {
+              const cardElement = card as HTMLElement;
+              const delay = index * 100;
+              setTimeout(() => {
+                cardElement.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                cardElement.style.opacity = '1';
+                cardElement.style.transform = 'translateY(0)';
+              }, delay);
+            });
+            getCardsObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      getCardsObserver.observe(getCardsContainer);
+    }
+
     return () => {
       revealObserver.disconnect();
       stageObserver.disconnect();
@@ -929,12 +1706,11 @@ export default function App() {
       
       <main id="main-content">
         {/* STAGE 1: HERO */}
-        <section id="hero" data-stage="hero" data-snap="true" className="stage reveal hero-bg">
-          <div className="absolute inset-0 z-0 hero-bg-layer" aria-hidden="true"></div>
+        <section id="hero" data-stage="hero" data-snap="true" className="stage reveal">
           <div className="absolute inset-0 z-0 hero-overlay" aria-hidden="true"></div>
 
-          <div className="container mx-auto px-4 md:px-12 relative z-10 grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col md:grid md:grid-cols-2 gap-8 items-center justify-center">
+            <div className="space-y-6">
               <h1 className="text-4xl md:text-6xl font-black heading-font leading-[1.1]">
                 מתאמן כבר תקופה <br /> 
                 <span className="text-accent underline decoration-4 underline-offset-8">ולא רואה תוצאות?</span>
@@ -964,13 +1740,12 @@ export default function App() {
         </section>
 
         {/* STAGE 2: REFLECTIVE DIAGNOSIS */}
-        <section id="diagnosis" data-stage="diagnosis" data-snap="true" className="stage stage-alt-1 reveal reflection-bg">
-          <div className="absolute inset-0 z-0 reflection-bg-layer" aria-hidden="true"></div>
+        <section id="diagnosis" data-stage="diagnosis" data-snap="true" className="stage stage-alt-1 reveal">
           <div className="absolute inset-0 z-0 reflection-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 py-12 md:py-24 relative z-10">
+          <div className="container mx-auto px-4 md:px-12 py-6 md:py-10 relative z-10 h-full flex flex-col">
             <StoryHeader text="איפה אתה נמצא היום" />
             
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <div className="text-center max-w-3xl mx-auto mb-8 space-y-4">
               <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight">
                 כשהתהליך לא מדוייק <span className="text-accent">הכל מרגיש כבד</span>
               </h2>
@@ -980,13 +1755,13 @@ export default function App() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-              <div className="bg-brandGray/40 border-r-2 border-white/10 p-8 md:p-10 rounded-2xl relative group transition-all">
-                <h3 className="text-xl md:text-2xl font-bold mb-8 text-gray-300 flex items-center gap-3">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-white/10 p-8 md:p-10 rounded-2xl relative group transition-all">
+                <h3 className="text-xl md:text-2xl font-bold mb-6 text-gray-300 flex items-center gap-3">
                   <MinusCircle className="text-gray-500 opacity-50" size={24} aria-hidden="true" />
                   ככה זה מרגיש בלי התהליך הנכון בשבילך
                 </h3>
-                <ul className="space-y-6">
+                <ul className="space-y-4">
                   {[
                     "אתה קופץ בין פתרונות ומחליף תוכנית כל הזמן",
                     "אתה לא באמת בטוח שאתה בכיוון הנכון",
@@ -1001,12 +1776,12 @@ export default function App() {
                 </ul>
               </div>
 
-              <div className="bg-brandGray/40 border-r-2 border-accent/20 p-8 md:p-10 rounded-2xl relative group transition-all">
+              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-accent/20 p-8 md:p-10 rounded-2xl relative group transition-all">
                 <h3 className="text-xl md:text-2xl font-bold mb-8 text-white flex items-center gap-3">
                   <PlusCircle className="text-accent opacity-80" size={24} aria-hidden="true" />
                   ככה זה נראה אחרי שאיבחנו מה התהליך הנכון עבורך
                 </h3>
-                <ul className="space-y-6">
+                <ul className="space-y-4">
                   {[
                     "יש לך יעדים ברורים לכל אימון",
                     "אתה לא רק פועל לפי התוכנית, אתה מבין למה זה עובד והופך את זה לדרך חיים שנכונה רק לך",
@@ -1022,7 +1797,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="text-center mt-16 max-w-2xl mx-auto">
+            <div className="text-center mt-8 max-w-2xl mx-auto">
               <p className="text-lg md:text-2xl font-bold text-white border-b border-white/5 pb-4">
                 אם אתה רוצה תהליך אחד מדוייק שמביא תוצאות, <br className="hidden md:block" />
                 <span className="text-accent">זה השלב שאני נכנס לתמונה</span>
@@ -1033,10 +1808,11 @@ export default function App() {
 
         {/* STAGE 3: ABOUT */}
         <section id="about" data-stage="about" data-snap="true" className="stage reveal">
-          <div className="container mx-auto px-4 md:px-12 max-w-5xl">
+          <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
             <StoryHeader text="מי עומד מאחורי התהליך" />
-            <div className="grid md:grid-cols-2 gap-12 items-center mt-8">
-              <div className="space-y-6 text-center md:text-right">
+            <div className="grid md:grid-cols-2 gap-8 items-center mt-4">
+              <div className="space-y-4 text-center md:text-right">
                 <div className="space-y-2">
                   <p className="text-accent font-bold tracking-[0.2em] uppercase text-sm">המאמן שלך</p>
                   <h2 className="text-4xl md:text-5xl font-black heading-font leading-tight">גילעד דורון</h2>
@@ -1044,7 +1820,7 @@ export default function App() {
                 <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
                   אני מלווה גברים בתהליכים משמעותיים כבר שנים. הליווי שלי הוא לא עוד תפריט גנרי, הוא דרך חיים שתביא אותך לתוצאה שאתה מחפש, בלי לנחש.
                 </p>
-                <div className="bg-brandGray/40 p-6 rounded-2xl border border-white/5 space-y-4">
+                <div className="bg-brandGray/20 backdrop-blur-sm p-6 rounded-2xl border border-white/5 space-y-4">
                   <h3 className="font-bold flex items-center gap-2 text-white justify-center md:justify-start"><ShieldCheck className="text-accent" size={20} aria-hidden="true" /> ההבטחה שלי:</h3>
                   <p className="text-sm text-gray-400">אני לא מוכר הבטחות ריקות. אני מוכר תהליך. אם תעבוד לפי התוכנית ולא תראה תוצאות - אני איתך עד שזה קורה.</p>
                 </div>
@@ -1084,7 +1860,7 @@ export default function App() {
           <div className="container mx-auto px-4 md:px-12 relative z-10">
             <StoryHeader text="איפה רוב האנשים נתקעים" />
             <div className="grid md:grid-cols-2 gap-12 items-center mt-12">
-              <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-[700px] rounded-3xl overflow-hidden shadow-2xl bg-brandGray/40 flex items-center justify-center">
+              <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-[700px] rounded-3xl overflow-hidden shadow-2xl bg-brandGray/20 backdrop-blur-sm flex items-center justify-center">
                 <img 
                   src="/assets/about/whynoprogress.webp" 
                   alt="אדם מרוכז באימון" 
@@ -1092,14 +1868,14 @@ export default function App() {
                   loading="lazy"
                 />
               </div>
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight">למה אתה עומד במקום?</h2>
                 <div className="space-y-6">
                   <p className="text-xl text-gray-300 leading-relaxed">רוב המתאמנים שמגיעים אלי משקיעים. הם מתאמנים מנסים ומשקיעים זמן ואנרגיה אבל לא רואים תוצאות</p>
                   <p className="text-xl font-bold text-white">זה קורה בדרך כלל בגלל:</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {[{icon:<Target />, t:"חוסר בהירות"}, {icon:<Zap />, t:"קפיצה בין שיטות"}, {icon:<User />, t:"תהליך לא מתאים"}, {icon:<ShieldCheck />, t:"אין עין מקצועית"}].map((item, idx) => (
-                      <div key={idx} className="bg-brandGray/40 p-5 rounded-2xl flex items-center gap-3">
+                      <div key={idx} className="bg-brandGray/20 backdrop-blur-sm p-5 rounded-2xl flex items-center gap-3">
                         <span className="text-accent">{React.cloneElement(item.icon as React.ReactElement, { size: 20, "aria-hidden": "true" })}</span>
                         <span className="font-medium">{item.t}</span>
                       </div>
@@ -1113,6 +1889,7 @@ export default function App() {
 
         {/* STAGE 5: WAITING COST */}
         <section id="waiting" data-stage="waiting" data-snap="true" className="stage stage-alt-2 text-center">
+          <div className="absolute inset-0 z-0 waiting-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 relative z-10 max-w-4xl reveal">
             <StoryHeader text="זה הרגע שרוב האנשים עוצרים" />
             <h2 className="text-4xl md:text-6xl font-black heading-font mb-4">המחיר של להמשיך לחכות?</h2>
@@ -1125,12 +1902,26 @@ export default function App() {
               </div>
               <p className="text-white font-medium">לא כי אתה לא רוצה מספיק. אלא כי בלי דרך נכונה — רוב האנשים פשוט נתקעים.</p>
             </div>
+            <div className="flex justify-center mt-6 md:mt-8 mb-4">
+              <a
+                href="#action"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const actionSection = document.getElementById('action');
+                  if (actionSection) {
+                    actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105"
+              >
+                בוא נבדוק אם זה מתאים לך
+              </a>
+            </div>
           </div>
         </section>
 
         {/* STAGE 6: GUARANTEE */}
-        <section id="guarantee" data-stage="guarantee" data-snap="true" className="stage stage-guarantee commitment-bg">
-          <div className="absolute inset-0 z-0 commitment-bg-layer" aria-hidden="true"></div>
+        <section id="guarantee" data-stage="guarantee" data-snap="true" className="stage stage-guarantee">
           <div className="absolute inset-0 z-0 commitment-overlay" aria-hidden="true"></div>
           <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
             <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
@@ -1178,10 +1969,11 @@ export default function App() {
 
         {/* STAGE 7: SOLUTION (GET) */}
         <section id="get" data-stage="get" className="stage stage-alt-1 reveal">
-          <div className="container mx-auto px-4 md:px-12">
+          <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
             <StoryHeader text="מכאן מתחיל הסדר" />
-            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-12">מה אתה מקבל בליווי?</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-8">
+            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4" id="get-cards-container">
               {[
                 { i: <Dumbbell />, t: "תוכנית אימונים אישית" },
                 { i: <Apple />, t: "תזונה מותאמת אישית" },
@@ -1189,7 +1981,12 @@ export default function App() {
                 { i: <BarChart3 />, t: "מעקב והתאמות שבועיות" },
                 { i: <Clock />, t: "סדר ובהירות בתהליך" }
               ].map((item, idx) => (
-                <div key={idx} className="bg-brandDark/40 p-6 md:p-8 rounded-2xl border border-white/5 flex flex-col items-center text-center gap-4 transition-all hover:-translate-y-2">
+                <div 
+                  key={idx} 
+                  className="get-card bg-brandDark/20 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-white/5 flex flex-col items-center text-center gap-4 transition-all hover:-translate-y-2"
+                  style={{ opacity: 0, transform: 'translateY(20px)' }}
+                  data-card-index={idx}
+                >
                   <div className="text-accent">{React.cloneElement(item.i as React.ReactElement, { size: 32, "aria-hidden": "true" })}</div>
                   <h3 className="text-sm md:text-lg font-bold leading-tight">{item.t}</h3>
                 </div>
@@ -1199,13 +1996,12 @@ export default function App() {
         </section>
 
         {/* STAGE 8: SOLUTION (HOW) */}
-        <section id="how" data-stage="how" data-snap="true" className="stage reveal process-bg">
-          <div className="absolute inset-0 z-0 process-bg-layer" aria-hidden="true"></div>
+        <section id="how" data-stage="how" data-snap="true" className="stage reveal">
           <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
             <StoryHeader text="ככה נראה תהליך שעובד" />
-            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-16">4 צעדים לתוצאה</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative mt-8">
+            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-8 md:mb-10">4 צעדים לתוצאה</h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 relative mt-4">
               <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true"></div>
               {[
                 { s: "01", t: "בדיקת התאמה", d: "שיחה קצרה להבין איפה אתה נמצא ולאן אתה רוצה להגיע." },
@@ -1214,7 +2010,7 @@ export default function App() {
                 { s: "04", t: "תוצאה במראה", d: "התאמות בזמן אמת עד שרואים את השינוי שרצית." }
               ].map((item, idx) => (
                 <div key={idx} className="relative z-10 flex flex-col items-center text-center group">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-brandGray border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-2xl font-black mb-6 group-hover:bg-accent group-hover:text-white transition-all" aria-hidden="true">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-2xl font-black mb-6 group-hover:bg-accent group-hover:text-white transition-all" aria-hidden="true">
                     {item.s}
                   </div>
                   <h3 className="text-xl font-bold mb-3">{item.t}</h3>
@@ -1227,211 +2023,283 @@ export default function App() {
 
         {/* STAGE 9: PROOF */}
         <section id="proof" data-stage="proof" data-snap="true" className="stage stage-alt-1 reveal">
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-12 md:py-24">
+          <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-2 md:py-4 h-full flex flex-col">
             <StoryHeader text="כשהתהליך נכון – רואים את זה" />
             
             {/* Header Section */}
-            <div className="text-center mb-12 md:mb-16">
-              <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight mb-4">התוצאות מדברות</h2>
-              <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <div className="text-center mb-2 md:mb-3 flex-shrink-0">
+              <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight mb-2">התוצאות מדברות</h2>
+              <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
                 מתאמנים אמיתיים שעברו את התהליך המלא. כל אחד עם מטרות שונות, כל אחד הגיע ליעדים שלו.
               </p>
-              
-              {/* Statistics Boxes */}
-              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-16">
-                <div className="bg-brandGray border border-white/10 rounded-2xl px-6 md:px-8 py-4 md:py-5 flex-1 max-w-[200px] sm:max-w-none">
-                  <div className="text-3xl md:text-4xl font-black text-accent mb-1">+200</div>
-                  <div className="text-sm md:text-base text-gray-300">מתאמנים מרוצים</div>
-                </div>
-                <div className="bg-brandGray border border-white/10 rounded-2xl px-6 md:px-8 py-4 md:py-5 flex-1 max-w-[200px] sm:max-w-none">
-                  <div className="text-3xl md:text-4xl font-black text-accent mb-1">95%</div>
-                  <div className="text-sm md:text-base text-gray-300">הגיעו ליעדים</div>
-                </div>
-              </div>
             </div>
 
-            {/* Client Testimonial 1 - Daniel B. */}
-            <div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-16 md:mb-24">
-              {/* Client Info - Left */}
-              <div className="space-y-6">
-                {/* Profile */}
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 md:w-14 md:h-14 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <User className="text-accent" size={24} aria-hidden="true" />
+            {/* Client Results Carousel */}
+            {/* touch-action: pan-y allows vertical scrolling on the carousel container */}
+            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0 max-h-[67vh]" style={{ touchAction: 'pan-y', pointerEvents: 'auto' }}>
+              {/* Arrow Navigation Controls */}
+              {CLIENT_RESULTS.length > 1 && (
+                <>
+                  <button
+                    onClick={goToPrevious}
+                    className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-brandGray/40 hover:bg-brandGray/60 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg pointer-events-auto"
+                    aria-label="לקוח קודם"
+                  >
+                    <ChevronRight size={20} aria-hidden="true" />
+                  </button>
+                  <button
+                    onClick={goToNext}
+                    className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-brandGray/40 hover:bg-brandGray/60 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg pointer-events-auto"
+                    aria-label="לקוח הבא"
+                  >
+                    <ChevronLeft size={20} aria-hidden="true" />
+                  </button>
+                </>
+              )}
+
+              {/* Carousel Content */}
+              {/* 
+                STABLE ARCHITECTURE:
+                - Pure CSS scroll-snap handles all snapping (no JS transforms)
+                - overscroll-behavior-x: contain prevents parent scroll conflicts
+                - Native touch scrolling works seamlessly with scroll-snap
+                - Fixed card widths prevent layout shift
+              */}
+              <div 
+                ref={carouselRef}
+                className={`carousel-container flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-6 md:gap-8 px-0 py-4 transition-opacity duration-300 ${carouselInitialized ? 'opacity-100' : 'opacity-0'}`}
+                style={{ 
+                  scrollBehavior: 'smooth',
+                  WebkitOverflowScrolling: 'touch',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  overscrollBehaviorX: 'contain', // Prevent horizontal overscroll only
+                  overscrollBehaviorY: 'auto', // Allow vertical scrolling
+                  touchAction: 'pan-x pan-y', // Allow both horizontal and vertical panning
+                  scrollSnapAlign: 'none' // Prevent carousel from being a vertical snap point
+                }}
+              >
+                {CLONE_ARRAY.map((client, cloneIndex) => {
+                  const actualIndex = getActualIndex(cloneIndex);
+                  const currentCloneIndex = getCloneIndex(currentClientIndex);
+                  const isActive = cloneIndex === currentCloneIndex && actualIndex === currentClientIndex;
+                  const distance = Math.abs(cloneIndex - currentCloneIndex);
+                  
+                  // Stable key: use client data + clone index (prevents remounts)
+                  const stableKey = `${client.name}-${client.age}-${cloneIndex}`;
+                  
+                  return (
+                    <div
+                      key={stableKey}
+                      className={`flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] snap-center transition-opacity duration-300 ${
+                        isActive 
+                          ? 'opacity-100 z-10' 
+                          : distance === 1 
+                            ? 'opacity-50' 
+                            : 'opacity-30'
+                      }`}
+                      style={{
+                        scrollSnapAlign: 'center',
+                        // Remove transforms - let scroll-snap handle positioning
+                        // Only use opacity for visual feedback (no scale/blur conflicts)
+                      }}
+                    >
+                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl p-2.5 md:p-3 max-h-[68vh] flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${
+                        isActive 
+                          ? 'border-accent shadow-[0_0_30px_rgba(255,107,53,0.4),0_4px_20px_rgba(0,0,0,0.5)]' 
+                          : 'border-white/10'
+                      }`}>
+                        {/* Header Row: Avatar + Name + Age */}
+                        <div className="flex items-center gap-2.5 mb-2.5">
+                          <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <User className="text-accent" size={20} aria-hidden="true" />
                   </div>
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-black text-white">דניאל ב.</h3>
-                    <p className="text-gray-400 text-sm md:text-base">מהנדס תוכנה, גיל 34</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg md:text-xl font-black text-white truncate">{client.name}</h3>
+                            <p className="text-gray-400 text-xs md:text-sm">{client.profession}, גיל {client.age}</p>
                   </div>
                 </div>
 
-                {/* Quote */}
-                <div className="bg-brandGray border-r-4 border-accent rounded-lg p-4 md:p-5">
-                  <p className="text-gray-200 text-base md:text-lg leading-relaxed italic">
-                    "הפעם הראשונה שאני רואה תוצאות אמיתיות. התהליך היה ברור מהתחלה."
+                        {/* Quote: Max 2 lines with ellipsis */}
+                        <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-2.5 md:p-3 mb-2.5">
+                          <p className="text-gray-200 text-sm md:text-base leading-relaxed italic line-clamp-2 overflow-hidden">
+                            "{client.quote}"
                   </p>
-                </div>
-
-                {/* Goals Achieved */}
-                <div>
-                  <h4 className="text-lg font-bold text-white mb-3">יעדים שהושגו:</h4>
-                  <ul className="space-y-2">
-                    {['ירידה במשקל', 'עליה במסת שריר', 'שיפור בכושר'].map((goal, idx) => (
-                      <li key={idx} className="flex items-center gap-3 text-gray-300">
-                        <CheckCircle2 className="text-accent flex-shrink-0" size={18} aria-hidden="true" />
-                        <span>{goal}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Duration and Commitment */}
-                <div className="bg-brandGray border border-white/10 rounded-lg p-4 md:p-5 flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1">
-                    <div className="text-2xl md:text-3xl font-black text-accent mb-1">3</div>
-                    <div className="text-sm text-gray-400">חודשים משך התהליך</div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-2xl md:text-3xl font-black text-accent mb-1">100%</div>
-                    <div className="text-sm text-gray-400">מחויבות לתוכנית</div>
-                  </div>
-                </div>
               </div>
 
-              {/* Before/After Image - Right */}
-              <div className="space-y-4">
-                <div className="relative rounded-2xl overflow-hidden bg-brandGray border border-white/10">
-                  <img 
-                    src={`${import.meta.env.BASE_URL}assets/results/result-01.webp`}
-                    alt="תוצאות לפני ואחרי - דניאל ב."
-                    className="w-full h-auto object-cover"
+                        {/* Before/After Image: Fixed aspect ratio with reserved space */}
+                        {/* Reserved space prevents layout shift when image loads */}
+                        <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-2 aspect-[4/3] md:aspect-[3/2] min-h-[130px] md:min-h-[150px]">
+                          <img 
+                            src={`${import.meta.env.BASE_URL}assets/results/${client.image}`}
+                            alt={client.imageAlt}
+                            className="w-full h-full object-contain scale-x-[-1]"
                     loading="lazy"
+                            style={{ 
+                              display: 'block', // Prevents inline spacing
+                              height: '100%',
+                              width: '100%'
+                            }}
                   />
                   {/* Labels Overlay */}
-                  <div className="absolute top-4 left-4 right-4 flex justify-between">
-                    <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-sm font-bold">לפני</div>
-                    <div className="bg-accent text-white px-3 py-1.5 rounded-lg text-sm font-bold">אחרי</div>
+                          <div className="absolute top-2 left-2 right-2 flex justify-between">
+                            <div className="bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-lg text-xs font-bold">לפני</div>
+                            <div className="bg-accent text-white px-2 py-1 rounded-lg text-xs font-bold">אחרי</div>
                   </div>
                   {/* Time Badge */}
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-bold">
-                    3 חודשים
+                          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-lg text-xs font-bold">
+                            {client.duration} חודשים
                   </div>
                 </div>
                 
-                {/* Statistics Bar */}
-                <div className="bg-brandGray border border-white/10 rounded-lg p-4 grid grid-cols-3 gap-4 text-center">
+                        {/* Statistics Row: Compact single row */}
+                        <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-1.5 md:p-2 grid grid-cols-3 gap-1 md:gap-1.5 text-center mb-1.5">
                   <div>
-                    <div className="text-lg md:text-xl font-black text-accent mb-1">12 ק"ג-</div>
-                    <div className="text-xs text-gray-400">משקל</div>
+                            <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.weight}</div>
+                            <div className="text-[10px] md:text-xs text-gray-400">משקל</div>
                   </div>
                   <div>
-                    <div className="text-lg md:text-xl font-black text-accent mb-1">+2.5 ק"ג</div>
-                    <div className="text-xs text-gray-400">מסת שריר</div>
+                            <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.muscleMass}</div>
+                            <div className="text-[10px] md:text-xs text-gray-400">מסת שריר</div>
                   </div>
                   <div>
-                    <div className="text-lg md:text-xl font-black text-accent mb-1">+40%</div>
-                    <div className="text-xs text-gray-400">כוח</div>
-                  </div>
-                </div>
+                            <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.strength}</div>
+                            <div className="text-[10px] md:text-xs text-gray-400">כוח</div>
               </div>
             </div>
 
-            {/* Client Testimonial 2 - Ori K. */}
-            <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-              {/* Before/After Image - Left */}
-              <div className="space-y-4 order-2 md:order-1">
-                <div className="relative rounded-2xl overflow-hidden bg-brandGray border border-white/10">
-                  <img 
-                    src={`${import.meta.env.BASE_URL}assets/results/result-02.webp`}
-                    alt="תוצאות לפני ואחרי - אורי כ."
-                    className="w-full h-auto object-cover"
-                    loading="lazy"
-                  />
-                  {/* Labels Overlay */}
-                  <div className="absolute top-4 left-4 right-4 flex justify-between">
-                    <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-sm font-bold">לפני</div>
-                    <div className="bg-accent text-white px-3 py-1.5 rounded-lg text-sm font-bold">אחרי</div>
+                        {/* "לכל הסיפור" Button */}
+                        <button
+                          onClick={() => openClientStory(actualIndex)}
+                          className="text-accent hover:text-accent/80 text-sm md:text-base font-bold underline underline-offset-2 transition-colors flex-shrink-0 pt-0.5"
+                          aria-label={`קרא את כל הסיפור של ${client.name}`}
+                        >
+                          לכל הסיפור
+                        </button>
                   </div>
-                  {/* Time Badge */}
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-bold">
-                    4 חודשים
                   </div>
+                  );
+                })}
                 </div>
                 
-                {/* Statistics Bar */}
-                <div className="bg-brandGray border border-white/10 rounded-lg p-4 grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-lg md:text-xl font-black text-accent mb-1">+3 ק"ג</div>
-                    <div className="text-xs text-gray-400">משקל</div>
-                  </div>
-                  <div>
-                    <div className="text-lg md:text-xl font-black text-accent mb-1">+5 ק"ג</div>
-                    <div className="text-xs text-gray-400">מסת שריר</div>
-                  </div>
-                  <div>
-                    <div className="text-lg md:text-xl font-black text-accent mb-1">+65%</div>
-                    <div className="text-xs text-gray-400">כוח</div>
-                  </div>
+              {/* Dot Indicators */}
+              <div className="flex justify-center gap-2 mt-6 md:mt-8 flex-shrink-0" role="tablist" aria-label="ניווט בין תוצאות לקוחות">
+                {CLIENT_RESULTS.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+                      index === currentClientIndex
+                        ? 'bg-accent w-8 md:w-10'
+                        : 'bg-white/30 hover:bg-white/50'
+                    }`}
+                    aria-label={`מעבר לתוצאות לקוח ${index + 1}`}
+                    aria-selected={index === currentClientIndex}
+                    role="tab"
+                  />
+                ))}
                 </div>
               </div>
 
-              {/* Client Info - Right */}
-              <div className="space-y-6 order-1 md:order-2">
-                {/* Profile */}
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 md:w-14 md:h-14 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <User className="text-accent" size={24} aria-hidden="true" />
+            {/* CTA Button - Always visible at bottom */}
+            <div className="flex justify-center mt-6 md:mt-8 mb-2 flex-shrink-0 relative z-20">
+              <a
+                href="#action"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const actionSection = document.getElementById('action');
+                  if (actionSection) {
+                    actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105 shadow-lg relative z-20 pointer-events-auto"
+              >
+                גם אני רוצה תוצאות
+              </a>
                   </div>
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-black text-white">אורי כ.</h3>
-                    <p className="text-gray-400 text-sm md:text-base">יזם, גיל 29</p>
                   </div>
-                </div>
+        </section>
 
-                {/* Quote */}
-                <div className="bg-brandGray border-r-4 border-accent rounded-lg p-4 md:p-5">
-                  <p className="text-gray-200 text-base md:text-lg leading-relaxed italic">
-                    "גילעד עזר לי להבין מה אני עושה לא נכון. התוצאות הגיעו מהר מהצפוי."
+        {/* STAGE 10: FAQ */}
+        <section id="faq" data-stage="faq" data-snap="true" className="stage stage-alt-1 reveal">
+          <div className="absolute inset-0 z-0 faq-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col">
+            <StoryHeader text="יש לך שאלות? יש לנו תשובות" />
+            
+            <div className="text-center mb-4 md:mb-6">
+              <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight mb-4">שאלות נפוצות</h2>
+              <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                כל מה שרצית לדעת על הליווי, התהליך, והתשובות
                   </p>
                 </div>
 
-                {/* Goals Achieved */}
-                <div>
-                  <h4 className="text-lg font-bold text-white mb-3">יעדים שהושגו:</h4>
-                  <ul className="space-y-2">
-                    {['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'].map((goal, idx) => (
-                      <li key={idx} className="flex items-center gap-3 text-gray-300">
-                        <CheckCircle2 className="text-accent flex-shrink-0" size={18} aria-hidden="true" />
-                        <span>{goal}</span>
-                      </li>
-                    ))}
-                  </ul>
+            <div className="max-w-4xl mx-auto space-y-4 flex-1 overflow-y-auto max-h-[calc(100vh-250px)] md:max-h-[calc(100vh-300px)]">
+              {FAQ_ITEMS.map((item, index) => {
+                const isExpanded = expandedFAQIndex === index;
+                return (
+                  <div
+                    key={index}
+                    className="bg-brandGray/20 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden transition-all"
+                  >
+                    <button
+                      onClick={() => toggleFAQ(index)}
+                      className="w-full flex items-center justify-between p-4 md:p-6 text-right hover:bg-white/5 transition-colors"
+                      aria-expanded={isExpanded}
+                      aria-controls={`faq-answer-${index}`}
+                    >
+                      <h3 className="text-lg md:text-xl font-bold text-white pl-4 flex-1 text-right">
+                        {item.question}
+                      </h3>
+                      <ChevronDown
+                        className={`text-white flex-shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                        size={24}
+                        aria-hidden="true"
+                      />
+                    </button>
+                    <div
+                      id={`faq-answer-${index}`}
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <div className="px-4 md:px-6 pb-4 md:pb-6 pt-0 text-gray-300">
+                        {typeof item.answer === 'string' ? (
+                          <p>{item.answer}</p>
+                        ) : (
+                          item.answer
+                        )}
                 </div>
-
-                {/* Duration and Commitment */}
-                <div className="bg-brandGray border border-white/10 rounded-lg p-4 md:p-5 flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1">
-                    <div className="text-2xl md:text-3xl font-black text-accent mb-1">4</div>
-                    <div className="text-sm text-gray-400">חודשים משך התהליך</div>
                   </div>
-                  <div className="flex-1">
-                    <div className="text-2xl md:text-3xl font-black text-accent mb-1">100%</div>
-                    <div className="text-sm text-gray-400">מחויבות לתוכנית</div>
                   </div>
+                );
+              })}
                 </div>
-              </div>
+            <div className="flex justify-center mt-4 md:mt-6 mb-4">
+              <a
+                href="#action"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const actionSection = document.getElementById('action');
+                  if (actionSection) {
+                    actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105 shadow-lg"
+              >
+                מוכן להתחיל?
+              </a>
             </div>
           </div>
         </section>
 
-        {/* STAGE 10: ACTION */}
-        <section id="action" data-stage="action" data-snap="true" className="stage stage-alt-1 reveal cta-bg">
-          <div className="absolute inset-0 z-0 cta-bg-layer" aria-hidden="true"></div>
+        {/* STAGE 11: ACTION */}
+        <section id="action" data-stage="action" data-snap="true" className="stage stage-alt-1 reveal">
           <div className="absolute inset-0 z-0 cta-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
             <StoryHeader text="הצעד האחרון בדרך שלך" />
-            <div className="grid md:grid-cols-2 gap-12 items-center mt-8">
-              <div className="space-y-8">
+            <div className="grid md:grid-cols-2 gap-8 items-center mt-4">
+              <div className="space-y-6">
                 <h2 className="text-4xl md:text-6xl font-black heading-font leading-tight">מוכן <br /> <span className="text-accent underline decoration-accent underline-offset-8">להתחיל?</span></h2>
                 <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
                 <div className="space-y-4">
@@ -1451,7 +2319,11 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="py-12 bg-brandDark border-t border-white/5 text-center text-gray-500 text-sm">
+      <footer 
+        data-snap="true" 
+        className="stage py-12 bg-brandDark border-t border-white/5 text-center text-gray-500 text-sm"
+        style={{ height: '100vh', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+      >
         <div className="container mx-auto px-4">
           <div className="text-xl font-black heading-font text-white mb-6">גילעד <span className="text-accent">דורון</span></div>
           <p className="mb-4">כל הזכויות שמורות &copy; {new Date().getFullYear()} גילעד דורון - ליווי אונליין</p>
@@ -1465,8 +2337,12 @@ export default function App() {
 
       {/* Modals */}
       <LegalModal type={modalType} onClose={() => setModalType(null)} />
+      <ClientStoryModal clientIndex={selectedClientIndex} onClose={closeClientStory} />
+      <ExitIntentPopup />
       
       <WhatsAppButton />
+      <FloatingCTA />
     </div>
   );
 }
+
