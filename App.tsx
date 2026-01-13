@@ -2037,7 +2037,7 @@ export default function App() {
 
             {/* Client Results Carousel */}
             {/* touch-action: pan-y allows vertical scrolling on the carousel container */}
-            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0 max-h-[67vh]" style={{ touchAction: 'pan-y', pointerEvents: 'auto' }}>
+            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0 max-h-[69vh]" style={{ touchAction: 'pan-y', pointerEvents: 'auto' }}>
               {/* Arrow Navigation Controls */}
               {CLIENT_RESULTS.length > 1 && (
                 <>
@@ -2105,13 +2105,13 @@ export default function App() {
                         // Only use opacity for visual feedback (no scale/blur conflicts)
                       }}
                     >
-                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl p-2.5 md:p-3 max-h-[68vh] flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${
+                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl p-2 md:p-2.5 max-h-[70vh] flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${
                         isActive 
                           ? 'border-accent shadow-[0_0_30px_rgba(255,107,53,0.4),0_4px_20px_rgba(0,0,0,0.5)]' 
                           : 'border-white/10'
                       }`}>
                         {/* Header Row: Avatar + Name + Age */}
-                        <div className="flex items-center gap-2.5 mb-2.5">
+                        <div className="flex items-center gap-2.5 mb-2">
                           <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
                             <User className="text-accent" size={20} aria-hidden="true" />
                   </div>
@@ -2122,7 +2122,7 @@ export default function App() {
                 </div>
 
                         {/* Quote: Max 2 lines with ellipsis */}
-                        <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-2.5 md:p-3 mb-2.5">
+                        <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-2 md:p-2.5 mb-2">
                           <p className="text-gray-200 text-sm md:text-base leading-relaxed italic line-clamp-2 overflow-hidden">
                             "{client.quote}"
                   </p>
@@ -2130,7 +2130,7 @@ export default function App() {
 
                         {/* Before/After Image: Fixed aspect ratio with reserved space */}
                         {/* Reserved space prevents layout shift when image loads */}
-                        <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-2 aspect-[4/3] md:aspect-[3/2] min-h-[130px] md:min-h-[150px]">
+                        <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-2 aspect-[4/3] md:aspect-[3/2] min-h-[120px] md:min-h-[140px]">
                           <img 
                             src={`${import.meta.env.BASE_URL}assets/results/${client.image}`}
                             alt={client.imageAlt}
@@ -2154,7 +2154,7 @@ export default function App() {
                 </div>
                 
                         {/* Statistics Row: Compact single row */}
-                        <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-1.5 md:p-2 grid grid-cols-3 gap-1 md:gap-1.5 text-center mb-1.5">
+                        <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-1 md:p-1.5 grid grid-cols-3 gap-1 md:gap-1.5 text-center">
                   <div>
                             <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.weight}</div>
                             <div className="text-[10px] md:text-xs text-gray-400">משקל</div>
@@ -2168,15 +2168,6 @@ export default function App() {
                             <div className="text-[10px] md:text-xs text-gray-400">כוח</div>
               </div>
             </div>
-
-                        {/* "לכל הסיפור" Button */}
-                        <button
-                          onClick={() => openClientStory(actualIndex)}
-                          className="text-accent hover:text-accent/80 text-sm md:text-base font-bold underline underline-offset-2 transition-colors flex-shrink-0 pt-0.5"
-                          aria-label={`קרא את כל הסיפור של ${client.name}`}
-                        >
-                          לכל הסיפור
-                        </button>
                   </div>
                   </div>
                   );
