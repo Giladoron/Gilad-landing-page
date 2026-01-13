@@ -138,6 +138,21 @@
         scroll-snap-stop: always;
       }
 
+      /* Card content scaling for responsive fit */
+      .carousel-card-content-wrapper {
+        --scale-factor: 0.90; /* Mobile default */
+        transform: scale(var(--scale-factor));
+        transform-origin: top center;
+        width: calc(100% / var(--scale-factor));
+        height: calc(100% / var(--scale-factor));
+      }
+
+      @media (min-width: 768px) {
+        .carousel-card-content-wrapper {
+          --scale-factor: 0.93; /* Desktop */
+        }
+      }
+
       /* Stage / Scene Styles */
       .stage {
         height: 100vh;

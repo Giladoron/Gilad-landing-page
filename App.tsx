@@ -2105,13 +2105,15 @@ export default function App() {
                         // Only use opacity for visual feedback (no scale/blur conflicts)
                       }}
                     >
-                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl p-2 md:p-2.5 max-h-[70vh] flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${
+                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl p-2 md:p-2.5 max-h-[70vh] flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden ${
                         isActive 
                           ? 'border-accent shadow-[0_0_30px_rgba(255,107,53,0.4),0_4px_20px_rgba(0,0,0,0.5)]' 
                           : 'border-white/10'
                       }`}>
-                        {/* Header Row: Avatar + Name + Age */}
-                        <div className="flex items-center gap-2.5 mb-2">
+                        {/* Content Wrapper with Scale Transform */}
+                        <div className="carousel-card-content-wrapper w-full h-full flex flex-col min-h-0">
+                          {/* Header Row: Avatar + Name + Age */}
+                          <div className="flex items-center gap-2.5 mb-2">
                           <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
                             <User className="text-accent" size={20} aria-hidden="true" />
                   </div>
@@ -2168,7 +2170,9 @@ export default function App() {
                             <div className="text-[10px] md:text-xs text-gray-400">כוח</div>
               </div>
             </div>
-                  </div>
+                        </div>
+                        {/* End of Content Wrapper */}
+                      </div>
                   </div>
                   );
                 })}
