@@ -2037,7 +2037,7 @@ export default function App() {
 
             {/* Client Results Carousel */}
             {/* touch-action: pan-y allows vertical scrolling on the carousel container */}
-            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0 max-h-[69vh]" style={{ touchAction: 'pan-y', pointerEvents: 'auto' }}>
+            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0 max-h-[72vh]" style={{ touchAction: 'pan-y', pointerEvents: 'auto' }}>
               {/* Arrow Navigation Controls */}
               {CLIENT_RESULTS.length > 1 && (
                 <>
@@ -2105,13 +2105,13 @@ export default function App() {
                         // Only use opacity for visual feedback (no scale/blur conflicts)
                       }}
                     >
-                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl p-2 md:p-2.5 max-h-[70vh] flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden ${
+                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-8 md:pb-10 max-h-[72vh] flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${
                         isActive 
                           ? 'border-accent shadow-[0_0_30px_rgba(255,107,53,0.4),0_4px_20px_rgba(0,0,0,0.5)]' 
                           : 'border-white/10'
-                      }`}>
-                        {/* Content Wrapper with Scale Transform */}
-                        <div className="carousel-card-content-wrapper w-full h-full flex flex-col min-h-0">
+                      }`} style={{ overflow: 'visible', boxSizing: 'border-box' }}>
+                        {/* Content Wrapper with Scale Transform - overflow hidden here to contain scaled content */}
+                        <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0" style={{ maxHeight: 'calc(100% - 16px)', overflow: 'hidden' }}>
                           {/* Header Row: Avatar + Name + Age */}
                           <div className="flex items-center gap-2.5 mb-2">
                           <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -2168,11 +2168,11 @@ export default function App() {
                   <div>
                             <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.strength}</div>
                             <div className="text-[10px] md:text-xs text-gray-400">כוח</div>
+                  </div>
+                </div>
               </div>
-            </div>
-                        </div>
                         {/* End of Content Wrapper */}
-                      </div>
+            </div>
                   </div>
                   );
                 })}
@@ -2340,4 +2340,5 @@ export default function App() {
     </div>
   );
 }
+
 
