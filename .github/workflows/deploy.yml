@@ -38,7 +38,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
       
       - name: Deploy to gh-pages
-        run: npx gh-pages -d dist -r https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        run: |
+          npx gh-pages -d dist \
+            -r https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git \
+            -u "github-actions[bot] <github-actions[bot]@users.noreply.github.com>" \
+            -m "Deploy to GitHub Pages"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
