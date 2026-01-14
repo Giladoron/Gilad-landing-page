@@ -1443,10 +1443,10 @@ export default function App() {
       inline: 'center'
     });
 
-    // Reset flag after scroll completes with a longer grace period for infinite jumps
+    // Reset flag after scroll completes
     setTimeout(() => {
       isProgrammaticScrollRef.current = false;
-    }, smooth ? 600 : 150);
+    }, smooth ? 500 : 50);
   };
 
   const goToNext = () => {
@@ -1488,86 +1488,59 @@ export default function App() {
 
         if (updateTimeout) clearTimeout(updateTimeout);
         updateTimeout = setTimeout(() => {
-          const containerCenter = container.getBoundingClientRect().left + container.offsetWidth / 2;
-          let bestIndex = -1;
-          let minDistance = Infinity;
+          if (isProgrammaticScrollRef.current || !container) return;
+
+          // Find the most centered card (highest intersection ratio)
+          let maxRatio = 0;
+          let activeCloneIndex = -1;
 
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const rect = entry.target.getBoundingClientRect();
-              const entryCenter = rect.left + rect.width / 2;
-              const distance = Math.abs(containerCenter - entryCenter);
-
-              if (distance < minDistance) {
-                minDistance = distance;
-                const index = Array.from(container.children).indexOf(entry.target as HTMLElement);
-                if (index !== -1) bestIndex = index;
+            if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+              maxRatio = entry.intersectionRatio;
+              const cloneIndex = Array.from(container.children).indexOf(entry.target as HTMLElement);
+              if (cloneIndex !== -1) {
+                activeCloneIndex = cloneIndex;
               }
             }
           });
 
-          if (bestIndex === -1) return;
+          if (activeCloneIndex === -1) return;
 
-          const actualIndex = getActualIndex(bestIndex);
-          if (actualIndex !== activeIndexRef.current) {
+          const actualIndex = getActualIndex(activeCloneIndex);
+
+          // Only update if we're in the middle set (ignore first/third sets to prevent jumps)
+          const isInMiddleSet = activeCloneIndex >= MIDDLE_START_INDEX && activeCloneIndex < MIDDLE_START_INDEX + ORIGINAL_COUNT;
+          
+          if (isInMiddleSet && actualIndex !== activeIndexRef.current) {
             activeIndexRef.current = actualIndex;
             setCurrentClientIndex(actualIndex);
+            
+            // Debug logging
+            if (CAROUSEL_DEBUG) {
+              console.log('[Carousel] Active card changed:', {
+                actualIndex,
+                cloneIndex: activeCloneIndex,
+                containerWidth: container.clientWidth,
+                scrollLeft: container.scrollLeft
+              });
+            }
           }
-        }, 50);
+        }, DEBOUNCE_DELAY);
       },
       {
         root: container,
-        threshold: [0.1, 0.5, 0.9],
+        threshold: [0.5], // Single threshold - more stable
         rootMargin: '0px'
       }
     );
 
-    // Observer all cards
-    Array.from(container.children).forEach((child) => observer.observe(child as Element));
-
-    // SILENT INFINITE LOOP JUMP (Separate from Observer)
-    // We only trigger the jump when the scroll has completely stopped (debounced scroll)
-    let scrollStopTimeout: NodeJS.Timeout;
-    const handleScroll = () => {
-      if (isProgrammaticScrollRef.current) return;
-
-      if (scrollStopTimeout) clearTimeout(scrollStopTimeout);
-      scrollStopTimeout = setTimeout(() => {
-        const containerCenter = container.getBoundingClientRect().left + container.offsetWidth / 2;
-        let activeCloneIndex = -1;
-        let minDistance = Infinity;
-
-        // Find current center item
-        Array.from(container.children).forEach((child: any, idx) => {
-          const rect = child.getBoundingClientRect();
-          const childCenter = rect.left + rect.width / 2;
-          const distance = Math.abs(containerCenter - childCenter);
-          if (distance < minDistance) {
-            minDistance = distance;
-            activeCloneIndex = idx;
-          }
-        });
-
-        if (activeCloneIndex === -1) return;
-
-        // check if we are in clones and jump
-        const isInFirstSet = activeCloneIndex < MIDDLE_START_INDEX;
-        const isInThirdSet = activeCloneIndex >= MIDDLE_START_INDEX + ORIGINAL_COUNT;
-        
-        if (isInFirstSet || isInThirdSet) {
-          const actualIndex = getActualIndex(activeCloneIndex);
-          scrollToCard(getCloneIndex(actualIndex), false);
-        }
-      }, 150); // Wait for scroll to settle
-    };
-
-    container.addEventListener('scroll', handleScroll, { passive: true });
+    // Observe all cards
+    const children = Array.from(container.children);
+    children.forEach((child) => observer.observe(child));
 
     return () => {
       observer.disconnect();
-      container.removeEventListener('scroll', handleScroll);
       if (updateTimeout) clearTimeout(updateTimeout);
-      if (scrollStopTimeout) clearTimeout(scrollStopTimeout);
     };
   }, [carouselInitialized]); // Wait for initialization
 
