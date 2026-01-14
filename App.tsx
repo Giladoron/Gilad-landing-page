@@ -162,16 +162,25 @@ const CLIENT_RESULTS: ClientResult[] = [
 // --- FAQ Data ---
 interface FAQItem {
   question: string;
-  answer: JSX.Element | string;
+  answer: React.ReactNode;
 }
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: 'למה זה עובד טוב יותר ממאמן בחדר כושר?',
+    question: 'איך אפשר להגיע לתוצאות בלי להיפגש פיזית?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>מאמן בחדר כושר סופר לך חזרות במשך שעה והולך הביתה. אני בונה לך <strong>מערכת שלימה</strong> שעוטפת אותך 24/7.</p>
-        <p>בחדר כושר אתה משלם על זמן. אצלי אתה משלם על תוצאה. אני איתך בתזונה, בהתאוששות, בשינה, וברגעים הקשים שבהם בא לך לוותר.</p>
+        <p>זה היתרון הכי גדול שלך. הליווי הוא לא "שעה בחדר כושר", אלא מערכת שעוטפת אותך 24/7.</p>
+        <p>עם מעקב דיגיטלי, ניתוח טכניקה בוידאו וזמינות מלאה בוואטסאפ – אתה מקבל פי 10 יותר תשומת לב ממאמן שרואה אותך פעמיים בשבוע והולך הביתה.</p>
+      </div>
+    )
+  },
+  {
+    question: 'זה מתאים גם אם בחיים לא נגעתי במשקולת?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>בדיוק בשביל זה יש ליווי. התוכנית נבנית מהיסוד לפי הרמה הנוכחית שלך.</p>
+        <p>במקום לנחש ולעשות טעויות שיגרמו לך לפרוש, אתה מקבל שיטה מסודרת לבניית בסיס חזק – מהצעד הראשון.</p>
       </div>
     )
   },
@@ -185,47 +194,38 @@ const FAQ_ITEMS: FAQItem[] = [
     )
   },
   {
-    question: 'אין לי הרבה זמן פנוי. זה יתאים לי?',
+    question: 'מה קורה אם הלו״ז משתבש או שפספסתי אימון?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>דווקא בגלל זה. אם אין לך זמן – אסור לך לבזבז אותו על אימונים לא אפקטיביים.</p>
-        <p>אני בונה את התוכנית סביב הלו"ז <strong>שלך</strong>. יש לך 3 שעות בשבוע? אנחנו נפיק מהן את המקסימום. המטרה היא לא לגור בחדר כושר, אלא להשיג תוצאות בחיים האמיתיים.</p>
+        <p>אנחנו מתאימים את התוכנית לחיים, לא להפך. החיים קורים – עבודה, משפחה, מילואים.</p>
+        <p>התפקיד שלי הוא לעשות את ההתאמות בזמן אמת כדי שתישאר על המסלול גם כשקשה, בלי "עונשים" ובלי ייסורי מצפון.</p>
       </div>
     )
   },
   {
-    question: 'חייב חדר כושר או אפשר מהבית?',
-    answer: (
-      <div className="space-y-2 text-gray-300">
-        <p>אנחנו לא נותנים לציוד להיות תירוץ. יש לך מנוי? מעולה. יש לך זוג משקולות בבית? מצוין.</p>
-        <p>אני מתאים את התוכנית בדיוק לציוד שעומד לרשותך. אפשר להגיע לגוף אתלטי וחזק גם מהסלון בבית – אם עובדים חכם.</p>
-      </div>
-    )
-  },
-  {
-    question: 'מתי אראה תוצאות?',
-    answer: (
-      <div className="space-y-2 text-gray-300">
-        <p>את השינוי באנרגיה ובכוח תרגיש כבר בשבוע הראשון. שינוי ויזואלי במראה? בדרך כלל תוך 3-4 שבועות.</p>
-        <p>אבל המטרה שלי היא לא 'תוצאה מהירה' שנעלמת, אלא גוף שתחזיק איתו שנים. אנחנו בונים כאן מנוע, לא עושים תיקון קוסמטי זמני.</p>
-      </div>
-    )
-  },
-  {
-    question: 'מה לגבי התזונה? אצטרך להרעיב את עצמי?',
+    question: 'אצטרך להרעיב את עצמי או לוותר על האוכל שאני אוהב?',
     answer: (
       <div className="space-y-2 text-gray-300">
         <p>ממש לא. דיאטות כאסח נכשלות ב-100% מהמקרים בטווח הארוך.</p>
-        <p>אנחנו נבנה תפריט שכולל אוכל שאתה אוהב, שמשתלב עם ארוחות שישי ועם בילויים. אם זה לא יהיה טעים ונוח – אתה לא תחזיק מעמד, ואני לא עשיתי את העבודה שלי.</p>
+        <p>אנחנו נבנה תפריט שכולל אוכל שאתה אוהב, שמשתלב עם ארוחות שישי ובילויים. אם זה לא יהיה טעים ונוח – אתה לא תחזיק מעמד, ואני לא עשיתי את העבודה שלי.</p>
       </div>
     )
   },
   {
-    question: 'איך מתקיים הקשר בינינו?',
+    question: 'בוא נדבר תכלס – אתם באמת מבטיחים תוצאות?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>אני זמין לך ב-WhatsApp האישי לכל שאלה, התייעצות או משבר.</p>
-        <p>אנחנו לא מדברים "פעם בחודש". יש מעקב שבועי מסודר, אבל אני איתך ביום-יום כדי לוודא שאתה לא יורד מהמסלול. אתה לא לבד בתהליך הזה.</p>
+        <p>כן. ב-100%. אם יישמת את התוכנית ולא הגעת למה שסיכמנו – אני ממשיך ללוות אותך בחינם עד שזה קורה, או שאתה מקבל החזר כספי מלא.</p>
+        <p>האחריות על התוצאה היא עלי, לא רק עליך.</p>
+      </div>
+    )
+  },
+  {
+    question: 'מה אם אגלה אחרי שיחת ההתאמה שזה לא בשבילי?',
+    answer: (
+      <div className="space-y-2 text-gray-300">
+        <p>הכל בסדר. שיחת ההתאמה נועדה בדיוק בשביל זה – להבין אם אנחנו מתאימים.</p>
+        <p>אם אראה שהשיטה שלי לא תביא אותך לתוצאות, אגיד לך את זה בכנות. בלי מכירות בלחץ ובלי התחייבויות מיותרות.</p>
       </div>
     )
   }
@@ -401,7 +401,7 @@ const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => vo
           {/* Before/After Image */}
           <div className="relative rounded-2xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10">
             <img 
-              src={`${import.meta.env.BASE_URL}assets/results/${client.image}`}
+              src={`${(import.meta as any).env.BASE_URL}assets/results/${client.image}`}
               alt={client.imageAlt}
               className="w-full h-auto object-cover scale-x-[-1]"
               loading="lazy"
@@ -631,9 +631,9 @@ const ExitIntentPopup: React.FC = () => {
       timeOnPage = (Date.now() - startTime) / 1000;
     }, 1000);
 
-    // Desktop: Mouse leave detection
+    // Desktop: Mouse leave detection (trigger at 50% scroll depth to reduce false triggers)
     const handleMouseLeave = (e: MouseEvent) => {
-      if (!isMobile && e.clientY <= 0 && !hasShownRef.current && scrollDepth > 0.3) {
+      if (!isMobile && e.clientY <= 0 && !hasShownRef.current && scrollDepth > 0.5) {
         hasShownRef.current = true;
         setIsOpen(true);
         sessionStorage.setItem('exitIntentShown', 'true');
@@ -1541,7 +1541,7 @@ export default function App() {
 
     // Observe all cards
     const children = Array.from(container.children);
-    children.forEach((child) => observer.observe(child));
+    children.forEach((child) => observer.observe(child as Element));
 
     return () => {
       observer.disconnect();
@@ -1861,7 +1861,7 @@ export default function App() {
 
             {/* Client Results Carousel */}
             {/* touch-action: pan-y allows vertical scrolling on the carousel container */}
-            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0 max-h-[72vh]" style={{ touchAction: 'pan-y', pointerEvents: 'auto' }}>
+            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0" style={{ touchAction: 'pan-y', pointerEvents: 'auto' }}>
               {/* Arrow Navigation Controls */}
               {CLIENT_RESULTS.length > 1 && (
                 <>
@@ -1892,7 +1892,7 @@ export default function App() {
               */}
               <div 
                 ref={carouselRef}
-                className={`carousel-container flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-6 md:gap-8 px-0 py-4 transition-opacity duration-300 ${carouselInitialized ? 'opacity-100' : 'opacity-0'}`}
+                className={`carousel-container flex overflow-x-auto overflow-y-visible snap-x snap-mandatory gap-6 md:gap-8 px-0 py-8 transition-opacity duration-300 ${carouselInitialized ? 'opacity-100' : 'opacity-0'}`}
                 style={{ 
                   scrollBehavior: 'smooth',
                   WebkitOverflowScrolling: 'touch',
@@ -1929,13 +1929,13 @@ export default function App() {
                         // Only use opacity for visual feedback (no scale/blur conflicts)
                       }}
                     >
-                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-8 md:pb-10 max-h-[72vh] flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${
+                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${
                         isActive 
                           ? 'border-accent shadow-[0_0_30px_rgba(255,107,53,0.4),0_4px_20px_rgba(0,0,0,0.5)]' 
                           : 'border-white/10'
-                      }`} style={{ overflow: 'visible', boxSizing: 'border-box' }}>
-                        {/* Content Wrapper with Scale Transform - overflow hidden here to contain scaled content */}
-                      <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0 bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
+                      }`}>
+                        {/* Content Wrapper with Scale Transform */}
+                      <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0 bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-2xl p-2 md:p-3">
                           {/* Header Row: Avatar + Name + Age */}
                           <div className="flex items-center gap-2.5 mb-2">
                           <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -1958,7 +1958,7 @@ export default function App() {
                         {/* Reserved space prevents layout shift when image loads */}
                         <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-1.5 md:mb-2 aspect-[2/1] md:aspect-[3/2] min-h-[100px] md:min-h-[140px]">
                           <img 
-                            src={`${import.meta.env.BASE_URL}assets/results/${client.image}`}
+                            src={`${(import.meta as any).env.BASE_URL}assets/results/${client.image}`}
                             alt={client.imageAlt}
                             className="w-full h-full object-contain scale-x-[-1]"
                     loading="lazy"
@@ -2060,23 +2060,15 @@ export default function App() {
                 </div>
               </div>
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center">
-                {/* Quiet depth card - purely visual, behind video */}
+                {/* Video container with floating shadow */}
                 <div 
-                  className="absolute -bottom-8 -left-8 w-[108%] h-[108%] rounded-[2.5rem] bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] -z-0 pointer-events-none hidden md:block"
-                  style={{ 
-                    backdropFilter: 'blur(8px)',
-                    WebkitBackdropFilter: 'blur(8px)'
-                  }}
-                  aria-hidden="true"
-                />
-                {/* Video container */}
-                <div 
-                  className="w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl relative z-10 border border-white/10" 
+                  className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10" 
                   style={{ 
                     aspectRatio: '3/4',
-                    maxHeight: '40vh', /* Strict Mobile Constraint */
+                    maxHeight: '55vh',
                     maxWidth: '100%',
-                    margin: '0 auto'
+                    margin: '0 auto',
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 107, 53, 0.15)'
                   }}
                 >
                   <div style={{ height: '100%', width: '100%', position: 'relative' }}>
@@ -2270,7 +2262,7 @@ export default function App() {
                 </div>
 
             <div className="max-w-4xl mx-auto space-y-2 md:space-y-4 flex-1 w-full min-h-0">
-              {FAQ_ITEMS.slice(0, 3).map((item, index) => { // Reduced to 3 to prevent CTA overlap
+              {FAQ_ITEMS.map((item, index) => { 
                 const isExpanded = expandedFAQIndex === index;
                 return (
                   <div

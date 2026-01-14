@@ -93,6 +93,8 @@
   min-height: 100dvh; 
   scroll-snap-align: start;
   scroll-snap-stop: normal;
+  /* Flex centering to maintain vertical balance */
+  justify-content: center;
   /* overflow: hidden; - Removed to allow natural content overflow */
 }
 
@@ -161,43 +163,43 @@
 /* Background Overlays - Modified for Global BG */
 .hero-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .reflection-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .proof-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .about-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .get-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .process-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .waiting-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .faq-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .cta-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 .commitment-overlay {
   background-color: black;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 
 /* Small screen compaction utilities (iPhone SE) */
