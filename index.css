@@ -202,6 +202,22 @@
   opacity: 0.55;
 }
 
+/* Darker overlays on mobile for better contrast */
+@media (max-width: 768px) {
+  .hero-overlay,
+  .reflection-overlay,
+  .proof-overlay,
+  .about-overlay,
+  .get-overlay,
+  .process-overlay,
+  .waiting-overlay,
+  .faq-overlay,
+  .cta-overlay,
+  .commitment-overlay {
+    opacity: 0.75;
+  }
+}
+
 /* Small screen compaction utilities (iPhone SE) */
 @media (max-height: 700px) {
   .compact-text {

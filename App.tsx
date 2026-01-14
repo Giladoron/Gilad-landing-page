@@ -171,7 +171,7 @@ const FAQ_ITEMS: FAQItem[] = [
     answer: (
       <div className="space-y-2 text-gray-300">
         <p>זה היתרון הכי גדול שלך. הליווי הוא לא "שעה בחדר כושר", אלא מערכת שעוטפת אותך 24/7.</p>
-        <p>עם מעקב דיגיטלי, ניתוח טכניקה בוידאו וזמינות מלאה בוואטסאפ – אתה מקבל פי 10 יותר תשומת לב ממאמן שרואה אותך פעמיים בשבוע והולך הביתה.</p>
+        <p>עם מעקב דיגיטלי, ניתוח טכניקה בוידאו וזמינות מלאה בוואטסאפ. אתה מקבל פי 10 יותר תשומת לב ממאמן שרואה אותך פעמיים בשבוע והולך הביתה.</p>
       </div>
     )
   },
@@ -180,7 +180,7 @@ const FAQ_ITEMS: FAQItem[] = [
     answer: (
       <div className="space-y-2 text-gray-300">
         <p>בדיוק בשביל זה יש ליווי. התוכנית נבנית מהיסוד לפי הרמה הנוכחית שלך.</p>
-        <p>במקום לנחש ולעשות טעויות שיגרמו לך לפרוש, אתה מקבל שיטה מסודרת לבניית בסיס חזק – מהצעד הראשון.</p>
+        <p>במקום לנחש ולעשות טעויות שיגרמו לך לפרוש, אתה מקבל שיטה מסודרת לבניית בסיס חזק מהצעד הראשון.</p>
       </div>
     )
   },
@@ -212,7 +212,7 @@ const FAQ_ITEMS: FAQItem[] = [
     )
   },
   {
-    question: 'בוא נדבר תכלס – אתם באמת מבטיחים תוצאות?',
+    question: 'בוא נדבר תכלס: אתם באמת מבטיחים תוצאות?',
     answer: (
       <div className="space-y-2 text-gray-300">
         <p>כן. ב-100%. אם יישמת את התוכנית ולא הגעת למה שסיכמנו – אני ממשיך ללוות אותך בחינם עד שזה קורה, או שאתה מקבל החזר כספי מלא.</p>
@@ -224,7 +224,7 @@ const FAQ_ITEMS: FAQItem[] = [
     question: 'מה אם אגלה אחרי שיחת ההתאמה שזה לא בשבילי?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>הכל בסדר. שיחת ההתאמה נועדה בדיוק בשביל זה – להבין אם אנחנו מתאימים.</p>
+        <p>הכל בסדר. שיחת ההתאמה נועדה בדיוק בשביל זה: להבין אם אנחנו מתאימים.</p>
         <p>אם אראה שהשיטה שלי לא תביא אותך לתוצאות, אגיד לך את זה בכנות. בלי מכירות בלחץ ובלי התחייבויות מיותרות.</p>
       </div>
     )
@@ -482,10 +482,11 @@ const MobileProgressBar: React.FC<{ activeStageIndex: number }> = ({ activeStage
 };
 
 const StoryHeader: React.FC<{ text: string }> = ({ text }) => (
-  <div className="text-center mb-2 sm:mb-4 md:mb-6 mt-4 sm:mt-8 md:mt-0 pt-2 sm:pt-4 md:pt-0">
+  <div className="text-center mb-2 sm:mb-4 md:mb-6 mt-4 sm:mt-8 md:mt-0 pt-2 sm:pt-4 md:pt-0 flex flex-col items-center">
     <span className="story-header-text text-gray-400 text-sm md:text-lg font-medium tracking-wide">
       {text}
     </span>
+    <div className="w-16 h-0.5 bg-accent mt-3" aria-hidden="true" />
   </div>
 );
 
@@ -567,8 +568,8 @@ const FloatingCTA: React.FC = () => {
         }
       }
 
-      // Show after scrolling 300px, hide before action section
-      if (scrollY > 300 && !hasReachedAction) {
+      // Show after scrolling 100px, hide before action section
+      if (scrollY > 100 && !hasReachedAction) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
@@ -595,7 +596,7 @@ const FloatingCTA: React.FC = () => {
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-6 left-6 md:bottom-20 md:left-auto md:right-8 z-50 bg-accent text-white px-6 py-3 rounded-full shadow-2xl hover:brightness-110 transition-all duration-300 font-bold text-sm md:text-base flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-300"
+      className="fixed bottom-6 left-6 md:bottom-20 md:left-auto md:right-8 z-[60] bg-accent text-white px-6 py-3 rounded-full shadow-2xl hover:brightness-110 transition-all duration-300 font-bold text-sm md:text-base flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-300"
       aria-label="מעבר לבדיקת התאמה"
     >
       בדיקת התאמה
@@ -633,20 +634,17 @@ const ExitIntentPopup: React.FC = () => {
 
     // Desktop: Mouse leave detection (trigger at 50% scroll depth to reduce false triggers)
     const handleMouseLeave = (e: MouseEvent) => {
-      if (!isMobile && e.clientY <= 0 && !hasShownRef.current && scrollDepth > 0.5) {
+      if (isMobile) return; // Explicitly disable for mobile
+      if (e.clientY <= 0 && !hasShownRef.current && scrollDepth > 0.5) {
         hasShownRef.current = true;
         setIsOpen(true);
         sessionStorage.setItem('exitIntentShown', 'true');
       }
     };
 
-    // Mobile: Time or scroll depth trigger
+    // Mobile: Disabled per user request
     const checkMobileTrigger = () => {
-      if (isMobile && !hasShownRef.current && (timeOnPage > 30 || scrollDepth > 0.7)) {
-        hasShownRef.current = true;
-        setIsOpen(true);
-        sessionStorage.setItem('exitIntentShown', 'true');
-      }
+      // Logic removed for mobile abandonment popup
     };
 
     const mobileCheckInterval = setInterval(checkMobileTrigger, 1000);
@@ -1445,10 +1443,10 @@ export default function App() {
       inline: 'center'
     });
 
-    // Reset flag after scroll completes
+    // Reset flag after scroll completes with a longer grace period for infinite jumps
     setTimeout(() => {
       isProgrammaticScrollRef.current = false;
-    }, smooth ? 500 : 50);
+    }, smooth ? 600 : 150);
   };
 
   const goToNext = () => {
@@ -1486,66 +1484,90 @@ export default function App() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Skip during programmatic scrolling
         if (isProgrammaticScrollRef.current) return;
 
-        // Debounce updates to prevent rapid state changes
         if (updateTimeout) clearTimeout(updateTimeout);
-
         updateTimeout = setTimeout(() => {
-          if (isProgrammaticScrollRef.current || !container) return;
-
-          // Find the most centered card (highest intersection ratio)
-          let maxRatio = 0;
-          let activeCloneIndex = -1;
+          const containerCenter = container.getBoundingClientRect().left + container.offsetWidth / 2;
+          let bestIndex = -1;
+          let minDistance = Infinity;
 
           entries.forEach((entry) => {
-            if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-              maxRatio = entry.intersectionRatio;
-              const cloneIndex = Array.from(container.children).indexOf(entry.target as HTMLElement);
-              if (cloneIndex !== -1) {
-                activeCloneIndex = cloneIndex;
+            if (entry.isIntersecting) {
+              const rect = entry.target.getBoundingClientRect();
+              const entryCenter = rect.left + rect.width / 2;
+              const distance = Math.abs(containerCenter - entryCenter);
+
+              if (distance < minDistance) {
+                minDistance = distance;
+                const index = Array.from(container.children).indexOf(entry.target as HTMLElement);
+                if (index !== -1) bestIndex = index;
               }
             }
           });
 
-          if (activeCloneIndex === -1) return;
+          if (bestIndex === -1) return;
 
-          const actualIndex = getActualIndex(activeCloneIndex);
-
-          // Only update if we're in the middle set (ignore first/third sets to prevent jumps)
-          const isInMiddleSet = activeCloneIndex >= MIDDLE_START_INDEX && activeCloneIndex < MIDDLE_START_INDEX + ORIGINAL_COUNT;
-          
-          if (isInMiddleSet && actualIndex !== activeIndexRef.current) {
+          const actualIndex = getActualIndex(bestIndex);
+          if (actualIndex !== activeIndexRef.current) {
             activeIndexRef.current = actualIndex;
             setCurrentClientIndex(actualIndex);
-            
-            // Debug logging
-            if (CAROUSEL_DEBUG) {
-              console.log('[Carousel] Active card changed:', {
-                actualIndex,
-                cloneIndex: activeCloneIndex,
-                containerWidth: container.clientWidth,
-                scrollLeft: container.scrollLeft
-              });
-            }
           }
-        }, DEBOUNCE_DELAY);
+        }, 50);
       },
       {
         root: container,
-        threshold: [0.5], // Single threshold - more stable
+        threshold: [0.1, 0.5, 0.9],
         rootMargin: '0px'
       }
     );
 
-    // Observe all cards
-    const children = Array.from(container.children);
-    children.forEach((child) => observer.observe(child as Element));
+    // Observer all cards
+    Array.from(container.children).forEach((child) => observer.observe(child as Element));
+
+    // SILENT INFINITE LOOP JUMP (Separate from Observer)
+    // We only trigger the jump when the scroll has completely stopped (debounced scroll)
+    let scrollStopTimeout: NodeJS.Timeout;
+    const handleScroll = () => {
+      if (isProgrammaticScrollRef.current) return;
+
+      if (scrollStopTimeout) clearTimeout(scrollStopTimeout);
+      scrollStopTimeout = setTimeout(() => {
+        const containerCenter = container.getBoundingClientRect().left + container.offsetWidth / 2;
+        let activeCloneIndex = -1;
+        let minDistance = Infinity;
+
+        // Find current center item
+        Array.from(container.children).forEach((child: any, idx) => {
+          const rect = child.getBoundingClientRect();
+          const childCenter = rect.left + rect.width / 2;
+          const distance = Math.abs(containerCenter - childCenter);
+          if (distance < minDistance) {
+            minDistance = distance;
+            activeCloneIndex = idx;
+          }
+        });
+
+        if (activeCloneIndex === -1) return;
+
+        // check if we are in clones and jump
+        const isInFirstSet = activeCloneIndex < MIDDLE_START_INDEX;
+        const isInThirdSet = activeCloneIndex >= MIDDLE_START_INDEX + ORIGINAL_COUNT;
+        
+        if (isInFirstSet || isInThirdSet) {
+          const actualIndex = getActualIndex(activeCloneIndex);
+          scrollToCard(getCloneIndex(actualIndex), false);
+        }
+      }, 150); // Wait for scroll to settle
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       observer.disconnect();
+      container.removeEventListener('scroll', handleScroll);
       if (updateTimeout) clearTimeout(updateTimeout);
+      if (scrollStopTimeout) clearTimeout(scrollStopTimeout);
     };
   }, [carouselInitialized]); // Wait for initialization
 
@@ -1749,32 +1771,26 @@ export default function App() {
           <div className="absolute inset-0 z-0 hero-overlay" aria-hidden="true"></div>
           <Navbar />
 
-          <div className="container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-start md:items-center justify-start md:justify-center pt-24 md:pt-0 pb-safe">
-            <div className="space-y-2 md:space-y-6 w-full">
-              <h1 className="text-2xl md:text-6xl font-black heading-font leading-[1.1] md:leading-[1.2] mt-0 compact-heading">
-                מתאמן כבר חודשים <br /> 
-                <span className="text-accent underline decoration-4 underline-offset-8">והגוף מסרב להשתנות?</span>
-              </h1>
-              <p className="text-base md:text-2xl text-gray-300 font-light max-w-xl compact-text">
-                הבעיה היא לא בכוח הרצון שלך, <br className="hidden md:block" /> 
-                <strong>הבעיה היא בתוכנית.</strong>
-              </p>
-              <div className="space-y-1.5 md:space-y-4">
-                <p className="text-sm md:text-xl text-white font-medium compact-text hidden md:block">
-                  השיטה היחידה שמתחייבת לתוצאות: <strong>100% הצלחה או שהכסף חוזר אליך.</strong>
-                </p>
-                <ul className="space-y-1 md:space-y-3">
-                  {["תוכנית אימון ותזונה מותאמת אישית", "ליווי צמוד ומעקב שוטף", "תהליך ברור, מסודר, אפקטיבי"].map((item, idx) => (
-                    <li key={idx} className="flex items-center gap-2 md:gap-3">
-                      <CheckCircle2 className="text-accent flex-shrink-0" size={16} aria-hidden="true" />
-                      <span className="text-sm md:text-base text-gray-200 font-medium compact-text">{item}</span>
-                    </li>
-                  ))}
-                </ul>
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-0">
+            <StoryHeader text="החלום שלך מתחיל כאן" />
+            <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
+              <div className="space-y-4 md:space-y-6 text-center md:text-right">
+                <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן כבר חודשים <br /> <span className="text-accent underline decoration-accent underline-offset-8">והגוף מסרב להשתנות?</span></h2>
+                <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
+                <div className="space-y-3 md:space-y-4 flex flex-col items-center md:items-start">
+                  <div className="flex items-center gap-3 md:gap-4 text-base md:text-xl">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><Phone size={20} className="md:w-6 md:h-6" /></div>
+                    <span>שיחה קצרה לתיאום ציפיות</span>
+                  </div>
+                  <div className="flex items-center gap-3 md:gap-4 text-base md:text-xl">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-[#25D366]/10 text-[#25D366] rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><MessageCircle size={20} className="md:w-6 md:h-6" /></div>
+                    <span>מענה מהיר בוואטסאפ</span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="delay-100 w-full flex-1 flex flex-col justify-end pb-2">
-              <LeadForm />
+              <div className="delay-100 w-full flex-1 flex flex-col justify-end pb-2">
+                <LeadForm isFooter={true} />
+              </div>
             </div>
           </div>
         </section>
@@ -1799,7 +1815,7 @@ export default function App() {
               <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-white/10 p-3 md:p-10 rounded-xl relative group transition-all flex flex-col justify-center">
                 <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-6 text-gray-300 flex items-center gap-2 md:gap-3 compact-heading">
                   <MinusCircle className="text-gray-500 opacity-50" size={20} aria-hidden="true" />
-                  ככה זה מרגיש בלי התהליך
+                  ככה זה מרגיש בלי הליווי
                 </h3>
                 <ul className="space-y-1.5 md:space-y-4">
                   {[
@@ -1853,9 +1869,12 @@ export default function App() {
             
             {/* Header Section */}
             <div className="text-center mb-2 md:mb-3 flex-shrink-0">
-              <h2 className="text-2xl md:text-5xl font-black heading-font leading-tight mb-2">התוצאות מדברות</h2>
-              <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                אנשים רגילים שהחליטו להפסיק לנחש — <strong>ולהתחיל לראות תוצאות.</strong>
+              <h2 className="text-4xl md:text-7xl font-black heading-font leading-tight mb-4">התוצאות מדברות</h2>
+              <div className="text-lg md:text-2xl text-accent font-black max-w-3xl mx-auto leading-relaxed mb-2">
+                התוצאה שלך – האחריות שלי.
+              </div>
+              <p className="text-sm md:text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                אנשים רגילים שהחליטו להפסיק לנחש ולהתחיל לראות תוצאות.
               </p>
             </div>
 
@@ -1916,43 +1935,40 @@ export default function App() {
                   return (
                     <div
                       key={stableKey}
-                      className={`flex-shrink-0 w-[90vw] sm:w-[80vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] snap-center transition-opacity duration-300 ${
+                      className={`flex-shrink-0 w-[90vw] sm:w-[80vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] snap-center transition-all duration-500 ${
                         isActive 
-                          ? 'opacity-100 z-10' 
-                          : distance === 1 
-                            ? 'opacity-50' 
-                            : 'opacity-30'
+                          ? 'opacity-100 z-10 scale-[1.03] md:scale-105' 
+                          : 'opacity-40 scale-95 blur-[1px]'
                       }`}
                       style={{
                         scrollSnapAlign: 'center',
-                        // Remove transforms - let scroll-snap handle positioning
-                        // Only use opacity for visual feedback (no scale/blur conflicts)
+                        perspective: '1000px'
                       }}
                     >
-                      <div className={`bg-brandGray/50 backdrop-blur-sm border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${
+                      <div className={`bg-brandGray/50 border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.6)] ${
                         isActive 
-                          ? 'border-accent shadow-[0_0_30px_rgba(255,107,53,0.4),0_4px_20px_rgba(0,0,0,0.5)]' 
-                          : 'border-white/10'
+                          ? 'border-accent shadow-[0_0_40px_rgba(255,107,53,0.3),0_10px_40px_rgba(0,0,0,0.6)]' 
+                          : 'border-white/5 shadow-none'
                       }`}>
                         {/* Content Wrapper with Scale Transform */}
-                      <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0 bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-2xl p-2 md:p-3">
+                        <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0 bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-2xl p-2 md:p-3">
                           {/* Header Row: Avatar + Name + Age */}
                           <div className="flex items-center gap-2.5 mb-2">
-                          <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
-                            <User className="text-accent" size={20} aria-hidden="true" />
-                  </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-lg md:text-xl font-black text-white truncate">{client.name}</h3>
-                            <p className="text-gray-400 text-xs md:text-sm">{client.profession}, גיל {client.age}</p>
-                  </div>
-                </div>
+                            <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+                              <User className="text-accent" size={20} aria-hidden="true" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-lg md:text-xl font-black text-white truncate">{client.name}</h3>
+                              <p className="text-gray-400 text-xs md:text-sm">{client.profession}, גיל {client.age}</p>
+                            </div>
+                          </div>
 
-                        {/* Quote: Max 2 lines with ellipsis */}
-                        <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-2 md:p-2.5 mb-2">
-                          <p className="text-gray-200 text-sm md:text-base leading-relaxed italic line-clamp-2 overflow-hidden">
-                            "{client.quote}"
-                  </p>
-              </div>
+                          {/* Quote: Max 2 lines with ellipsis */}
+                          <div className="bg-brandGray/60 border-r-4 md:border-r-[6px] border-accent rounded-lg p-2 md:p-2.5 mb-2 shadow-inner">
+                            <p className="text-gray-200 text-sm md:text-base leading-relaxed italic line-clamp-2 overflow-hidden">
+                              "{client.quote}"
+                            </p>
+                          </div>
 
                         {/* Before/After Image: Fixed aspect ratio with reserved space */}
                         {/* Reserved space prevents layout shift when image loads */}
@@ -2065,7 +2081,8 @@ export default function App() {
                   className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10" 
                   style={{ 
                     aspectRatio: '3/4',
-                    maxHeight: '55vh',
+                    maxHeight: '65vh',
+                    minHeight: '400px',
                     maxWidth: '100%',
                     margin: '0 auto',
                     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 107, 53, 0.15)'
@@ -2164,7 +2181,7 @@ export default function App() {
         {/* STAGE 7: SOLUTION (GET) */}
         <section id="get" data-stage="get" data-snap="true" className="stage stage-alt-1 reveal">
           <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-10 h-full flex flex-col justify-center">
             <StoryHeader text="מכאן מתחיל הסדר" />
             <h2 className="text-2xl md:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4" id="get-cards-container">
@@ -2177,7 +2194,7 @@ export default function App() {
               ].map((item, idx) => (
                 <div 
                   key={idx} 
-                  className="get-card bg-brandDark/20 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-white/5 flex flex-col items-center text-center gap-4 transition-all hover:-translate-y-2"
+                  className={`get-card bg-brandDark/20 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-white/5 flex flex-col items-center text-center gap-4 transition-all hover:-translate-y-2 ${idx === 4 ? 'col-span-2 md:col-span-1' : ''}`}
                   style={{ opacity: 0, transform: 'translateY(20px)' }}
                   data-card-index={idx}
                 >
@@ -2192,7 +2209,7 @@ export default function App() {
         {/* STAGE 8: SOLUTION (HOW) */}
         <section id="how" data-stage="how" data-snap="true" className="stage reveal">
           <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-0 md:py-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="ככה נראה תהליך שעובד" />
             <h2 className="text-xl md:text-5xl font-black heading-font text-center mb-4 md:mb-10 compact-heading">4 צעדים לתוצאה</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 relative mt-2 md:mt-4 min-h-0">
@@ -2203,8 +2220,8 @@ export default function App() {
                 { s: "03", t: "ליווי ומעקב", d: "עבודה שוטפת, וואטסאפ זמין, ובדיקות התקדמות." },
                 { s: "04", t: "תוצאה שלא נעלמת", d: "אנחנו מוודאים שהגוף נשמר גם אחרי שהתהליך נגמר." }
               ].map((item, idx) => (
-                <div key={idx} className="relative z-10 flex flex-col items-center text-center group bg-brandDark/20 backdrop-blur-sm p-3 rounded-xl border border-white/5 md:bg-transparent md:border-none">
-                  <div className="w-10 h-10 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-2 md:border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-lg md:text-2xl font-black mb-2 md:mb-6 group-hover:bg-accent group-hover:text-white transition-all shrink-0" aria-hidden="true">
+                <div key={idx} className="relative z-10 flex flex-col items-center text-center group bg-transparent p-3 rounded-xl md:border-none">
+                  <div className="w-12 h-12 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-2 md:border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-lg md:text-2xl font-black mb-2 md:mb-6 group-hover:bg-accent group-hover:text-white transition-all shrink-0" aria-hidden="true">
                     {item.s}
                   </div>
                   <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">{item.t}</h3>
@@ -2221,7 +2238,7 @@ export default function App() {
           <div className="container mx-auto px-4 relative z-10 max-w-4xl reveal">
             <StoryHeader text="זה הרגע שרוב האנשים עוצרים" />
             <h2 className="text-4xl md:text-6xl font-black heading-font mb-4">המחיר של להמשיך לחכות?</h2>
-            <div className="text-5xl md:text-7xl font-black text-accent mb-12 block animate-pulse">הוא גבוה מדי.</div>
+            <div className="text-5xl md:text-7xl font-black text-accent mb-12 block animate-pulse">הוא גבוה מדי</div>
             <div className="space-y-6 text-xl md:text-2xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
               <p>כל חודש שעובר בלי תוכנית ברורה זה עוד חודש שאתה משקיע — ולא מתקדם.</p>
               <div className="py-4 font-bold text-white uppercase tracking-[0.2em] space-y-2">
@@ -2347,8 +2364,7 @@ export default function App() {
       </main>
 
       <footer 
-        data-snap="true" 
-        className="stage py-12 bg-brandDark border-t border-white/5 text-center text-gray-500 text-sm min-h-screen flex flex-col justify-center"
+        className="py-12 bg-black/90 border-t border-white/5 text-center text-gray-500 text-sm"
       >
         <div className="container mx-auto px-4">
           <div className="text-xl font-black heading-font text-white mb-6">גילעד <span className="text-accent">דורון</span></div>
@@ -2363,11 +2379,11 @@ export default function App() {
             <Instagram size={20} strokeWidth={1.5} />
           </a>
 
-          <p className="mb-4">כל הזכויות שמורות &copy; {new Date().getFullYear()} גילעד דורון - ליווי אונליין</p>
-          <div className="flex justify-center gap-6 text-xs md:text-sm">
-            <button onClick={() => setModalType('accessibility')} className="hover:text-white hover:underline transition-all">הצהרת נגישות</button>
-            <button onClick={() => setModalType('privacy')} className="hover:text-white hover:underline transition-all">מדיניות פרטיות</button>
-            <button onClick={() => setModalType('terms')} className="hover:text-white hover:underline transition-all">תקנון שימוש</button>
+          <p className="mb-4">כל הזכויות שמורות &copy; {new Date().getFullYear()} גילעד דורון | ליווי אונליין</p>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-xs md:text-sm">
+            <button onClick={() => setModalType('accessibility')} className="hover:text-white hover:underline transition-all whitespace-nowrap">הצהרת נגישות</button>
+            <button onClick={() => setModalType('privacy')} className="hover:text-white hover:underline transition-all whitespace-nowrap">מדיניות פרטיות</button>
+            <button onClick={() => setModalType('terms')} className="hover:text-white hover:underline transition-all whitespace-nowrap">תקנון שימוש</button>
           </div>
         </div>
       </footer>
