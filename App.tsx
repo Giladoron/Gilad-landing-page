@@ -22,7 +22,8 @@ import {
   X,
   Loader2,
   Volume2,
-  VolumeX
+  VolumeX,
+  Instagram
 } from 'lucide-react';
 
 // --- Types ---
@@ -166,11 +167,11 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: 'איך עובד הליווי האונליין?',
+    question: 'למה זה עובד טוב יותר ממאמן בחדר כושר?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>הליווי האונליין כולל תוכנית אימונים ותזונה מותאמת אישית, מעקב שוטף, ותמיכה צמודה בוואטסאפ. אני בונה עבורך תוכנית מפורטת בהתאם ליעדים שלך, מצב הפיזי הנוכחי, והזמינות שלך.</p>
-        <p>במהלך התהליך נבדוק התקדמות, נעדכן את התוכנית לפי הצורך, ואני זמין לשאלות והכוונה בכל עת.</p>
+        <p>מאמן בחדר כושר סופר לך חזרות במשך שעה והולך הביתה. אני בונה לך <strong>מערכת שלימה</strong> שעוטפת אותך 24/7.</p>
+        <p>בחדר כושר אתה משלם על זמן. אצלי אתה משלם על תוצאה. אני איתך בתזונה, בהתאוששות, בשינה, וברגעים הקשים שבהם בא לך לוותר.</p>
       </div>
     )
   },
@@ -178,26 +179,26 @@ const FAQ_ITEMS: FAQItem[] = [
     question: 'מה המחיר של הליווי?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>המחיר משתנה בהתאם למשך התהליך והצרכים האישיים שלך. המחיר כולל תוכנית אימונים ותזונה מותאמת אישית, מעקב שבועי, ותמיכה שוטפת בוואטסאפ.</p>
-        <p>לפרטים מדויקים, מומלץ לשוחח איתי בבדיקת התאמה קצרה שבה נבין יחד מה הכי מתאים לך.</p>
+        <p>השאלה האמיתית היא: כמה עלה לך עד היום לנסות לבד ולא להגיע לתוצאות?</p>
+        <p>המחיר מותאם אישית למטרות ולתוכנית שנבנה עבורך. זה לא מנוי גנרי לחדר כושר, זו השקעה חד פעמית בגוף שילך איתך שנים קדימה. בשיחת ההתאמה נבין בדיוק מה אתה צריך.</p>
       </div>
     )
   },
   {
-    question: 'כמה זמן צריך להשקיע בשבוע?',
+    question: 'אין לי הרבה זמן פנוי. זה יתאים לי?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>התוכנית מותאמת לזמינות שלך. לרוב, מדובר על 3-4 אימונים בשבוע, כל אימון בין 45-60 דקות. בנוסף, יש מעקב שוטף של התזונה והתקדמות.</p>
-        <p>הרעיון הוא לא רק לעבוד קשה, אלא לעבוד נכון - ולכן התוכנית מותאמת גם לזמן שיש לך וגם ליעדים שלך.</p>
+        <p>דווקא בגלל זה. אם אין לך זמן – אסור לך לבזבז אותו על אימונים לא אפקטיביים.</p>
+        <p>אני בונה את התוכנית סביב הלו"ז <strong>שלך</strong>. יש לך 3 שעות בשבוע? אנחנו נפיק מהן את המקסימום. המטרה היא לא לגור בחדר כושר, אלא להשיג תוצאות בחיים האמיתיים.</p>
       </div>
     )
   },
   {
-    question: 'איזה ציוד נדרש?',
+    question: 'חייב חדר כושר או אפשר מהבית?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>התוכנית מותאמת למה שיש לך. אם יש לך גישה לחדר כושר - מעולה. אם אתה מעדיף להתאמן בבית - גם זה אפשרי. אני בונה תוכנית שעובדת עם מה שיש.</p>
-        <p>לרוב, אפשר להתחיל גם עם מינימום ציוד (משקולות בסיסיות, מזרן) ולהתקדם בהדרגה.</p>
+        <p>אנחנו לא נותנים לציוד להיות תירוץ. יש לך מנוי? מעולה. יש לך זוג משקולות בבית? מצוין.</p>
+        <p>אני מתאים את התוכנית בדיוק לציוד שעומד לרשותך. אפשר להגיע לגוף אתלטי וחזק גם מהסלון בבית – אם עובדים חכם.</p>
       </div>
     )
   },
@@ -205,26 +206,26 @@ const FAQ_ITEMS: FAQItem[] = [
     question: 'מתי אראה תוצאות?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>תוצאות משתנות מאדם לאדם ותלויות במחויבות, עקביות, והתמדה. לרוב, ניתן לראות שינויים ראשונים לאחר 4-6 שבועות, ותוצאות משמעותיות לאחר 3-4 חודשים של עבודה עקבית.</p>
-        <p>התהליך כולל מעקב שוטף כדי לוודא שאתה בכיוון הנכון ולבצע התאמות במידת הצורך.</p>
+        <p>את השינוי באנרגיה ובכוח תרגיש כבר בשבוע הראשון. שינוי ויזואלי במראה? בדרך כלל תוך 3-4 שבועות.</p>
+        <p>אבל המטרה שלי היא לא 'תוצאה מהירה' שנעלמת, אלא גוף שתחזיק איתו שנים. אנחנו בונים כאן מנוע, לא עושים תיקון קוסמטי זמני.</p>
       </div>
     )
   },
   {
-    question: 'מה כוללת התזונה בתוכנית?',
+    question: 'מה לגבי התזונה? אצטרך להרעיב את עצמי?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>התזונה מותאמת אישית לפי היעדים שלך, אורח החיים, וההעדפות שלך. התוכנית כוללת תפריט מפורט עם כמויות, זמנים, וגם גמישות לבחירות אישיות.</p>
-        <p>הרעיון הוא לא דיאטה קשיחה אלא דרך חיים שתאפשר לך להגיע ליעדים ולהישאר שם.</p>
+        <p>ממש לא. דיאטות כאסח נכשלות ב-100% מהמקרים בטווח הארוך.</p>
+        <p>אנחנו נבנה תפריט שכולל אוכל שאתה אוהב, שמשתלב עם ארוחות שישי ועם בילויים. אם זה לא יהיה טעים ונוח – אתה לא תחזיק מעמד, ואני לא עשיתי את העבודה שלי.</p>
       </div>
     )
   },
   {
-    question: 'איך מתקיים הקשר והמעקב?',
+    question: 'איך מתקיים הקשר בינינו?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>הקשר מתקיים בעיקר דרך וואטסאפ - אני זמין לשאלות, עדכונים, והכוונה. בנוסף, יש מעקב שבועי שבו נבדוק התקדמות, נעדכן את התוכנית לפי הצורך, ונוודא שאתה בדרך הנכונה.</p>
-        <p>התהליך הוא אישי ומותאם - אני כאן כדי שתתמיד ותגיע לתוצאות.</p>
+        <p>אני זמין לך ב-WhatsApp האישי לכל שאלה, התייעצות או משבר.</p>
+        <p>אנחנו לא מדברים "פעם בחודש". יש מעקב שבועי מסודר, אבל אני איתך ביום-יום כדי לוודא שאתה לא יורד מהמסלול. אתה לא לבד בתהליך הזה.</p>
       </div>
     )
   }
@@ -481,7 +482,7 @@ const MobileProgressBar: React.FC<{ activeStageIndex: number }> = ({ activeStage
 };
 
 const StoryHeader: React.FC<{ text: string }> = ({ text }) => (
-  <div className="text-center mb-4 md:mb-6 mt-16 md:mt-0 pt-4 md:pt-0">
+  <div className="text-center mb-2 sm:mb-4 md:mb-6 mt-4 sm:mt-8 md:mt-0 pt-2 sm:pt-4 md:pt-0">
     <span className="story-header-text text-gray-400 text-sm md:text-lg font-medium tracking-wide">
       {text}
     </span>
@@ -735,8 +736,8 @@ const ExitIntentPopup: React.FC = () => {
 };
 
 const Navbar: React.FC = () => (
-  <header className="absolute top-0 left-0 right-0 z-50 py-3 md:py-6 px-4 md:px-12 flex justify-between items-center bg-transparent">
-    <div className="text-2xl font-black heading-font tracking-tighter text-white">
+  <header className="absolute top-0 left-0 right-0 z-50 py-2 md:py-6 px-3 md:px-12 flex justify-between items-center bg-transparent w-full">
+    <div className="text-lg md:text-2xl font-black heading-font tracking-tighter text-white shrink-0">
       גילעד <span className="text-accent">דורון</span>
     </div>
     <nav className="hidden md:flex gap-8 text-sm font-medium" aria-label="ניווט ראשי">
@@ -746,7 +747,7 @@ const Navbar: React.FC = () => (
     </nav>
     <a 
       href="#action" 
-      className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-4 py-2 rounded-full text-sm font-bold transition-all"
+      className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-bold transition-all whitespace-nowrap"
     >
       בדיקת התאמה
     </a>
@@ -855,9 +856,9 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
               </div>
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-2 md:space-y-3">
             <div>
-              <label htmlFor="fullName" className={`block text-xs font-bold mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>שם מלא</label>
+              <label htmlFor="fullName" className={`block text-[10px] md:text-xs font-bold mb-0.5 md:mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>שם מלא</label>
               <input 
                 id="fullName"
                 name="name"
@@ -868,14 +869,14 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
                 disabled={isSubmitting}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
-                className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
+                className={`w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
                 placeholder="ישראל ישראלי"
                 value={formData.fullName}
                 onChange={e => setFormData({...formData, fullName: e.target.value})}
               />
             </div>
             <div>
-              <label htmlFor="phone" className={`block text-xs font-bold mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>טלפון</label>
+              <label htmlFor="phone" className={`block text-[10px] md:text-xs font-bold mb-0.5 md:mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>טלפון</label>
               <input 
                 id="phone"
                 name="tel"
@@ -886,14 +887,14 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
                 disabled={isSubmitting}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
-                className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
+                className={`w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
                 placeholder="050-0000000"
                 value={formData.phone}
                 onChange={e => setFormData({...formData, phone: e.target.value})}
               />
             </div>
             <div>
-              <label htmlFor="email" className={`block text-xs font-bold mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>אימייל</label>
+              <label htmlFor="email" className={`block text-[10px] md:text-xs font-bold mb-0.5 md:mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>אימייל</label>
               <input 
                 id="email"
                 name="email"
@@ -1734,43 +1735,45 @@ export default function App() {
 
   return (
     <div className="min-h-screen selection:bg-accent selection:text-white">
+      <div className="global-parallax-bg" aria-hidden="true" />
       <a href="#main-content" className="sr-only">
         דלג לתוכן הראשי
       </a>
       <MobileProgressBar activeStageIndex={activeStageIndex} />
-      <Navbar />
+
       <JourneyRail activeStage={activeStage} />
       
       <main id="main-content">
         {/* STAGE 1: HERO */}
         <section id="hero" data-stage="hero" data-snap="true" className="stage reveal">
           <div className="absolute inset-0 z-0 hero-overlay" aria-hidden="true"></div>
+          <Navbar />
 
-          <div className="container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col md:grid md:grid-cols-2 gap-8 items-center justify-center pt-20 md:pt-0">
-            <div className="space-y-3 md:space-y-6">
-              <h1 className="text-3xl md:text-6xl font-black heading-font leading-[1.2] mt-4 md:mt-0">
-                מתאמן כבר תקופה <br /> 
-                <span className="text-accent underline decoration-4 underline-offset-8">ולא רואה תוצאות?</span>
+          <div className="container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-start md:items-center justify-start md:justify-center pt-24 md:pt-0 pb-safe">
+            <div className="space-y-2 md:space-y-6 w-full">
+              <h1 className="text-2xl md:text-6xl font-black heading-font leading-[1.1] md:leading-[1.2] mt-0 compact-heading">
+                מתאמן כבר חודשים <br /> 
+                <span className="text-accent underline decoration-4 underline-offset-8">והגוף מסרב להשתנות?</span>
               </h1>
-              <p className="text-lg md:text-2xl text-gray-300 font-light max-w-xl">
-                זה לא כי אתה צריך להשקיע יותר, <br className="hidden md:block" /> 
-                <strong>זה כי אתה צריך להיות אפקטיבי יותר</strong>
+              <p className="text-base md:text-2xl text-gray-300 font-light max-w-xl compact-text">
+                הבעיה היא לא בכוח הרצון שלך, <br className="hidden md:block" /> 
+                <strong>הבעיה היא בתוכנית.</strong>
               </p>
-              <div className="space-y-2 md:space-y-4">
-                <p className="text-base md:text-xl text-white font-medium">
-                  ליווי אונליין באימונים ותזונה למי שלא מפחדים לעבוד איתי קשה ולראות תוצאות אמיתיות
+              <div className="space-y-1.5 md:space-y-4">
+                <p className="text-sm md:text-xl text-white font-medium compact-text hidden md:block">
+                  השיטה היחידה שמתחייבת לתוצאות: <strong>100% הצלחה או שהכסף חוזר אליך.</strong>
                 </p>
-                <ul className="space-y-1.5 md:space-y-3">
+                <ul className="space-y-1 md:space-y-3">
                   {["תוכנית אימון ותזונה מותאמת אישית", "ליווי צמוד ומעקב שוטף", "תהליך ברור, מסודר, אפקטיבי"].map((item, idx) => (
                     <li key={idx} className="flex items-center gap-2 md:gap-3">
-                      <CheckCircle2 className="text-accent flex-shrink-0" size={18} aria-hidden="true" />
-                      <span className="text-sm md:text-base text-gray-200 font-medium">{item}</span>
+                      <CheckCircle2 className="text-accent flex-shrink-0" size={16} aria-hidden="true" />
+                      <span className="text-sm md:text-base text-gray-200 font-medium compact-text">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
-            <div className="delay-100">
+            <div className="delay-100 w-full flex-1 flex flex-col justify-end pb-2">
               <LeadForm />
             </div>
           </div>
@@ -1779,54 +1782,54 @@ export default function App() {
         {/* STAGE 2: REFLECTIVE DIAGNOSIS */}
         <section id="diagnosis" data-stage="diagnosis" data-snap="true" className="stage stage-alt-1 reveal">
           <div className="absolute inset-0 z-0 reflection-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 py-6 md:py-10 relative z-10 h-full flex flex-col">
-            <StoryHeader text="איפה אתה נמצא היום" />
+          <div className="container mx-auto px-4 md:px-12 py-2 md:py-10 relative z-10 h-full flex flex-col justify-center pb-safe">
+            <StoryHeader text="למה נתקעת?" />
             
-            <div className="text-center max-w-3xl mx-auto mb-8 space-y-4">
-              <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight">
-                כשהתהליך לא מדוייק <span className="text-accent">הכל מרגיש כבד</span>
+            <div className="text-center max-w-3xl mx-auto mb-2 md:mb-8 space-y-1 md:space-y-4">
+              <h2 className="text-xl md:text-5xl font-black heading-font leading-tight compact-heading">
+                אתה עובד 'קשה' <span className="text-accent">במקום לעבוד 'נכון'</span>
               </h2>
-              <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-                זה לא כי אתה לא משקיע. <br className="md:hidden" />
+              <p className="text-sm md:text-xl text-gray-300 leading-relaxed compact-text">
+                זה לא כי אתה לא משקיע. <br className="md:hidden hidden" />
                 זה כי בלי התהליך הנכון גם עבודה קשה לא מביאה תוצאות.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-white/10 p-8 md:p-10 rounded-2xl relative group transition-all">
-                <h3 className="text-xl md:text-2xl font-bold mb-6 text-gray-300 flex items-center gap-3">
-                  <MinusCircle className="text-gray-500 opacity-50" size={24} aria-hidden="true" />
-                  ככה זה מרגיש בלי התהליך הנכון בשבילך
+            <div className="grid md:grid-cols-2 gap-2 md:gap-8 flex-1 min-h-0">
+              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-white/10 p-3 md:p-10 rounded-xl relative group transition-all flex flex-col justify-center">
+                <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-6 text-gray-300 flex items-center gap-2 md:gap-3 compact-heading">
+                  <MinusCircle className="text-gray-500 opacity-50" size={20} aria-hidden="true" />
+                  ככה זה מרגיש בלי התהליך
                 </h3>
-                <ul className="space-y-4">
+                <ul className="space-y-1.5 md:space-y-4">
                   {[
-                    "אתה קופץ בין פתרונות ומחליף תוכנית כל הזמן",
+                    "אתה מחליף תוכניות כל שבועיים ומתפלל שמשהו יעבוד",
                     "אתה לא באמת בטוח שאתה בכיוון הנכון",
                     "אתה עובד קשה אבל זה לא מתבטא בתוצאות",
                     "המוטיבציה שלך נחלשת משבוע לשבוע"
                   ].map((item, idx) => (
-                    <li key={idx} className="text-base md:text-lg text-gray-400 flex items-start gap-4">
-                      <span className="w-1 h-1 bg-gray-600 rounded-full mt-2.5 flex-shrink-0" aria-hidden="true"></span>
+                    <li key={idx} className="text-sm md:text-lg text-gray-400 flex items-start gap-2 md:gap-4 compact-text">
+                      <span className="w-1 h-1 bg-gray-600 rounded-full mt-2 flex-shrink-0" aria-hidden="true"></span>
                       {item}
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-accent/20 p-8 md:p-10 rounded-2xl relative group transition-all">
-                <h3 className="text-xl md:text-2xl font-bold mb-8 text-white flex items-center gap-3">
-                  <PlusCircle className="text-accent opacity-80" size={24} aria-hidden="true" />
-                  ככה זה נראה אחרי שאיבחנו מה התהליך הנכון עבורך
+              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-accent/20 p-3 md:p-10 rounded-xl relative group transition-all flex flex-col justify-center">
+                <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-8 text-white flex items-center gap-2 md:gap-3 compact-heading">
+                  <PlusCircle className="text-accent opacity-80" size={20} aria-hidden="true" />
+                  ככה זה נראה עם התהליך הנכון
                 </h3>
-                <ul className="space-y-4">
+                <ul className="space-y-1.5 md:space-y-4">
                   {[
                     "יש לך יעדים ברורים לכל אימון",
-                    "אתה לא רק פועל לפי התוכנית, אתה מבין למה זה עובד והופך את זה לדרך חיים שנכונה רק לך",
+                    "אתה לא רק פועל, אתה מבין למה זה עובד",
                     "אתה יודע למדוד את ההתקדמות ומפסיק לנחש",
                     "אתה מצליח להתמיד לאורך זמן ומסופק מהדרך"
                   ].map((item, idx) => (
-                    <li key={idx} className="text-base md:text-lg text-gray-200 flex items-start gap-4">
-                      <span className="w-1 h-1 bg-accent rounded-full mt-2.5 flex-shrink-0" aria-hidden="true"></span>
+                    <li key={idx} className="text-sm md:text-lg text-gray-200 flex items-start gap-2 md:gap-4 compact-text">
+                      <span className="w-1 h-1 bg-accent rounded-full mt-2 flex-shrink-0" aria-hidden="true"></span>
                       {item}
                     </li>
                   ))}
@@ -1834,10 +1837,9 @@ export default function App() {
               </div>
             </div>
 
-            <div className="text-center mt-8 max-w-2xl mx-auto">
-              <p className="text-lg md:text-2xl font-bold text-white border-b border-white/5 pb-4">
-                אם אתה רוצה תהליך אחד מדוייק שמביא תוצאות, <br className="hidden md:block" />
-                <span className="text-accent">זה השלב שאני נכנס לתמונה</span>
+            <div className="text-center mt-2 md:mt-8 max-w-2xl mx-auto compact-hide">
+              <p className="text-base md:text-2xl font-bold text-white border-b border-white/5 pb-2 md:pb-4 compact-text">
+                אם אתה רוצה תהליך אחד מדוייק שמביא תוצאות, <span className="text-accent">אני כאן.</span>
               </p>
             </div>
           </div>
@@ -1851,9 +1853,9 @@ export default function App() {
             
             {/* Header Section */}
             <div className="text-center mb-2 md:mb-3 flex-shrink-0">
-              <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight mb-2">התוצאות מדברות</h2>
+              <h2 className="text-2xl md:text-5xl font-black heading-font leading-tight mb-2">התוצאות מדברות</h2>
               <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                מתאמנים אמיתיים שעברו את התהליך המלא. כל אחד עם מטרות שונות, כל אחד הגיע ליעדים שלו.
+                אנשים רגילים שהחליטו להפסיק לנחש — <strong>ולהתחיל לראות תוצאות.</strong>
               </p>
             </div>
 
@@ -1914,7 +1916,7 @@ export default function App() {
                   return (
                     <div
                       key={stableKey}
-                      className={`flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] snap-center transition-opacity duration-300 ${
+                      className={`flex-shrink-0 w-[90vw] sm:w-[80vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] snap-center transition-opacity duration-300 ${
                         isActive 
                           ? 'opacity-100 z-10' 
                           : distance === 1 
@@ -1933,7 +1935,7 @@ export default function App() {
                           : 'border-white/10'
                       }`} style={{ overflow: 'visible', boxSizing: 'border-box' }}>
                         {/* Content Wrapper with Scale Transform - overflow hidden here to contain scaled content */}
-                        <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0" style={{ maxHeight: 'calc(100% - 16px)', overflow: 'hidden' }}>
+                      <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0 bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
                           {/* Header Row: Avatar + Name + Age */}
                           <div className="flex items-center gap-2.5 mb-2">
                           <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -1954,7 +1956,7 @@ export default function App() {
 
                         {/* Before/After Image: Fixed aspect ratio with reserved space */}
                         {/* Reserved space prevents layout shift when image loads */}
-                        <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-2 aspect-[4/3] md:aspect-[3/2] min-h-[120px] md:min-h-[140px]">
+                        <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-1.5 md:mb-2 aspect-[2/1] md:aspect-[3/2] min-h-[100px] md:min-h-[140px]">
                           <img 
                             src={`${import.meta.env.BASE_URL}assets/results/${client.image}`}
                             alt={client.imageAlt}
@@ -2006,9 +2008,9 @@ export default function App() {
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+                    className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
                       index === currentClientIndex
-                        ? 'bg-accent w-6 md:w-10'
+                        ? 'bg-accent w-4 md:w-8'
                         : 'bg-white/30 hover:bg-white/50'
                     }`}
                     aria-label={`מעבר לתוצאות לקוח ${index + 1}`}
@@ -2032,7 +2034,7 @@ export default function App() {
                 }}
                 className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105 shadow-lg relative z-20 pointer-events-auto"
               >
-                גם אני רוצה תוצאות
+                בנה לי את הגוף שתמיד רציתי
               </a>
                   </div>
                   </div>
@@ -2041,23 +2043,23 @@ export default function App() {
         {/* STAGE 4: ABOUT */}
         <section id="about" data-stage="about" data-snap="true" className="stage reveal">
           <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
+          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="מי עומד מאחורי התהליך" />
-            <div className="grid md:grid-cols-2 gap-8 items-center mt-4">
-              <div className="space-y-4 text-center md:text-right">
-                <div className="space-y-2">
-                  <p className="text-accent font-bold tracking-[0.2em] uppercase text-sm">המאמן שלך</p>
-                  <h2 className="text-4xl md:text-5xl font-black heading-font leading-tight">גילעד דורון</h2>
+            <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-4 h-full min-h-0 overflow-hidden">
+              <div className="space-y-2 text-center md:text-right shrink-0">
+                <div className="space-y-1">
+                  <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
+                  <h2 className="text-2xl md:text-5xl font-black heading-font leading-tight compact-heading">גילעד דורון</h2>
                 </div>
-                <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-                  אני מלווה גברים בתהליכים משמעותיים כבר שנים. הליווי שלי הוא לא עוד תפריט גנרי, הוא דרך חיים שתביא אותך לתוצאה שאתה מחפש, בלי לנחש.
+                <p className="text-sm md:text-xl text-gray-300 leading-relaxed compact-text line-clamp-3 md:line-clamp-none">
+                  אני לא 'מאמן כושר' שסופר חזרות. אני בונה <strong>מערכות חיים</strong> שמייצרות גוף חזק — ונשארות איתך לתמיד.
                 </p>
-                <div className="bg-brandGray/20 backdrop-blur-sm p-6 rounded-2xl border border-white/5 space-y-4">
-                  <h3 className="font-bold flex items-center gap-2 text-white justify-center md:justify-start"><ShieldCheck className="text-accent" size={20} aria-hidden="true" /> ההבטחה שלי:</h3>
-                  <p className="text-sm text-gray-400">אני לא מוכר הבטחות ריקות. אני מוכר תהליך. אם תעבוד לפי התוכנית ולא תראה תוצאות - אני איתך עד שזה קורה.</p>
+                <div className="bg-brandGray/20 backdrop-blur-sm p-3 md:p-6 rounded-2xl border border-white/5 space-y-2 md:space-y-4">
+                  <h3 className="font-bold flex items-center gap-2 text-white justify-center md:justify-start compact-text"><ShieldCheck className="text-accent" size={16} aria-hidden="true" /> ההבטחה שלי:</h3>
+                  <p className="text-xs md:text-sm text-gray-400 compact-text leading-tight">אני לא מוכר הבטחות ריקות. אני מוכר תהליך. אם תעבוד לפי התוכנית ולא תראה תוצאות - אני איתך עד שזה קורה.</p>
                 </div>
               </div>
-              <div className="relative w-full">
+              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center">
                 {/* Quiet depth card - purely visual, behind video */}
                 <div 
                   className="absolute -bottom-8 -left-8 w-[108%] h-[108%] rounded-[2.5rem] bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] -z-0 pointer-events-none hidden md:block"
@@ -2069,11 +2071,12 @@ export default function App() {
                 />
                 {/* Video container */}
                 <div 
-                  className="w-full rounded-3xl overflow-hidden shadow-2xl relative z-10 border border-white/10" 
+                  className="w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl relative z-10 border border-white/10" 
                   style={{ 
-                    aspectRatio: '4/5',
-                    minHeight: '400px',
-                    maxWidth: '100%'
+                    aspectRatio: '3/4',
+                    maxHeight: '40vh', /* Strict Mobile Constraint */
+                    maxWidth: '100%',
+                    margin: '0 auto'
                   }}
                 >
                   <div style={{ height: '100%', width: '100%', position: 'relative' }}>
@@ -2091,7 +2094,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 confusion-overlay"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10">
             <StoryHeader text="איפה רוב האנשים נתקעים" />
-            <div className="grid md:grid-cols-2 gap-12 items-center mt-12">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-center mt-8 md:mt-12">
               <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-[700px] rounded-3xl overflow-hidden shadow-2xl bg-brandGray/20 backdrop-blur-sm flex items-center justify-center">
                 <img 
                   src="/assets/about/whynoprogress.webp" 
@@ -2101,7 +2104,7 @@ export default function App() {
                 />
               </div>
               <div className="space-y-6">
-                <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight">למה אתה עומד במקום?</h2>
+                <h2 className="text-2xl md:text-5xl font-black heading-font leading-tight">למה אתה עומד במקום?</h2>
                 <div className="space-y-6">
                   <p className="text-xl text-gray-300 leading-relaxed">רוב המתאמנים שמגיעים אלי משקיעים. הם מתאמנים מנסים ומשקיעים זמן ואנרגיה אבל לא רואים תוצאות</p>
                   <p className="text-xl font-bold text-white">זה קורה בדרך כלל בגלל:</p>
@@ -2125,9 +2128,9 @@ export default function App() {
           <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
             <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
             
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
-              <span className="guarantee-part-1">התוצאה שלך </span>
-              <span className="guarantee-part-2"> – <span className="underline-responsibility">האחריות</span> שלי.</span>
+            <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
+              <span className="guarantee-part-1">אני לא צריך את הכסף שלך </span>
+              <span className="guarantee-part-2"> – <span className="underline-responsibility">אם לא הבאתי לך תוצאות.</span></span>
             </h2>
 
             <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
@@ -2171,7 +2174,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
             <StoryHeader text="מכאן מתחיל הסדר" />
-            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
+            <h2 className="text-2xl md:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4" id="get-cards-container">
               {[
                 { i: <Dumbbell />, t: "תוכנית אימונים אישית" },
@@ -2197,23 +2200,23 @@ export default function App() {
         {/* STAGE 8: SOLUTION (HOW) */}
         <section id="how" data-stage="how" data-snap="true" className="stage reveal">
           <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col justify-center">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="ככה נראה תהליך שעובד" />
-            <h2 className="text-3xl md:text-5xl font-black heading-font text-center mb-8 md:mb-10">4 צעדים לתוצאה</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 relative mt-4">
+            <h2 className="text-xl md:text-5xl font-black heading-font text-center mb-4 md:mb-10 compact-heading">4 צעדים לתוצאה</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 relative mt-2 md:mt-4 min-h-0">
               <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true"></div>
               {[
                 { s: "01", t: "בדיקת התאמה", d: "שיחה קצרה להבין איפה אתה נמצא ולאן אתה רוצה להגיע." },
                 { s: "02", t: "אבחון ואסטרטגיה", d: "איסוף כל הנתונים ובניית אסטרטגיה מותאמת אישית." },
                 { s: "03", t: "ליווי ומעקב", d: "עבודה שוטפת, וואטסאפ זמין, ובדיקות התקדמות." },
-                { s: "04", t: "תוצאה במראה", d: "התאמות בזמן אמת עד שרואים את השינוי שרצית." }
+                { s: "04", t: "תוצאה שלא נעלמת", d: "אנחנו מוודאים שהגוף נשמר גם אחרי שהתהליך נגמר." }
               ].map((item, idx) => (
-                <div key={idx} className="relative z-10 flex flex-col items-center text-center group">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-2xl font-black mb-6 group-hover:bg-accent group-hover:text-white transition-all" aria-hidden="true">
+                <div key={idx} className="relative z-10 flex flex-col items-center text-center group bg-brandDark/20 backdrop-blur-sm p-3 rounded-xl border border-white/5 md:bg-transparent md:border-none">
+                  <div className="w-10 h-10 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-2 md:border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-lg md:text-2xl font-black mb-2 md:mb-6 group-hover:bg-accent group-hover:text-white transition-all shrink-0" aria-hidden="true">
                     {item.s}
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{item.t}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed px-2">{item.d}</p>
+                  <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">{item.t}</h3>
+                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed px-1 md:px-2 compact-text line-clamp-3 md:line-clamp-none">{item.d}</p>
                 </div>
               ))}
             </div>
@@ -2260,14 +2263,14 @@ export default function App() {
             <StoryHeader text="יש לך שאלות? יש לנו תשובות" />
             
             <div className="text-center mb-4 md:mb-6">
-              <h2 className="text-3xl md:text-5xl font-black heading-font leading-tight mb-4">שאלות נפוצות</h2>
+              <h2 className="text-2xl md:text-5xl font-black heading-font leading-tight mb-4">שאלות נפוצות</h2>
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
                 כל מה שרצית לדעת על הליווי, התהליך, והתשובות
                   </p>
                 </div>
 
-            <div className="max-w-4xl mx-auto space-y-4 flex-1 overflow-y-auto max-h-[calc(100vh-250px)] md:max-h-[calc(100vh-300px)]">
-              {FAQ_ITEMS.map((item, index) => {
+            <div className="max-w-4xl mx-auto space-y-2 md:space-y-4 flex-1 w-full min-h-0">
+              {FAQ_ITEMS.slice(0, 3).map((item, index) => { // Reduced to 3 to prevent CTA overlap
                 const isExpanded = expandedFAQIndex === index;
                 return (
                   <div
@@ -2332,7 +2335,7 @@ export default function App() {
             <StoryHeader text="הצעד האחרון בדרך שלך" />
             <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
               <div className="space-y-4 md:space-y-6">
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מוכן <br /> <span className="text-accent underline decoration-accent underline-offset-8">להתחיל?</span></h2>
+                <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מוכן <br /> <span className="text-accent underline decoration-accent underline-offset-8">להתחיל?</span></h2>
                 <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
                 <div className="space-y-3 md:space-y-4">
                   <div className="flex items-center gap-3 md:gap-4 text-base md:text-xl">
@@ -2353,11 +2356,21 @@ export default function App() {
 
       <footer 
         data-snap="true" 
-        className="stage py-12 bg-brandDark border-t border-white/5 text-center text-gray-500 text-sm"
-        style={{ height: '100vh', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+        className="stage py-12 bg-brandDark border-t border-white/5 text-center text-gray-500 text-sm min-h-screen flex flex-col justify-center"
       >
         <div className="container mx-auto px-4">
           <div className="text-xl font-black heading-font text-white mb-6">גילעד <span className="text-accent">דורון</span></div>
+          
+          <a 
+            href="https://www.instagram.com/gilad_doron?igsh=MWx3dmRlNXFzdzd4bQ==" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-block text-gray-500 hover:text-accent transition-colors duration-300 mb-6"
+            aria-label="Instagram"
+          >
+            <Instagram size={20} strokeWidth={1.5} />
+          </a>
+
           <p className="mb-4">כל הזכויות שמורות &copy; {new Date().getFullYear()} גילעד דורון - ליווי אונליין</p>
           <div className="flex justify-center gap-6 text-xs md:text-sm">
             <button onClick={() => setModalType('accessibility')} className="hover:text-white hover:underline transition-all">הצהרת נגישות</button>
