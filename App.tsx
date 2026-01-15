@@ -1084,6 +1084,47 @@ declare global {
   }
 }
 
+// Simple testimonial video component (no auto-play/pause, just basic embed)
+const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
+  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=1&loop=0&controls=1&background=0`;
+  
+  return (
+    <div 
+      style={{ 
+        backgroundColor: '#000', 
+        width: '100%', 
+        height: '100%', 
+        minHeight: '400px',
+        position: 'relative', 
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <iframe
+        src={vimeoUrl}
+        className="w-full h-full absolute inset-0"
+        style={{ 
+          border: 'none', 
+          width: '100%', 
+          height: '100%', 
+          minHeight: '400px',
+          backgroundColor: '#000',
+          position: 'absolute',
+          top: 0,
+          left: 0
+        }}
+        frameBorder="0"
+        allow="autoplay; fullscreen"
+        allowFullScreen
+        loading="lazy"
+        title="תעודת לקוח - וידאו"
+      />
+    </div>
+  );
+};
+
 const VideoPlayer: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMuted, setIsMuted] = useState(true); // Start muted (browser requirement for autoplay)
@@ -1472,9 +1513,14 @@ export default function App() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [expandedFAQIndex, setExpandedFAQIndex] = useState<number | null>(null);
   const [selectedClientIndex, setSelectedClientIndex] = useState<number | null>(null);
+  const [expandedStepIndex, setExpandedStepIndex] = useState<number | null>(null);
 
   const toggleFAQ = (index: number) => {
     setExpandedFAQIndex(expandedFAQIndex === index ? null : index);
+  };
+
+  const toggleStep = (index: number) => {
+    setExpandedStepIndex(expandedStepIndex === index ? null : index);
   };
 
   const openClientStory = (index: number) => {
@@ -1672,12 +1718,12 @@ export default function App() {
           <div className="absolute inset-0 z-0 hero-overlay" aria-hidden="true"></div>
           <Navbar />
 
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-0">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-0 mobile-hero-spacing">
             <StoryHeader text="החלום שלך מתחיל כאן" />
             <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
               <div className="space-y-4 md:space-y-6 text-center md:text-right">
-                <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן כבר חודשים <br /> <span className="text-accent underline decoration-accent underline-offset-8">והגוף מסרב להשתנות?</span></h2>
-                <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
+                <h2 className="hero-headline text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן כבר חודשים <br /> <span className="text-accent underline decoration-accent underline-offset-8">והגוף מסרב להשתנות?</span></h2>
+                <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
                 <div className="space-y-3 md:space-y-4 flex flex-col items-center md:items-start">
                   <div className="flex items-center gap-3 md:gap-4 text-base md:text-xl">
                     <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><Phone size={20} className="md:w-6 md:h-6" /></div>
@@ -1689,8 +1735,10 @@ export default function App() {
                   </div>
                 </div>
               </div>
-              <div className="delay-100 w-full flex-1 flex flex-col justify-end pb-2">
-                <LeadForm isFooter={true} />
+              <div className="delay-100 w-full flex-1 flex flex-col justify-end pb-2 md:pb-0">
+                <div className="mobile-form-container">
+                  <LeadForm isFooter={true} />
+                </div>
               </div>
             </div>
           </div>
@@ -1699,7 +1747,7 @@ export default function App() {
         {/* STAGE 2: REFLECTIVE DIAGNOSIS */}
         <section id="diagnosis" data-stage="diagnosis" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 reflection-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 py-2 md:py-10 relative z-10 h-full flex flex-col justify-center pb-safe">
+          <div className="container mx-auto px-4 md:px-12 py-2 md:py-10 relative z-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
             <StoryHeader text="למה נתקעת?" />
             
             <div className="text-center max-w-3xl mx-auto mb-2 md:mb-8 space-y-1 md:space-y-4">
@@ -1929,10 +1977,53 @@ export default function App() {
                   </div>
         </section>
 
+        {/* STAGE 3.5: CLIENT TESTIMONIAL VIDEO */}
+        <section id="client-testimonial-video" data-stage="client-testimonial-video" data-snap="true" className="stage stage-alt-1">
+          <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
+            <StoryHeader text="הלקוח מדבר" />
+            
+            <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-6">
+              {/* Testimonial Text - First on mobile, secondary on desktop */}
+              <div className="space-y-4 md:space-y-6 text-center md:text-right w-full md:w-auto">
+                <div>
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                    ראובן כ. · מהנדס · גיל 31
+                  </h3>
+                  <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-4 md:p-5">
+                    <p className="text-gray-200 text-base md:text-lg leading-relaxed italic line-clamp-2">
+                      "טקסט עד 2 שורות מקסימום - תוכן עדכני יוזן מאוחר יותר"
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Video - Second on mobile, primary on desktop */}
+              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center">
+                <div 
+                  className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10"
+                  style={{ 
+                    aspectRatio: '16/9', // Wider aspect for testimonial
+                    maxHeight: '75dvh',
+                    minHeight: '400px',
+                    maxWidth: '100%',
+                    margin: '0 auto',
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 107, 53, 0.15)'
+                  }}
+                >
+                  <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+                    <ClientTestimonialVideo videoId="1152174898" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* STAGE 4: ABOUT */}
         <section id="about" data-stage="about" data-snap="true" className="stage">
           <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe">
+          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
             <StoryHeader text="מי עומד מאחורי התהליך" />
             <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-4 h-full min-h-0 overflow-hidden">
               <div className="space-y-2 text-center md:text-right shrink-0">
@@ -1948,7 +2039,7 @@ export default function App() {
                   <p className="text-xs md:text-sm text-gray-400 compact-text leading-tight">אני לא מוכר הבטחות ריקות. אני מוכר תהליך. אם תעבוד לפי התוכנית ולא תראה תוצאות - אני איתך עד שזה קורה.</p>
                 </div>
               </div>
-              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center">
+              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
                 {/* Video container with floating shadow */}
                 <div 
                   className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10" 
@@ -2010,21 +2101,40 @@ export default function App() {
           <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
             <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
             
-            <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
-              <span className="guarantee-part-1">אני לא צריך את הכסף שלך </span>
-              <span className="guarantee-part-2"> – <span className="underline-responsibility">אם לא הבאתי לך תוצאות.</span></span>
-            </h2>
+            {/* Professional Image - Mobile below text, Desktop beside */}
+            <div className="flex flex-col md:flex-row md:items-center md:gap-8 md:text-right md:justify-center">
+              <div className="flex-1 space-y-2 md:space-y-3">
+                <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
+                  <span className="guarantee-part-1">אני לא צריך את הכסף שלך </span>
+                  <span className="guarantee-part-2"> – <span className="underline-responsibility">אם לא הבאתי לך תוצאות.</span></span>
+                </h2>
 
-            <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
-              <p className="font-medium text-white">אני לא מוכר ליווי.</p>
-              <p>
-                אני לוקח אחריות על תוצאה שסיכמנו עליה מראש — <span className="text-white font-medium">ביחד.</span>
-              </p>
-              <p className="text-base md:text-lg">
-                אם עמדת בתהליך, יישמת את מה שבנינו, <br className="hidden md:block" />
-                ועדיין לא הגעת לתוצאה שסיכמנו עליה —
-              </p>
-              <p className="text-white font-bold text-xl md:text-2xl">אני לא משאיר אותך לבד עם זה.</p>
+                <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto md:mx-0">
+                  <p className="font-medium text-white">אני לא מוכר ליווי.</p>
+                  <p>
+                    אני לוקח אחריות על תוצאה שסיכמנו עליה מראש — <span className="text-white font-medium">ביחד.</span>
+                  </p>
+                  <p className="text-base md:text-lg">
+                    אם עמדת בתהליך, יישמת את מה שבנינו, <br className="hidden md:block" />
+                    ועדיין לא הגעת לתוצאה שסיכמנו עליה —
+                  </p>
+                  <p className="text-white font-bold text-xl md:text-2xl">אני לא משאיר אותך לבד עם זה.</p>
+                </div>
+              </div>
+              
+              {/* Professional Image */}
+              <div className="professional-image w-48 h-48 md:w-56 md:h-56 mx-auto md:mx-0 rounded-full overflow-hidden border-2 border-white/20 shadow-lg flex-shrink-0">
+                <img 
+                  src={`${(import.meta as any).env.BASE_URL}assets/about/professional-image.webp`}
+                  alt="גילעד דורון"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    // Hide image if it doesn't exist yet
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto">
@@ -2054,7 +2164,7 @@ export default function App() {
         {/* STAGE 7: SOLUTION (GET) */}
         <section id="get" data-stage="get" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-10 h-full flex flex-col justify-center">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
             <StoryHeader text="מכאן מתחיל הסדר" />
             <h2 className="text-2xl md:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4" id="get-cards-container">
@@ -2080,27 +2190,103 @@ export default function App() {
         </section>
 
         {/* STAGE 8: SOLUTION (HOW) */}
-        <section id="how" data-stage="how" data-snap="true" className="stage">
+        <section id="how" data-stage="how" data-snap="true" className="stage section-with-fitness-bg">
           <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-0 md:py-10 h-full flex flex-col justify-center pb-safe">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-0 md:py-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
             <StoryHeader text="ככה נראה תהליך שעובד" />
             <h2 className="text-xl md:text-5xl font-black heading-font text-center mb-4 md:mb-10 compact-heading">4 צעדים לתוצאה</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 relative mt-2 md:mt-4 min-h-0">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-6 relative mt-2 md:mt-4 min-h-0 mobile-steps-timeline">
               <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true"></div>
               {[
-                { s: "01", t: "בדיקת התאמה", d: "שיחה קצרה להבין איפה אתה נמצא ולאן אתה רוצה להגיע." },
-                { s: "02", t: "אבחון ואסטרטגיה", d: "איסוף כל הנתונים ובניית אסטרטגיה מותאמת אישית." },
-                { s: "03", t: "ליווי ומעקב", d: "עבודה שוטפת, וואטסאפ זמין, ובדיקות התקדמות." },
-                { s: "04", t: "תוצאה שלא נעלמת", d: "אנחנו מוודאים שהגוף נשמר גם אחרי שהתהליך נגמר." }
-              ].map((item, idx) => (
-                <div key={idx} className="relative z-10 flex flex-col items-center text-center group bg-transparent p-3 rounded-xl md:border-none">
-                  <div className="w-12 h-12 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-2 md:border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-lg md:text-2xl font-black mb-2 md:mb-6 group-hover:bg-accent group-hover:text-white transition-all shrink-0" aria-hidden="true">
-                    {item.s}
+                { 
+                  s: "01", 
+                  t: "בדיקת התאמה", 
+                  d: "שיחה קצרה להבין איפה אתה נמצא ולאן אתה רוצה להגיע.",
+                  explanation: "בשיחה נבין יחד את המטרות שלך, הרקע שלך באימונים, והציפיות. זה לא תהליך מכירה - זה תהליך התאמה. אם נראה שזה לא בשבילך, אגיד לך את זה בכנות."
+                },
+                { 
+                  s: "02", 
+                  t: "אבחון ואסטרטגיה", 
+                  d: "איסוף כל הנתונים ובניית אסטרטגיה מותאמת אישית.",
+                  explanation: "אני אוסף את כל המידע: רקע רפואי, זמינות, ציוד, העדפות תזונתיות. מזה אני בונה תוכנית שמתאימה בדיוק לחיים שלך - לא תוכנית גנרית שתצטרך להתאים."
+                },
+                { 
+                  s: "03", 
+                  t: "ליווי ומעקב", 
+                  d: "עבודה שוטפת, וואטסאפ זמין, ובדיקות התקדמות.",
+                  explanation: "זה לא 'תוכנית ששולחים לך'. זה ליווי פעיל: מענה מהיר בוואטסאפ, בדיקות שבועיות, התאמות בזמן אמת. אם משהו לא עובד - אנחנו משנים את זה מיד."
+                },
+                { 
+                  s: "04", 
+                  t: "תוצאה שלא נעלמת", 
+                  d: "אנחנו מוודאים שהגוף נשמר גם אחרי שהתהליך נגמר.",
+                  explanation: "המטרה היא לא רק להגיע לתוצאה - אלא לשמור עליה. אני מלמד אותך את העקרונות, בונה הרגלים, ומוודא שאתה יודע איך להמשיך לבד גם אחרי שהליווי נגמר."
+                }
+              ].map((item, idx) => {
+                const isExpanded = expandedStepIndex === idx;
+                
+                return (
+                  <div key={idx} className="mobile-step-wrapper relative">
+                    {/* Vertical connector line - only on mobile */}
+                    <div className="mobile-timeline-connector" aria-hidden="true"></div>
+                    
+                    {/* Step content */}
+                    <div className="relative z-10 flex flex-row md:flex-col items-start md:items-center text-right md:text-center group bg-transparent p-3 rounded-xl md:border-none">
+                      {/* Step number - more dominant on mobile */}
+                      <div className="mobile-step-number w-16 h-16 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-2 md:border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-xl md:text-2xl font-black mb-0 md:mb-6 mr-4 md:mr-0 group-hover:bg-accent group-hover:text-white transition-all shrink-0" aria-hidden="true">
+                        {item.s}
+                      </div>
+                      
+                      {/* Step content */}
+                      <div className="flex-1 md:flex-none">
+                        <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">{item.t}</h3>
+                        <p className="text-gray-400 text-xs md:text-sm leading-relaxed px-1 md:px-2 compact-text line-clamp-3 md:line-clamp-none">{item.d}</p>
+                        
+                        {/* Desktop: Click to expand */}
+                        <button
+                          onClick={() => toggleStep(idx)}
+                          className="hidden md:flex items-center gap-2 mt-3 text-accent text-xs hover:text-accent/80 transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1"
+                          aria-expanded={isExpanded}
+                          aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleStep(idx);
+                            }
+                          }}
+                        >
+                          <ChevronDown className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} size={14} aria-hidden="true" />
+                          <span>{isExpanded ? 'סגור' : 'קרא עוד'}</span>
+                        </button>
+                        
+                        {/* Mobile: Tap to expand accordion */}
+                        <button
+                          onClick={() => toggleStep(idx)}
+                          className="md:hidden flex items-center gap-2 mt-3 text-accent text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-2 py-1"
+                          aria-expanded={isExpanded}
+                          aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleStep(idx);
+                            }
+                          }}
+                        >
+                          <ChevronDown className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} size={16} aria-hidden="true" />
+                          <span>{isExpanded ? 'סגור' : 'קרא עוד'}</span>
+                        </button>
+                        
+                        {/* Expanded explanation */}
+                        {isExpanded && (
+                          <div className="mt-3 text-gray-300 text-xs md:text-sm leading-relaxed px-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <p>{item.explanation}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">{item.t}</h3>
-                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed px-1 md:px-2 compact-text line-clamp-3 md:line-clamp-none">{item.d}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
@@ -2230,7 +2416,9 @@ export default function App() {
                   </div>
                 </div>
               </div>
-              <LeadForm isFooter={true} />
+              <div className="mobile-form-container">
+                <LeadForm isFooter={true} />
+              </div>
             </div>
           </div>
         </section>

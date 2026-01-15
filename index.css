@@ -123,6 +123,85 @@
   /* overflow: hidden; - Removed to allow natural content overflow */
 }
 
+/* DEBUG MODE: Uncomment to visually verify grade layer is applied */
+/* .stage::before {
+  background: var(--grade-tint-debug, rgba(0, 255, 0, 0.35)) !important;
+  mix-blend-mode: normal !important;
+} */
+
+/* 4 Steps Section - Fitness Image Background */
+.section-with-fitness-bg {
+  position: relative;
+  overflow: hidden; /* Clip background to section bounds */
+  
+  /* Background image */
+  background-image: url('/Gilad-landing-page/assets/about/fitness-image.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center 30%; /* Adjusted to position subject more centrally behind content */
+  background-attachment: fixed; /* Optional: parallax effect, remove if causes issues */
+}
+
+/* Dark uniform overlay - calms the image (reduced opacity for better visibility) */
+.section-with-fitness-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  
+  /* Dark overlay - reduced by ~20% (from 0.65 to 0.5) for better image visibility */
+  background: rgba(10, 10, 10, 0.5); /* Still dark but allows image to show through more */
+  
+  pointer-events: none;
+}
+
+/* Vignette/spotlight gradient overlay - protects readability (softer center) */
+.section-with-fitness-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  
+  /* Vignette: stronger at edges, softer at center - center more transparent for subject visibility */
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 40%,
+    rgba(10, 10, 10, 0.2) 60%,
+    rgba(10, 10, 10, 0.6) 100%
+  );
+  
+  pointer-events: none;
+}
+
+/* Ensure content stays above overlays */
+.section-with-fitness-bg .container {
+  position: relative;
+  z-index: 2; /* Above both overlays */
+}
+
+/* Mobile: Adjust overlay strength if needed (still readable but image visible) */
+@media (max-width: 768px) {
+  .section-with-fitness-bg::before {
+    background: rgba(10, 10, 10, 0.6); /* Reduced from 0.7 to 0.6 for better visibility, still strong for readability */
+  }
+  
+  .section-with-fitness-bg::after {
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 30%,
+      rgba(10, 10, 10, 0.3) 55%,
+      rgba(10, 10, 10, 0.75) 100%
+    );
+  }
+  
+  /* Remove fixed attachment on mobile for performance */
+  .section-with-fitness-bg {
+    background-attachment: scroll;
+  }
+}
+
 /* Journey Rail - Fixed Right, Hidden on Mobile */
 .journey-rail {
   position: fixed;
@@ -179,52 +258,25 @@
   width: 100%;
   height: 100%;
   z-index: -1;
-  background-image: url('/Gilad-landing-page/assets/backgrounds/bg-global-parallax.jpeg');
+  background-image: url('/Gilad-landing-page/assets/ChatGPT Image Jan 15, 2026, 07_30_19 PM.png');
   background-size: cover;
   background-position: center;
   /* background-attachment: fixed; */ /* Disabled for better mobile support - position: fixed div is better */
 }
 
-/* Background Overlays - Modified for Global BG */
-.hero-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
-.reflection-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
-.proof-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
-.about-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
-.get-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
-.process-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
-.waiting-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
-.faq-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
-.cta-overlay {
-  background-color: black;
-  opacity: 0.55;
-}
+/* Background Overlays - Unified for consistency with "4 צעדים" section */
+.hero-overlay,
+.reflection-overlay,
+.proof-overlay,
+.about-overlay,
+.get-overlay,
+.process-overlay,
+.waiting-overlay,
+.faq-overlay,
+.cta-overlay,
 .commitment-overlay {
-  background-color: black;
-  opacity: 0.55;
+  background-color: rgba(10, 10, 10, 0.5); /* Match "4 צעדים" uniform overlay */
+  opacity: 1; /* Full opacity since we're using rgba */
 }
 
 /* Darker overlays on mobile for better contrast */
@@ -239,8 +291,45 @@
   .faq-overlay,
   .cta-overlay,
   .commitment-overlay {
-    opacity: 0.75;
+    background-color: rgba(10, 10, 10, 0.6); /* Match "4 צעדים" mobile */
+    opacity: 1;
   }
+}
+
+/* Vignette gradient overlay for all sections - consistent premium feel */
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  
+  /* Vignette: stronger at edges, softer at center - matches "4 צעדים" */
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 40%,
+    rgba(10, 10, 10, 0.2) 60%,
+    rgba(10, 10, 10, 0.6) 100%
+  );
+}
+
+/* Mobile: Slightly stronger vignette */
+@media (max-width: 768px) {
+  .stage::after {
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 30%,
+      rgba(10, 10, 10, 0.3) 55%,
+      rgba(10, 10, 10, 0.75) 100%
+    );
+  }
+}
+
+/* Exception: "4 צעדים" section already has its own ::after, so keep existing */
+.section-with-fitness-bg::after {
+  /* Keep existing vignette - already defined in section-with-fitness-bg styles */
 }
 
 /* Small screen compaction utilities (iPhone SE) */
@@ -259,5 +348,153 @@
   }
   .compact-hide {
     @apply hidden !important;
+  }
+}
+
+/* Mobile Form Container - Breathing Room */
+@media (max-width: 768px) {
+  .mobile-form-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem; /* Vertical separation */
+  }
+  
+  .mobile-form-container > div {
+    /* Add subtle visual separation */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Mobile Typography Hierarchy */
+@media (max-width: 768px) {
+  /* Hero Headline - Maintain Dominance */
+  .hero-headline {
+    line-height: 1.1 !important; /* Tighter for authority */
+    letter-spacing: -0.02em;
+  }
+  
+  /* Subheadline - Strong but Secondary */
+  .hero-subheadline {
+    line-height: 1.4 !important;
+    font-weight: 300; /* Keep light but readable */
+  }
+  
+  /* Body Text - Readable, Not Compressed */
+  .mobile-body-text {
+    line-height: 1.6 !important;
+    font-size: 0.95rem; /* Slightly larger if needed */
+  }
+}
+
+/* Mobile Section Spacing */
+@media (max-width: 768px) {
+  .mobile-section-spacing {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+  
+  .mobile-content-padding {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+  
+  /* Sections connect seamlessly on mobile - no gap between sections */
+  .stage {
+    margin-bottom: 0;
+  }
+}
+
+
+/* Professional Image Styling */
+.professional-image {
+  filter: grayscale(10%);
+  opacity: 0.95;
+}
+
+@media (max-width: 768px) {
+  .professional-image {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Mobile Hero Top Spacing */
+@media (max-width: 768px) {
+  .mobile-hero-spacing {
+    padding-top: 4rem !important; /* Increased from pt-24 (6rem) */
+    padding-bottom: 2rem !important;
+  }
+  
+  /* Add space between headline and form */
+  .mobile-hero-spacing .grid {
+    gap: 2rem; /* Increased from gap-6 */
+  }
+}
+
+/* Desktop unchanged */
+@media (min-width: 769px) {
+  .mobile-hero-spacing {
+    /* No changes - desktop remains as is */
+  }
+}
+
+/* Mobile Steps Timeline */
+@media (max-width: 768px) {
+  .mobile-steps-timeline {
+    position: relative;
+    padding-left: 2rem; /* Space for timeline line */
+  }
+  
+  .mobile-step-wrapper {
+    position: relative;
+    padding-bottom: 2rem;
+  }
+  
+  .mobile-step-wrapper:last-child {
+    padding-bottom: 0;
+  }
+  
+  .mobile-timeline-connector {
+    position: absolute;
+    left: 0.75rem; /* Align with step number center */
+    top: 2rem; /* Start after step number */
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, 
+      rgba(255, 107, 53, 0.3) 0%,
+      rgba(255, 107, 53, 0.1) 100%
+    );
+  }
+  
+  .mobile-step-wrapper:last-child .mobile-timeline-connector {
+    display: none; /* No line after last step */
+  }
+  
+  .mobile-step-number {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+    font-size: 1.25rem !important;
+    border-width: 3px !important;
+  }
+}
+
+/* Desktop unchanged */
+@media (min-width: 769px) {
+  .mobile-steps-timeline {
+    padding-left: 0;
+  }
+  
+  .mobile-step-wrapper {
+    padding-bottom: 0;
+  }
+  
+  .mobile-timeline-connector {
+    display: none;
   }
 }
