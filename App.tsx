@@ -2282,7 +2282,7 @@ export default function App() {
                   className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10" 
                   style={{ 
                     aspectRatio: '3/4',
-                    maxHeight: '65vh',
+                    maxHeight: '75dvh', // Increased from 65vh to 75dvh for iOS Safari compatibility and to accommodate Vimeo controls
                     minHeight: '400px',
                     maxWidth: '100%',
                     margin: '0 auto',
