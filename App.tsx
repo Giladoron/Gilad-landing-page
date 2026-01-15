@@ -1,5 +1,7 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import FocusTrap from 'focus-trap-react';
 import { 
   CheckCircle2, 
   XCircle, 
@@ -332,7 +334,8 @@ const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
-      <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
+      <FocusTrap>
+        <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
         <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
           <h2 id="modal-title" className="text-2xl font-bold heading-font text-white">{title}</h2>
           <button 
@@ -354,7 +357,8 @@ const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, 
             הבנתי
           </button>
         </div>
-      </div>
+        </div>
+      </FocusTrap>
     </div>
   );
 };
@@ -388,7 +392,8 @@ const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => vo
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="client-story-title">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
-      <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
+      <FocusTrap>
+        <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
         <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
           <div>
             <h2 id="client-story-title" className="text-2xl font-bold heading-font text-white mb-1">{client.name}</h2>
@@ -476,7 +481,8 @@ const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => vo
             סגור
           </button>
         </div>
-      </div>
+        </div>
+      </FocusTrap>
     </div>
   );
 };
@@ -791,7 +797,8 @@ const ExitIntentPopup: React.FC = () => {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="exit-intent-title">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={handleClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
-      <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-md relative z-10 p-6 md:p-8 shadow-2xl">
+      <FocusTrap>
+        <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-md relative z-10 p-6 md:p-8 shadow-2xl">
         <button 
           onClick={handleClose}
           className="absolute top-4 left-4 p-2 hover:bg-white/10 rounded-full transition-colors"
@@ -821,7 +828,8 @@ const ExitIntentPopup: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+        </div>
+      </FocusTrap>
     </div>
   );
 };
@@ -1461,10 +1469,9 @@ const VideoPlayer: React.FC = () => {
 export default function App() {
   const [activeStage, setActiveStage] = useState('hero');
   const [modalType, setModalType] = useState<ModalType>(null);
-  const [currentClientIndex, setCurrentClientIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [expandedFAQIndex, setExpandedFAQIndex] = useState<number | null>(null);
   const [selectedClientIndex, setSelectedClientIndex] = useState<number | null>(null);
-  const [carouselInitialized, setCarouselInitialized] = useState(false);
 
   const toggleFAQ = (index: number) => {
     setExpandedFAQIndex(expandedFAQIndex === index ? null : index);
@@ -1481,361 +1488,54 @@ export default function App() {
   const activeStageIndex = STAGES.findIndex(s => s.id === activeStage);
 
   // ============================================================================
-  // CAROUSEL REFACTOR: Pure CSS scroll-snap architecture
+  // Embla Carousel Implementation
   // ============================================================================
-  // ROOT CAUSE ANALYSIS:
-  // 1. Multiple competing scroll handlers (scroll event + IntersectionObserver + touch)
-  // 2. State updates during scroll causing re-renders mid-scroll
-  // 3. Infinite scroll logic directly manipulating scrollLeft during scroll events
-  // 4. Touch handlers triggering programmatic scrolls that fight native scroll-snap
-  // 5. Using index as key causing React remounts
-  // 6. Transform + scroll-snap conflicts
-  // 7. Image loading without reserved space causing layout shift
-  //
-  // SOLUTION: Pure CSS scroll-snap with minimal JS
-  // - Native scroll-snap handles all snapping (no JS transforms)
-  // - Single IntersectionObserver to detect active card (no scroll event handlers)
-  // - Touch events removed (native swipe works with scroll-snap)
-  // - Stable keys using client data (not index)
-  // - Fixed image containers prevent layout shift
-  // - RTL-aware scroll calculations
+  // Replaced complex custom carousel with Embla Carousel for reliability
+  // - Handles infinite scroll/loop automatically
+  // - Native RTL support
+  // - Touch/swipe gestures work out of the box
+  // - No race conditions or edge case bugs
   // ============================================================================
 
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const isProgrammaticScrollRef = useRef(false);
-  const activeIndexRef = useRef(0); // Track active index without triggering re-renders
-  
-  // Debug mode toggle (set to true to log carousel state changes)
-  const CAROUSEL_DEBUG = false;
-
-  // Create clone array for infinite scroll (3 sets: [set1][set2][set3])
-  const CLONE_ARRAY = [...CLIENT_RESULTS, ...CLIENT_RESULTS, ...CLIENT_RESULTS];
-  const ORIGINAL_COUNT = CLIENT_RESULTS.length;
-  const MIDDLE_START_INDEX = ORIGINAL_COUNT;
-
-  // Map clone index to actual client index
-  const getActualIndex = (cloneIndex: number) => cloneIndex % ORIGINAL_COUNT;
-
-  // Get clone index for a given actual index in the middle set
-  const getCloneIndex = (actualIndex: number) => MIDDLE_START_INDEX + actualIndex;
-
-  // Scroll to a specific card using native scroll-snap (no transforms)
-  const scrollToCard = (cloneIndex: number, smooth: boolean = true) => {
-    const container = carouselRef.current;
-    if (!container) return;
-
-    const cardElement = container.children[cloneIndex] as HTMLElement;
-    if (!cardElement) return;
-
-    isProgrammaticScrollRef.current = true;
-
-    // Use scrollIntoView which respects scroll-snap
-    cardElement.scrollIntoView({
-      behavior: smooth ? 'smooth' : 'auto',
-      block: 'nearest',
-      inline: 'center'
-    });
-
-    // Reset flag after scroll completes AND debounce delay
-    // FIX: Increased timeout to 200ms (was 50ms) to exceed IntersectionObserver debounce (150ms)
-    // This prevents race condition where observer callback fires after flag is reset
-    setTimeout(() => {
-      isProgrammaticScrollRef.current = false;
-    }, smooth ? 500 : 200);
-  };
-
-  const goToNext = () => {
-    // Use ref to get latest value without causing effect re-runs
-    const currentIndex = activeIndexRef.current;
-    const nextIndex = (currentIndex + 1) % ORIGINAL_COUNT;
-    activeIndexRef.current = nextIndex;
-    setCurrentClientIndex(nextIndex);
-    scrollToCard(getCloneIndex(nextIndex));
-  };
-
-  const goToPrevious = () => {
-    // Use ref to get latest value without causing effect re-runs
-    const currentIndex = activeIndexRef.current;
-    const prevIndex = (currentIndex - 1 + ORIGINAL_COUNT) % ORIGINAL_COUNT;
-    activeIndexRef.current = prevIndex;
-    setCurrentClientIndex(prevIndex);
-    scrollToCard(getCloneIndex(prevIndex));
-  };
-
-  const goToSlide = (actualIndex: number) => {
-    setCurrentClientIndex(actualIndex);
-    scrollToCard(getCloneIndex(actualIndex));
-  };
-
-  // ============================================================================
-  // SINGLE IntersectionObserver: Detects active card from scroll-snap
-  // ============================================================================
-  // Why this is stable:
-  // - Only ONE mechanism detects active card (no competing handlers)
-  // - Uses IntersectionObserver which fires AFTER scroll-snap completes
-  // - Updates state only when card actually changes (prevents re-render loops)
-  // - Debounced to prevent rapid updates
-  // ============================================================================
-  useEffect(() => {
-    const container = carouselRef.current;
-    if (!container || !carouselInitialized) return; // Wait for initialization
-
-    let updateTimeout: NodeJS.Timeout | null = null;
-    const DEBOUNCE_DELAY = 150; // Debounce state updates
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (isProgrammaticScrollRef.current) return;
-
-        if (updateTimeout) clearTimeout(updateTimeout);
-        updateTimeout = setTimeout(() => {
-          if (isProgrammaticScrollRef.current || !container) return;
-
-          // Find the most centered card (highest intersection ratio)
-          let maxRatio = 0;
-          let activeCloneIndex = -1;
-
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-              maxRatio = entry.intersectionRatio;
-              const cloneIndex = Array.from(container.children).indexOf(entry.target as HTMLElement);
-              if (cloneIndex !== -1) {
-                activeCloneIndex = cloneIndex;
-              }
-            }
-          });
-
-          if (activeCloneIndex === -1) return;
-
-          const actualIndex = getActualIndex(activeCloneIndex);
-
-          // Check if we're in the middle set
-          const isInMiddleSet = activeCloneIndex >= MIDDLE_START_INDEX && activeCloneIndex < MIDDLE_START_INDEX + ORIGINAL_COUNT;
-          
-          if (isInMiddleSet && actualIndex !== activeIndexRef.current) {
-            // Normal case: update state when in middle set
-            activeIndexRef.current = actualIndex;
-            setCurrentClientIndex(actualIndex);
-            
-            // Debug logging
-            if (CAROUSEL_DEBUG) {
-              console.log('[Carousel] Active card changed:', {
-                actualIndex,
-                cloneIndex: activeCloneIndex,
-                containerWidth: container.clientWidth,
-                scrollLeft: container.scrollLeft
-              });
-            }
-          } else if (!isInMiddleSet) {
-            // Edge case: user is in first or third set - loop back to middle set
-            // This prevents the "blurred cards" state when swiping past boundaries
-            const middleCloneIndex = getCloneIndex(actualIndex);
-            isProgrammaticScrollRef.current = true;
-            scrollToCard(middleCloneIndex, true);
-            
-            // Update state after a brief delay to allow scroll to start
-            setTimeout(() => {
-              activeIndexRef.current = actualIndex;
-              setCurrentClientIndex(actualIndex);
-              isProgrammaticScrollRef.current = false;
-            }, 100);
-            
-            if (CAROUSEL_DEBUG) {
-              console.log('[Carousel] Edge set detected, looping back:', {
-                actualIndex,
-                edgeCloneIndex: activeCloneIndex,
-                middleCloneIndex,
-                isInFirstSet: activeCloneIndex < MIDDLE_START_INDEX,
-                isInThirdSet: activeCloneIndex >= MIDDLE_START_INDEX + ORIGINAL_COUNT
-              });
-            }
-          }
-        }, DEBOUNCE_DELAY);
-      },
-      {
-        root: container,
-        threshold: [0.5], // Single threshold - more stable
-        rootMargin: '0px'
-      }
-    );
-
-    // Observe all cards
-    const children = Array.from(container.children);
-    children.forEach((child) => observer.observe(child as Element));
-
-    return () => {
-      observer.disconnect();
-      if (updateTimeout) clearTimeout(updateTimeout);
-    };
-  }, [carouselInitialized]); // Wait for initialization
-
-  // ============================================================================
-  // Scroll Boundary Detection: Loop back when reaching edges (mobile infinite scroll)
-  // ============================================================================
-  // Detects when user scrolls to first or third set and smoothly loops back to middle set
-  // This prevents the "blurred cards" state when swiping past boundaries on mobile
-  // ============================================================================
-  useEffect(() => {
-    const container = carouselRef.current;
-    if (!container || !carouselInitialized) return;
-
-    const EDGE_THRESHOLD = 100; // pixels from edge to trigger loop-back
-    let scrollTimeout: NodeJS.Timeout | null = null;
-    let isLoopingBack = false; // Prevent multiple loop-backs during transition
-
-    const handleScroll = () => {
-      // Skip if programmatic scroll or already looping back
-      if (isProgrammaticScrollRef.current || isLoopingBack) return;
-
-      // Clear any pending timeout
-      if (scrollTimeout) clearTimeout(scrollTimeout);
-
-      // Debounce scroll detection to avoid interfering with active scrolling
-      scrollTimeout = setTimeout(() => {
-        if (isProgrammaticScrollRef.current || isLoopingBack || !container) return;
-
-        const scrollLeft = container.scrollLeft;
-        const scrollWidth = container.scrollWidth;
-        const clientWidth = container.clientWidth;
-        const maxScroll = scrollWidth - clientWidth;
-
-        // Check if we're near the start (first set) or end (third set)
-        const isNearStart = scrollLeft < EDGE_THRESHOLD;
-        const isNearEnd = scrollLeft > (maxScroll - EDGE_THRESHOLD);
-
-        if (isNearStart || isNearEnd) {
-          // Find which card is currently most visible
-          let closestCardIndex = -1;
-          let closestDistance = Infinity;
-
-          Array.from(container.children).forEach((child, index) => {
-            const cardElement = child as HTMLElement;
-            const cardLeft = cardElement.offsetLeft;
-            const cardWidth = cardElement.offsetWidth;
-            const cardCenter = cardLeft + (cardWidth / 2);
-            const containerCenter = scrollLeft + (clientWidth / 2);
-            const distance = Math.abs(cardCenter - containerCenter);
-
-            if (distance < closestDistance) {
-              closestDistance = distance;
-              closestCardIndex = index;
-            }
-          });
-
-          if (closestCardIndex !== -1) {
-            const actualIndex = getActualIndex(closestCardIndex);
-            const middleCloneIndex = getCloneIndex(actualIndex);
-
-            // Only loop back if we're not already in the middle set
-            const isInMiddleSet = closestCardIndex >= MIDDLE_START_INDEX && closestCardIndex < MIDDLE_START_INDEX + ORIGINAL_COUNT;
-            
-            if (!isInMiddleSet) {
-              isLoopingBack = true;
-              isProgrammaticScrollRef.current = true;
-
-              // Smoothly scroll to corresponding card in middle set
-              scrollToCard(middleCloneIndex, true);
-
-              // Update state
-              activeIndexRef.current = actualIndex;
-              setCurrentClientIndex(actualIndex);
-
-              // Reset flags after transition completes
-              setTimeout(() => {
-                isProgrammaticScrollRef.current = false;
-                isLoopingBack = false;
-              }, 600); // Slightly longer than smooth scroll duration
-
-              if (CAROUSEL_DEBUG) {
-                console.log('[Carousel] Boundary reached, looping back:', {
-                  edge: isNearStart ? 'start' : 'end',
-                  closestCardIndex,
-                  actualIndex,
-                  middleCloneIndex,
-                  scrollLeft,
-                  maxScroll
-                });
-              }
-            }
-          }
-        }
-      }, 150); // Debounce delay - wait for scroll to settle
-    };
-
-    // Use scrollend event if available (modern browsers), fallback to scroll event
-    if ('onscrollend' in container) {
-      container.addEventListener('scrollend', handleScroll, { passive: true });
-    } else {
-      container.addEventListener('scroll', handleScroll, { passive: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { 
+      loop: true, 
+      align: 'center',
+      direction: 'rtl',
+      slidesToScroll: 1,
+      skipSnaps: false,
+      dragFree: false
     }
+  );
 
-    return () => {
-      if (scrollTimeout) clearTimeout(scrollTimeout);
-      if ('onscrollend' in container) {
-        container.removeEventListener('scrollend', handleScroll);
-      } else {
-        container.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, [carouselInitialized]); // Wait for initialization
+  // Navigation handlers
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
 
-  // ============================================================================
-  // Initialize carousel: Center first card of middle set
-  // ============================================================================
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const scrollTo = useCallback((index: number) => {
+    if (emblaApi) emblaApi.scrollTo(index);
+  }, [emblaApi]);
+
+  // Track selected slide
   useEffect(() => {
-    const container = carouselRef.current;
-    if (!container) return;
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    });
+  }, [emblaApi]);
 
-    // Wait for layout to be ready
-    const initCarousel = () => {
-      const firstCardIndex = MIDDLE_START_INDEX;
-      const cardElement = container.children[firstCardIndex] as HTMLElement;
-
-      if (!cardElement || cardElement.offsetWidth === 0) {
-        // Retry if not ready
-        requestAnimationFrame(initCarousel);
-        return;
-      }
-
-      isProgrammaticScrollRef.current = true;
-      setCurrentClientIndex(0);
-
-      // Always use direct position setting (no scrollIntoView)
-      // This prevents any visible movement when scrolling past the carousel
-      const cardLeft = cardElement.offsetLeft;
-      const cardWidth = cardElement.offsetWidth;
-      const containerWidth = container.clientWidth;
-      const scrollPosition = cardLeft - (containerWidth / 2) + (cardWidth / 2);
-      
-      // Set scroll position directly (instant, no animation, no page scroll)
-      container.scrollLeft = scrollPosition;
-
-      // Mark as initialized immediately (no delay needed since we're not animating)
-      isProgrammaticScrollRef.current = false;
-      setCarouselInitialized(true);
-    };
-
-    // Start initialization after a brief delay to ensure DOM is ready
-    const timer = setTimeout(initCarousel, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // ============================================================================
   // Center carousel when proof section becomes active
-  // ============================================================================
-  // FIX: Removed currentClientIndex from dependencies to break feedback loop
-  // This effect should only run when proof section becomes active, not on every carousel change
   useEffect(() => {
-    if (activeStage !== 'proof' || !carouselRef.current || !carouselInitialized) return;
-
-    const timer = setTimeout(() => {
-      // Use current state value, but don't re-run effect when it changes
-      const currentCloneIndex = getCloneIndex(currentClientIndex);
-      scrollToCard(currentCloneIndex, false);
-    }, 200);
-
-    return () => clearTimeout(timer);
-  }, [activeStage]); // FIXED: Only depends on activeStage to prevent feedback loop
+    if (activeStage === 'proof' && emblaApi) {
+      emblaApi.scrollTo(0, true); // Scroll to first slide smoothly
+    }
+  }, [activeStage, emblaApi]);
 
   // Keyboard navigation for carousel
   useEffect(() => {
@@ -1846,16 +1546,16 @@ export default function App() {
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
         if (e.key === 'ArrowRight') {
-          goToPrevious(); // Right arrow = previous (RTL)
+          scrollPrev(); // Right arrow = previous (RTL)
         } else {
-          goToNext(); // Left arrow = next (RTL)
+          scrollNext(); // Left arrow = next (RTL)
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeStage]); // FIXED: Removed currentClientIndex - functions use ref for latest value
+  }, [activeStage, scrollPrev, scrollNext]);
 
   useEffect(() => {
     // Stage/Focus Observer
@@ -2080,20 +1780,19 @@ export default function App() {
             </div>
 
             {/* Client Results Carousel */}
-            {/* touch-action: pan-y allows vertical scrolling on the carousel container */}
-            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0" style={{ touchAction: 'pan-y', pointerEvents: 'auto' }}>
+            <div className="relative px-4 md:px-12 flex-1 flex flex-col justify-center min-h-0" style={{ touchAction: 'pan-x pan-y', pointerEvents: 'auto' }}>
               {/* Arrow Navigation Controls */}
               {CLIENT_RESULTS.length > 1 && (
                 <>
                   <button
-                    onClick={goToPrevious}
+                    onClick={scrollPrev}
                     className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-brandGray/40 hover:bg-brandGray/60 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg pointer-events-auto"
                     aria-label="לקוח קודם"
                   >
                     <ChevronRight size={20} aria-hidden="true" />
                   </button>
                   <button
-                    onClick={goToNext}
+                    onClick={scrollNext}
                     className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-brandGray/40 hover:bg-brandGray/60 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg pointer-events-auto"
                     aria-label="לקוח הבא"
                   >
@@ -2102,141 +1801,114 @@ export default function App() {
                 </>
               )}
 
-              {/* Carousel Content */}
-              {/* 
-                STABLE ARCHITECTURE:
-                - Pure CSS scroll-snap handles all snapping (no JS transforms)
-                - overscroll-behavior-x: contain prevents parent scroll conflicts
-                - Native touch scrolling works seamlessly with scroll-snap
-                - Fixed card widths prevent layout shift
-              */}
-              <div 
-                ref={carouselRef}
-                className={`carousel-container flex overflow-x-auto overflow-y-visible snap-x snap-mandatory gap-6 md:gap-8 px-0 py-8 transition-opacity duration-300 ${carouselInitialized ? 'opacity-100' : 'opacity-0'}`}
-                style={{ 
-                  scrollBehavior: 'smooth',
-                  WebkitOverflowScrolling: 'touch',
-                  scrollbarWidth: 'none',
-                  msOverflowStyle: 'none',
-                  overscrollBehaviorX: 'contain', // Prevent horizontal overscroll only
-                  overscrollBehaviorY: 'auto', // Allow vertical scrolling
-                  touchAction: 'pan-x pan-y', // Allow both horizontal and vertical panning
-                  scrollSnapAlign: 'none' // Prevent carousel from being a vertical snap point
-                }}
-              >
-                {CLONE_ARRAY.map((client, cloneIndex) => {
-                  const actualIndex = getActualIndex(cloneIndex);
-                  const currentCloneIndex = getCloneIndex(currentClientIndex);
-                  const isActive = cloneIndex === currentCloneIndex && actualIndex === currentClientIndex;
-                  const distance = Math.abs(cloneIndex - currentCloneIndex);
-                  
-                  // Stable key: use client data + clone index (prevents remounts)
-                  const stableKey = `${client.name}-${client.age}-${cloneIndex}`;
-                  
-                  return (
-                    <div
-                      key={stableKey}
-                      className={`flex-shrink-0 w-[90vw] sm:w-[80vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] snap-center transition-all duration-500 ${
-                        isActive 
-                          ? 'opacity-100 z-10 scale-[1.03] md:scale-105' 
-                          : 'opacity-40 scale-95 blur-[1px]'
-                      }`}
-                      style={{
-                        scrollSnapAlign: 'center',
-                        perspective: '1000px'
-                      }}
-                    >
-                      <div className={`bg-brandGray/50 border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.6)] ${
-                        isActive 
-                          ? 'border-accent shadow-[0_0_40px_rgba(255,107,53,0.3),0_10px_40px_rgba(0,0,0,0.6)]' 
-                          : 'border-white/5 shadow-none'
-                      }`}>
-                        {/* Content Wrapper with Scale Transform */}
-                        <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0 bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-2xl p-2 md:p-3">
-                          {/* Header Row: Avatar + Name + Age */}
-                          <div className="flex items-center gap-2.5 mb-2">
-                            <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
-                              <User className="text-accent" size={20} aria-hidden="true" />
+              {/* Embla Carousel Container */}
+              <div className="embla overflow-hidden" ref={emblaRef}>
+                <div className="embla__container flex gap-6 md:gap-8 py-8">
+                  {CLIENT_RESULTS.map((client, index) => {
+                    const isActive = index === selectedIndex;
+                    
+                    return (
+                      <div
+                        key={`${client.name}-${client.age}-${index}`}
+                        className={`embla__slide flex-shrink-0 w-[90vw] sm:w-[80vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] transition-all duration-500 ${
+                          isActive 
+                            ? 'opacity-100 z-10 scale-[1.03] md:scale-105' 
+                            : 'opacity-40 scale-95 blur-[1px]'
+                        }`}
+                        style={{
+                          perspective: '1000px'
+                        }}
+                      >
+                        <div className={`bg-brandGray/50 border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.6)] ${
+                          isActive 
+                            ? 'border-accent shadow-[0_0_40px_rgba(255,107,53,0.3),0_10px_40px_rgba(0,0,0,0.6)]' 
+                            : 'border-white/5 shadow-none'
+                        }`}>
+                          {/* Content Wrapper */}
+                          <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0 bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-2xl p-2 md:p-3">
+                            {/* Header Row: Avatar + Name + Age */}
+                            <div className="flex items-center gap-2.5 mb-2">
+                              <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <User className="text-accent" size={20} aria-hidden="true" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="text-lg md:text-xl font-black text-white truncate">{client.name}</h3>
+                                <p className="text-gray-400 text-xs md:text-sm">{client.profession}, גיל {client.age}</p>
+                              </div>
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-lg md:text-xl font-black text-white truncate">{client.name}</h3>
-                              <p className="text-gray-400 text-xs md:text-sm">{client.profession}, גיל {client.age}</p>
+
+                            {/* Quote: Max 2 lines with ellipsis */}
+                            <div className="bg-brandGray/60 border-r-4 md:border-r-[6px] border-accent rounded-lg p-2 md:p-2.5 mb-2 shadow-inner">
+                              <p className="text-gray-200 text-sm md:text-base leading-relaxed italic line-clamp-2 overflow-hidden">
+                                "{client.quote}"
+                              </p>
+                            </div>
+
+                            {/* Before/After Image: Fixed aspect ratio with reserved space */}
+                            <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-1.5 md:mb-2 aspect-[2/1] md:aspect-[3/2] min-h-[100px] md:min-h-[140px]">
+                              <img 
+                                src={`${(import.meta as any).env.BASE_URL}assets/results/${client.image}`}
+                                alt={client.imageAlt}
+                                className="w-full h-full object-contain scale-x-[-1]"
+                                loading="lazy"
+                                style={{ 
+                                  display: 'block',
+                                  height: '100%',
+                                  width: '100%'
+                                }}
+                              />
+                              {/* Labels Overlay */}
+                              <div className="absolute top-2 left-2 right-2 flex justify-between">
+                                <div className="bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-lg text-xs font-bold">לפני</div>
+                                <div className="bg-accent text-white px-2 py-1 rounded-lg text-xs font-bold">אחרי</div>
+                              </div>
+                              {/* Time Badge */}
+                              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-lg text-xs font-bold">
+                                {client.duration} חודשים
+                              </div>
+                            </div>
+                            
+                            {/* Statistics Row: Compact single row */}
+                            <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-1 md:p-1.5 grid grid-cols-3 gap-1 md:gap-1.5 text-center">
+                              <div>
+                                <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.weight}</div>
+                                <div className="text-[10px] md:text-xs text-gray-400">משקל</div>
+                              </div>
+                              <div>
+                                <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.muscleMass}</div>
+                                <div className="text-[10px] md:text-xs text-gray-400">מסת שריר</div>
+                              </div>
+                              <div>
+                                <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.strength}</div>
+                                <div className="text-[10px] md:text-xs text-gray-400">כוח</div>
+                              </div>
                             </div>
                           </div>
-
-                          {/* Quote: Max 2 lines with ellipsis */}
-                          <div className="bg-brandGray/60 border-r-4 md:border-r-[6px] border-accent rounded-lg p-2 md:p-2.5 mb-2 shadow-inner">
-                            <p className="text-gray-200 text-sm md:text-base leading-relaxed italic line-clamp-2 overflow-hidden">
-                              "{client.quote}"
-                            </p>
-                          </div>
-
-                        {/* Before/After Image: Fixed aspect ratio with reserved space */}
-                        {/* Reserved space prevents layout shift when image loads */}
-                        <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-1.5 md:mb-2 aspect-[2/1] md:aspect-[3/2] min-h-[100px] md:min-h-[140px]">
-                          <img 
-                            src={`${(import.meta as any).env.BASE_URL}assets/results/${client.image}`}
-                            alt={client.imageAlt}
-                            className="w-full h-full object-contain scale-x-[-1]"
-                    loading="lazy"
-                            style={{ 
-                              display: 'block', // Prevents inline spacing
-                              height: '100%',
-                              width: '100%'
-                            }}
-                  />
-                  {/* Labels Overlay */}
-                          <div className="absolute top-2 left-2 right-2 flex justify-between">
-                            <div className="bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-lg text-xs font-bold">לפני</div>
-                            <div className="bg-accent text-white px-2 py-1 rounded-lg text-xs font-bold">אחרי</div>
-                  </div>
-                  {/* Time Badge */}
-                          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-lg text-xs font-bold">
-                            {client.duration} חודשים
-                  </div>
-                </div>
-                
-                        {/* Statistics Row: Compact single row */}
-                        <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-1 md:p-1.5 grid grid-cols-3 gap-1 md:gap-1.5 text-center">
-                  <div>
-                            <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.weight}</div>
-                            <div className="text-[10px] md:text-xs text-gray-400">משקל</div>
-                  </div>
-                  <div>
-                            <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.muscleMass}</div>
-                            <div className="text-[10px] md:text-xs text-gray-400">מסת שריר</div>
-                  </div>
-                  <div>
-                            <div className="text-base md:text-lg font-black text-accent mb-0.5">{client.stats.strength}</div>
-                            <div className="text-[10px] md:text-xs text-gray-400">כוח</div>
-                  </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-                        {/* End of Content Wrapper */}
-            </div>
-                  </div>
-                  );
-                })}
-                </div>
                 
               {/* Dot Indicators */}
               <div className="flex justify-center gap-2 mt-6 md:mt-8 flex-shrink-0" role="tablist" aria-label="ניווט בין תוצאות לקוחות">
                 {CLIENT_RESULTS.map((_, index) => (
                   <button
                     key={index}
-                    onClick={() => goToSlide(index)}
+                    onClick={() => scrollTo(index)}
                     className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
-                      index === currentClientIndex
+                      index === selectedIndex
                         ? 'bg-accent w-4 md:w-8'
                         : 'bg-white/30 hover:bg-white/50'
                     }`}
                     aria-label={`מעבר לתוצאות לקוח ${index + 1}`}
-                    aria-selected={index === currentClientIndex}
+                    aria-selected={index === selectedIndex}
                     role="tab"
                   />
                 ))}
-                </div>
               </div>
+            </div>
 
             {/* CTA Button - Always visible at bottom */}
             <div className="flex justify-center mt-6 md:mt-8 mb-20 md:mb-2 flex-shrink-0 relative z-20">

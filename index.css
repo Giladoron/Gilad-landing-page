@@ -74,6 +74,21 @@
     touch-action: pan-x;
   }
 
+  /* Embla Carousel Base Styles */
+  .embla {
+    overflow: hidden;
+  }
+
+  .embla__container {
+    display: flex;
+    touch-action: pan-x pan-y; /* Allow both horizontal carousel and vertical page scrolling */
+  }
+
+  .embla__slide {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
   /* Safe Area Utilities for iPhone Notch/Home Bar */
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
