@@ -50,13 +50,25 @@ declare global {
       ) => Promise<{ status: number; text: string }>;
     };
   }
+  
+  interface ImportMetaEnv {
+    readonly VITE_EMAILJS_SERVICE_ID?: string;
+    readonly VITE_EMAILJS_TEMPLATE_ID?: string;
+    readonly VITE_EMAILJS_PUBLIC_KEY?: string;
+    readonly VITE_RECIPIENT_EMAIL?: string;
+  }
+  
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }
 }
 
 // --- EmailJS Configuration ---
-const EMAILJS_SERVICE_ID = 'service_fphe5xu';
-const EMAILJS_TEMPLATE_ID = 'template_8p1hgtg';
-const EMAILJS_PUBLIC_KEY = 'vT2iqiRsrq5f4D03A';
-const RECIPIENT_EMAIL = 'gilad042@gmail.com';
+// Load from environment variables, fallback to hardcoded values for backward compatibility
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_fphe5xu';
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_8p1hgtg';
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'vT2iqiRsrq5f4D03A';
+const RECIPIENT_EMAIL = import.meta.env.VITE_RECIPIENT_EMAIL || 'gilad042@gmail.com';
 
 // --- Constants ---
 
@@ -548,40 +560,99 @@ const WhatsAppButton: React.FC = () => {
 const FloatingCTA: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [hasReachedAction, setHasReachedAction] = useState(false);
+  
+  // Cache action section position to avoid layout thrashing
+  const actionSectionRef = useRef<HTMLElement | null>(null);
+  const actionTopRef = useRef<number>(0);
+  const rafIdRef = useRef<number | null>(null);
+  const hasReachedActionRef = useRef(hasReachedAction);
+  const isVisibleRef = useRef(isVisible);
+
+  // Sync refs when state changes (from outside this effect)
+  useEffect(() => {
+    hasReachedActionRef.current = hasReachedAction;
+    isVisibleRef.current = isVisible;
+  }, [hasReachedAction, isVisible]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
+    // Cache action section element and position
+    const updateActionPosition = () => {
       const actionSection = document.getElementById('action');
-      
-      // Check if user has reached action section
+      actionSectionRef.current = actionSection;
       if (actionSection) {
         const actionRect = actionSection.getBoundingClientRect();
-        const actionTop = actionRect.top + window.scrollY;
-        
-        if (scrollY + window.innerHeight >= actionTop - 100) {
-          setHasReachedAction(true);
-          setIsVisible(false);
-          return;
-        } else {
-          setHasReachedAction(false);
-        }
+        actionTopRef.current = actionRect.top + window.scrollY;
+      }
+    };
+
+    // Initial cache
+    updateActionPosition();
+
+    // Recalculate on resize (position changes)
+    const handleResize = () => {
+      updateActionPosition();
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
+
+    const handleScroll = () => {
+      // Cancel any pending RAF
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
       }
 
-      // Show after scrolling 100px, hide before action section
-      if (scrollY > 100 && !hasReachedAction) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      // Batch layout reads and state updates in RAF
+      rafIdRef.current = requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const actionSection = actionSectionRef.current;
+        
+        let newHasReachedAction = hasReachedActionRef.current;
+        let newIsVisible = isVisibleRef.current;
+
+        // Check if user has reached action section (use cached position)
+        if (actionSection) {
+          // Only recalculate if we're near the action section (within 200px)
+          if (Math.abs(scrollY - actionTopRef.current) < 200) {
+            const actionRect = actionSection.getBoundingClientRect();
+            actionTopRef.current = actionRect.top + window.scrollY;
+          }
+          
+          if (scrollY + window.innerHeight >= actionTopRef.current - 100) {
+            newHasReachedAction = true;
+            newIsVisible = false;
+          } else {
+            newHasReachedAction = false;
+          }
+        }
+
+        // Show after scrolling 100px, hide before action section
+        if (scrollY > 100 && !newHasReachedAction) {
+          newIsVisible = true;
+        } else {
+          newIsVisible = false;
+        }
+
+        // Only update state if values changed (prevent unnecessary re-renders)
+        if (newHasReachedAction !== hasReachedActionRef.current || newIsVisible !== isVisibleRef.current) {
+          hasReachedActionRef.current = newHasReachedAction;
+          isVisibleRef.current = newIsVisible;
+          setHasReachedAction(newHasReachedAction);
+          setIsVisible(newIsVisible);
+        }
+      });
     };
 
     // Initial check
     handleScroll();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasReachedAction]);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+    };
+  }, []); // Empty deps - use refs to avoid stale closures and prevent re-runs
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -619,12 +690,30 @@ const ExitIntentPopup: React.FC = () => {
     const startTime = Date.now();
     const isMobile = window.innerWidth < 768;
 
-    // Track scroll depth
+    // Cache scrollHeight (only changes on resize, not scroll)
+    let cachedScrollHeight = document.documentElement.scrollHeight;
+    let scrollTimeout: NodeJS.Timeout | null = null;
+
+    // Update cached scrollHeight on resize
+    const handleResize = () => {
+      cachedScrollHeight = document.documentElement.scrollHeight;
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
+
+    // Track scroll depth (throttled to avoid layout thrashing)
     const handleScroll = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop = window.scrollY;
-      scrollDepth = (scrollTop + windowHeight) / documentHeight;
+      // Clear any pending timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+
+      // Throttle scroll handler (100ms debounce)
+      scrollTimeout = setTimeout(() => {
+        const windowHeight = window.innerHeight;
+        const scrollTop = window.scrollY;
+        // Use cached scrollHeight instead of reading it every scroll
+        scrollDepth = (scrollTop + windowHeight) / cachedScrollHeight;
+      }, 100);
     };
 
     // Track time on page
@@ -654,9 +743,13 @@ const ExitIntentPopup: React.FC = () => {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
       document.removeEventListener('mouseleave', handleMouseLeave);
       clearInterval(timeInterval);
       clearInterval(mobileCheckInterval);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
     };
   }, []);
 
@@ -1067,7 +1160,7 @@ const VideoPlayer: React.FC = () => {
             }
           } catch (err) {
             // Ignore errors if player not fully ready yet
-            console.debug('Volume change listener setup failed:', err);
+            // Volume change listener setup failed - non-critical, continue silently
             // Still mark as ready even if listener setup fails
             setIsPlayerReady(true);
           }
@@ -1075,7 +1168,7 @@ const VideoPlayer: React.FC = () => {
           // Clear all timeouts once initialized
           timeoutIds.forEach(id => clearTimeout(id));
         } catch (error) {
-          console.error('Failed to initialize Vimeo player:', error);
+          // Failed to initialize Vimeo player - non-critical, video will not play
         }
       } else if (!window.Vimeo?.Player && retryCount < maxRetries) {
         // Retry if Vimeo SDK hasn't loaded yet
@@ -1244,9 +1337,9 @@ const VideoPlayer: React.FC = () => {
       const currentMuted = await playerRef.current.getMuted();
       await playerRef.current.setMuted(!currentMuted);
       setIsMuted(!currentMuted);
-    } catch (err) {
-      console.error('Failed to toggle mute:', err);
-    }
+              } catch (err) {
+                // Failed to toggle mute - non-critical, continue silently
+              }
   };
 
   // Intersection Observer to detect when video section is visible
@@ -1443,20 +1536,28 @@ export default function App() {
       inline: 'center'
     });
 
-    // Reset flag after scroll completes
+    // Reset flag after scroll completes AND debounce delay
+    // FIX: Increased timeout to 200ms (was 50ms) to exceed IntersectionObserver debounce (150ms)
+    // This prevents race condition where observer callback fires after flag is reset
     setTimeout(() => {
       isProgrammaticScrollRef.current = false;
-    }, smooth ? 500 : 50);
+    }, smooth ? 500 : 200);
   };
 
   const goToNext = () => {
-    const nextIndex = (currentClientIndex + 1) % ORIGINAL_COUNT;
+    // Use ref to get latest value without causing effect re-runs
+    const currentIndex = activeIndexRef.current;
+    const nextIndex = (currentIndex + 1) % ORIGINAL_COUNT;
+    activeIndexRef.current = nextIndex;
     setCurrentClientIndex(nextIndex);
     scrollToCard(getCloneIndex(nextIndex));
   };
 
   const goToPrevious = () => {
-    const prevIndex = (currentClientIndex - 1 + ORIGINAL_COUNT) % ORIGINAL_COUNT;
+    // Use ref to get latest value without causing effect re-runs
+    const currentIndex = activeIndexRef.current;
+    const prevIndex = (currentIndex - 1 + ORIGINAL_COUNT) % ORIGINAL_COUNT;
+    activeIndexRef.current = prevIndex;
     setCurrentClientIndex(prevIndex);
     scrollToCard(getCloneIndex(prevIndex));
   };
@@ -1508,10 +1609,11 @@ export default function App() {
 
           const actualIndex = getActualIndex(activeCloneIndex);
 
-          // Only update if we're in the middle set (ignore first/third sets to prevent jumps)
+          // Check if we're in the middle set
           const isInMiddleSet = activeCloneIndex >= MIDDLE_START_INDEX && activeCloneIndex < MIDDLE_START_INDEX + ORIGINAL_COUNT;
           
           if (isInMiddleSet && actualIndex !== activeIndexRef.current) {
+            // Normal case: update state when in middle set
             activeIndexRef.current = actualIndex;
             setCurrentClientIndex(actualIndex);
             
@@ -1522,6 +1624,29 @@ export default function App() {
                 cloneIndex: activeCloneIndex,
                 containerWidth: container.clientWidth,
                 scrollLeft: container.scrollLeft
+              });
+            }
+          } else if (!isInMiddleSet) {
+            // Edge case: user is in first or third set - loop back to middle set
+            // This prevents the "blurred cards" state when swiping past boundaries
+            const middleCloneIndex = getCloneIndex(actualIndex);
+            isProgrammaticScrollRef.current = true;
+            scrollToCard(middleCloneIndex, true);
+            
+            // Update state after a brief delay to allow scroll to start
+            setTimeout(() => {
+              activeIndexRef.current = actualIndex;
+              setCurrentClientIndex(actualIndex);
+              isProgrammaticScrollRef.current = false;
+            }, 100);
+            
+            if (CAROUSEL_DEBUG) {
+              console.log('[Carousel] Edge set detected, looping back:', {
+                actualIndex,
+                edgeCloneIndex: activeCloneIndex,
+                middleCloneIndex,
+                isInFirstSet: activeCloneIndex < MIDDLE_START_INDEX,
+                isInThirdSet: activeCloneIndex >= MIDDLE_START_INDEX + ORIGINAL_COUNT
               });
             }
           }
@@ -1536,11 +1661,121 @@ export default function App() {
 
     // Observe all cards
     const children = Array.from(container.children);
-    children.forEach((child) => observer.observe(child));
+    children.forEach((child) => observer.observe(child as Element));
 
     return () => {
       observer.disconnect();
       if (updateTimeout) clearTimeout(updateTimeout);
+    };
+  }, [carouselInitialized]); // Wait for initialization
+
+  // ============================================================================
+  // Scroll Boundary Detection: Loop back when reaching edges (mobile infinite scroll)
+  // ============================================================================
+  // Detects when user scrolls to first or third set and smoothly loops back to middle set
+  // This prevents the "blurred cards" state when swiping past boundaries on mobile
+  // ============================================================================
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container || !carouselInitialized) return;
+
+    const EDGE_THRESHOLD = 100; // pixels from edge to trigger loop-back
+    let scrollTimeout: NodeJS.Timeout | null = null;
+    let isLoopingBack = false; // Prevent multiple loop-backs during transition
+
+    const handleScroll = () => {
+      // Skip if programmatic scroll or already looping back
+      if (isProgrammaticScrollRef.current || isLoopingBack) return;
+
+      // Clear any pending timeout
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+
+      // Debounce scroll detection to avoid interfering with active scrolling
+      scrollTimeout = setTimeout(() => {
+        if (isProgrammaticScrollRef.current || isLoopingBack || !container) return;
+
+        const scrollLeft = container.scrollLeft;
+        const scrollWidth = container.scrollWidth;
+        const clientWidth = container.clientWidth;
+        const maxScroll = scrollWidth - clientWidth;
+
+        // Check if we're near the start (first set) or end (third set)
+        const isNearStart = scrollLeft < EDGE_THRESHOLD;
+        const isNearEnd = scrollLeft > (maxScroll - EDGE_THRESHOLD);
+
+        if (isNearStart || isNearEnd) {
+          // Find which card is currently most visible
+          let closestCardIndex = -1;
+          let closestDistance = Infinity;
+
+          Array.from(container.children).forEach((child, index) => {
+            const cardElement = child as HTMLElement;
+            const cardLeft = cardElement.offsetLeft;
+            const cardWidth = cardElement.offsetWidth;
+            const cardCenter = cardLeft + (cardWidth / 2);
+            const containerCenter = scrollLeft + (clientWidth / 2);
+            const distance = Math.abs(cardCenter - containerCenter);
+
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestCardIndex = index;
+            }
+          });
+
+          if (closestCardIndex !== -1) {
+            const actualIndex = getActualIndex(closestCardIndex);
+            const middleCloneIndex = getCloneIndex(actualIndex);
+
+            // Only loop back if we're not already in the middle set
+            const isInMiddleSet = closestCardIndex >= MIDDLE_START_INDEX && closestCardIndex < MIDDLE_START_INDEX + ORIGINAL_COUNT;
+            
+            if (!isInMiddleSet) {
+              isLoopingBack = true;
+              isProgrammaticScrollRef.current = true;
+
+              // Smoothly scroll to corresponding card in middle set
+              scrollToCard(middleCloneIndex, true);
+
+              // Update state
+              activeIndexRef.current = actualIndex;
+              setCurrentClientIndex(actualIndex);
+
+              // Reset flags after transition completes
+              setTimeout(() => {
+                isProgrammaticScrollRef.current = false;
+                isLoopingBack = false;
+              }, 600); // Slightly longer than smooth scroll duration
+
+              if (CAROUSEL_DEBUG) {
+                console.log('[Carousel] Boundary reached, looping back:', {
+                  edge: isNearStart ? 'start' : 'end',
+                  closestCardIndex,
+                  actualIndex,
+                  middleCloneIndex,
+                  scrollLeft,
+                  maxScroll
+                });
+              }
+            }
+          }
+        }
+      }, 150); // Debounce delay - wait for scroll to settle
+    };
+
+    // Use scrollend event if available (modern browsers), fallback to scroll event
+    if ('onscrollend' in container) {
+      container.addEventListener('scrollend', handleScroll, { passive: true });
+    } else {
+      container.addEventListener('scroll', handleScroll, { passive: true });
+    }
+
+    return () => {
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if ('onscrollend' in container) {
+        container.removeEventListener('scrollend', handleScroll);
+      } else {
+        container.removeEventListener('scroll', handleScroll);
+      }
     };
   }, [carouselInitialized]); // Wait for initialization
 
@@ -1565,38 +1800,19 @@ export default function App() {
       isProgrammaticScrollRef.current = true;
       setCurrentClientIndex(0);
 
-      // Check if proof section is in viewport before scrolling
-      // This prevents page auto-scroll on reload
-      const proofSection = document.getElementById('proof');
-      let isInViewport = false;
+      // Always use direct position setting (no scrollIntoView)
+      // This prevents any visible movement when scrolling past the carousel
+      const cardLeft = cardElement.offsetLeft;
+      const cardWidth = cardElement.offsetWidth;
+      const containerWidth = container.clientWidth;
+      const scrollPosition = cardLeft - (containerWidth / 2) + (cardWidth / 2);
       
-      if (proofSection) {
-        const rect = proofSection.getBoundingClientRect();
-        // Section is in viewport if its top is visible
-        isInViewport = rect.top >= 0 && rect.top < window.innerHeight;
-      }
+      // Set scroll position directly (instant, no animation, no page scroll)
+      container.scrollLeft = scrollPosition;
 
-      if (isInViewport) {
-        // Only scroll carousel if section is already visible
-        // Use scrollIntoView which respects scroll-snap
-        cardElement.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
-      } else {
-        // Section not visible - just set scroll position without triggering page scroll
-        // Calculate center position manually
-        const cardLeft = cardElement.offsetLeft;
-        const cardWidth = cardElement.offsetWidth;
-        const containerWidth = container.clientWidth;
-        const scrollPosition = cardLeft - (containerWidth / 2) + (cardWidth / 2);
-        
-        // Set scroll position directly (no page scroll)
-        container.scrollLeft = scrollPosition;
-      }
-
-      // Mark as initialized after scroll completes
-      setTimeout(() => {
-        isProgrammaticScrollRef.current = false;
-        setCarouselInitialized(true);
-      }, 500); // Longer delay to ensure scroll completes
+      // Mark as initialized immediately (no delay needed since we're not animating)
+      isProgrammaticScrollRef.current = false;
+      setCarouselInitialized(true);
     };
 
     // Start initialization after a brief delay to ensure DOM is ready
@@ -1607,16 +1823,19 @@ export default function App() {
   // ============================================================================
   // Center carousel when proof section becomes active
   // ============================================================================
+  // FIX: Removed currentClientIndex from dependencies to break feedback loop
+  // This effect should only run when proof section becomes active, not on every carousel change
   useEffect(() => {
-    if (activeStage !== 'proof' || !carouselRef.current) return;
+    if (activeStage !== 'proof' || !carouselRef.current || !carouselInitialized) return;
 
     const timer = setTimeout(() => {
+      // Use current state value, but don't re-run effect when it changes
       const currentCloneIndex = getCloneIndex(currentClientIndex);
       scrollToCard(currentCloneIndex, false);
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [activeStage, currentClientIndex]);
+  }, [activeStage]); // FIXED: Only depends on activeStage to prevent feedback loop
 
   // Keyboard navigation for carousel
   useEffect(() => {
@@ -1636,29 +1855,26 @@ export default function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeStage, currentClientIndex]);
+  }, [activeStage]); // FIXED: Removed currentClientIndex - functions use ref for latest value
 
   useEffect(() => {
-    // 1. Reveal Observer
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
-
-    // 2. Stage/Focus Observer
+    // Stage/Focus Observer
     const stageOptions = {
       root: null,
       rootMargin: "-20% 0px -55% 0px",
-      threshold: [0, 0.1, 0.2, 0.5, 0.8, 1.0]
+      // Reduced thresholds from 6 to 3 key points to reduce callback frequency
+      threshold: [0.1, 0.5, 0.9]
     };
 
     // Track intersection ratios for all sections
     const sectionRatios = new Map<Element, number>();
+
+    // Cache snap elements (only query once, not on every callback)
+    const snapElements = document.querySelectorAll('[data-snap="true"]');
+
+    // Debounce state updates to prevent excessive re-renders
+    let stageUpdateTimeout: NodeJS.Timeout | null = null;
+    const DEBOUNCE_DELAY = 75; // ms
 
     const stageObserver = new IntersectionObserver((entries) => {
       // Update the ratios map with current intersection data
@@ -1681,22 +1897,32 @@ export default function App() {
         }
       });
 
-      // Only update if we found a visible section
-      if (mostVisibleElement) {
-        const stageId = mostVisibleElement.getAttribute('data-stage');
-        if (stageId) {
+      // Clear any pending update
+      if (stageUpdateTimeout) {
+        clearTimeout(stageUpdateTimeout);
+      }
+
+      // Debounce state updates and DOM manipulation
+      stageUpdateTimeout = setTimeout(() => {
+        // Only update if we found a visible section
+        if (mostVisibleElement) {
+          const stageId = mostVisibleElement.getAttribute('data-stage');
+          if (stageId) {
             setActiveStage(stageId);
-            document.querySelectorAll('[data-snap="true"]').forEach(s => s.classList.remove('active-section'));
-          mostVisibleElement.classList.add('active-section');
+            // Use cached querySelectorAll result
+            snapElements.forEach(s => s.classList.remove('active-section'));
+            mostVisibleElement.classList.add('active-section');
 
             if (stageId === 'guarantee') {
-            mostVisibleElement.classList.add('guarantee-revealed');
+              mostVisibleElement.classList.add('guarantee-revealed');
             }
           }
         }
+      }, DEBOUNCE_DELAY);
     }, stageOptions);
 
-    document.querySelectorAll('[data-snap="true"]').forEach((el) => stageObserver.observe(el));
+    // Observe all snap elements (using cached reference)
+    snapElements.forEach((el) => stageObserver.observe(el));
 
     // Staggered animation for get section cards
     const getCardsContainer = document.getElementById('get-cards-container');
@@ -1723,8 +1949,10 @@ export default function App() {
     }
 
     return () => {
-      revealObserver.disconnect();
       stageObserver.disconnect();
+      if (stageUpdateTimeout) {
+        clearTimeout(stageUpdateTimeout);
+      }
     };
   }, []);
 
@@ -1740,7 +1968,7 @@ export default function App() {
       
       <main id="main-content">
         {/* STAGE 1: HERO */}
-        <section id="hero" data-stage="hero" data-snap="true" className="stage reveal">
+        <section id="hero" data-stage="hero" data-snap="true" className="stage">
           <div className="absolute inset-0 z-0 hero-overlay" aria-hidden="true"></div>
           <Navbar />
 
@@ -1769,7 +1997,7 @@ export default function App() {
         </section>
 
         {/* STAGE 2: REFLECTIVE DIAGNOSIS */}
-        <section id="diagnosis" data-stage="diagnosis" data-snap="true" className="stage stage-alt-1 reveal">
+        <section id="diagnosis" data-stage="diagnosis" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 reflection-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 py-2 md:py-10 relative z-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="למה נתקעת?" />
@@ -1835,7 +2063,7 @@ export default function App() {
         </section>
 
         {/* STAGE 3: PROOF */}
-        <section id="proof" data-stage="proof" data-snap="true" className="stage stage-alt-1 reveal">
+        <section id="proof" data-stage="proof" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-2 md:py-4 h-full flex flex-col">
             <StoryHeader text="כשהתהליך נכון – רואים את זה" />
@@ -2030,7 +2258,7 @@ export default function App() {
         </section>
 
         {/* STAGE 4: ABOUT */}
-        <section id="about" data-stage="about" data-snap="true" className="stage reveal">
+        <section id="about" data-stage="about" data-snap="true" className="stage">
           <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="מי עומד מאחורי התהליך" />
@@ -2152,7 +2380,7 @@ export default function App() {
         </section>
 
         {/* STAGE 7: SOLUTION (GET) */}
-        <section id="get" data-stage="get" data-snap="true" className="stage stage-alt-1 reveal">
+        <section id="get" data-stage="get" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-10 h-full flex flex-col justify-center">
             <StoryHeader text="מכאן מתחיל הסדר" />
@@ -2180,7 +2408,7 @@ export default function App() {
         </section>
 
         {/* STAGE 8: SOLUTION (HOW) */}
-        <section id="how" data-stage="how" data-snap="true" className="stage reveal">
+        <section id="how" data-stage="how" data-snap="true" className="stage">
           <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-0 md:py-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="ככה נראה תהליך שעובד" />
@@ -2208,7 +2436,7 @@ export default function App() {
         {/* STAGE 9: WAITING COST */}
         <section id="waiting" data-stage="waiting" data-snap="true" className="stage stage-alt-2 text-center">
           <div className="absolute inset-0 z-0 waiting-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 relative z-10 max-w-4xl reveal">
+          <div className="container mx-auto px-4 relative z-10 max-w-4xl">
             <StoryHeader text="זה הרגע שרוב האנשים עוצרים" />
             <h2 className="text-4xl md:text-6xl font-black heading-font mb-4">המחיר של להמשיך לחכות?</h2>
             <div className="text-5xl md:text-7xl font-black text-accent mb-12 block animate-pulse">הוא גבוה מדי</div>
@@ -2239,7 +2467,7 @@ export default function App() {
         </section>
 
         {/* STAGE 10: FAQ */}
-        <section id="faq" data-stage="faq" data-snap="true" className="stage stage-alt-1 reveal">
+        <section id="faq" data-stage="faq" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 faq-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col">
             <StoryHeader text="יש לך שאלות? יש לנו תשובות" />
@@ -2311,7 +2539,7 @@ export default function App() {
         </section>
 
         {/* STAGE 11: ACTION */}
-        <section id="action" data-stage="action" data-snap="true" className="stage stage-alt-1 reveal">
+        <section id="action" data-stage="action" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 cta-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center">
             <StoryHeader text="הצעד האחרון בדרך שלך" />
