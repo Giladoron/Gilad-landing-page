@@ -1858,7 +1858,7 @@ export default function App() {
                     return (
                       <div
                         key={`${client.name}-${client.age}-${index}`}
-                        className={`embla__slide flex-shrink-0 w-[90vw] sm:w-[80vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] transition-all duration-500 ${
+                        className={`embla__slide flex-shrink-0 w-[80vw] sm:w-[70vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] transition-all duration-500 ${
                           isActive 
                             ? 'opacity-100 z-10 scale-[1.03] md:scale-105' 
                             : 'opacity-40 scale-95 blur-[1px]'
@@ -2238,7 +2238,7 @@ export default function App() {
                         {/* Desktop: Click to expand */}
                         <button
                           onClick={() => toggleStep(idx)}
-                          className="hidden md:flex items-center gap-2 mt-3 text-accent text-xs hover:text-accent/80 transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1"
+                          className="hidden md:flex justify-center w-fit mx-auto mt-3 text-accent hover:text-accent/80 transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1"
                           aria-expanded={isExpanded}
                           aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
                           onKeyDown={(e) => {
@@ -2249,25 +2249,25 @@ export default function App() {
                           }}
                         >
                           <ChevronDown className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} size={14} aria-hidden="true" />
-                          <span>{isExpanded ? 'סגור' : 'קרא עוד'}</span>
                         </button>
                         
-                        {/* Mobile: Tap to expand accordion */}
-                        <button
-                          onClick={() => toggleStep(idx)}
-                          className="md:hidden flex items-center gap-2 mt-3 text-accent text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-2 py-1"
-                          aria-expanded={isExpanded}
-                          aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              toggleStep(idx);
-                            }
-                          }}
-                        >
-                          <ChevronDown className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} size={16} aria-hidden="true" />
-                          <span>{isExpanded ? 'סגור' : 'קרא עוד'}</span>
-                        </button>
+                        {/* Mobile: Tap to expand accordion - centered with text content */}
+                        <div className="md:hidden flex justify-center mt-3 px-1">
+                          <button
+                            onClick={() => toggleStep(idx)}
+                            className="flex justify-center w-fit text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-2 py-1"
+                            aria-expanded={isExpanded}
+                            aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                toggleStep(idx);
+                              }
+                            }}
+                          >
+                            <ChevronDown className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} size={16} aria-hidden="true" />
+                          </button>
+                        </div>
                         
                         {/* Expanded explanation */}
                         {isExpanded && (
