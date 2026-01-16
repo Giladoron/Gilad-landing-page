@@ -1996,7 +1996,7 @@ export default function App() {
                 <div 
                   className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10"
                   style={{ 
-                    aspectRatio: '16/9', // Wider aspect for testimonial
+                    aspectRatio: '9/16', // Match actual video format (portrait)
                     maxHeight: '75dvh',
                     minHeight: '400px',
                     maxWidth: '100%',
@@ -2037,7 +2037,7 @@ export default function App() {
                 <div 
                   className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10" 
                   style={{ 
-                    aspectRatio: '3/4',
+                    aspectRatio: '9/16', // Match actual video format (portrait)
                     maxHeight: '75dvh', // Increased from 65vh to 75dvh for iOS Safari compatibility and to accommodate Vimeo controls
                     minHeight: '400px',
                     maxWidth: '100%',
