@@ -183,17 +183,17 @@
 /* Mobile: Adjust overlay strength if needed (still readable but image visible) */
 @media (max-width: 768px) {
   .section-with-fitness-bg::before {
-    background: rgba(10, 10, 10, 0.6); /* Reduced from 0.7 to 0.6 for better visibility, still strong for readability */
+    background: rgba(10, 10, 10, 0.3); /* Reduced for better image visibility on mobile */
   }
   
   .section-with-fitness-bg::after {
     background: radial-gradient(
       ellipse at center,
       transparent 0%,
-      transparent 30%,
-      rgba(10, 10, 10, 0.3) 55%,
-      rgba(10, 10, 10, 0.75) 100%
-    );
+      transparent 40%,
+      rgba(10, 10, 10, 0.15) 60%,
+      rgba(10, 10, 10, 0.5) 100%
+    ); /* Lighter vignette for better image visibility on mobile */
   }
   
   /* Remove fixed attachment on mobile for performance */
