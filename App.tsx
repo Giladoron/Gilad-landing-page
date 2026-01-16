@@ -1962,13 +1962,6 @@ export default function App() {
             <div className="flex justify-center mt-6 md:mt-8 mb-20 md:mb-2 flex-shrink-0 relative z-20">
               <a
                 href="#action"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const actionSection = document.getElementById('action');
-                  if (actionSection) {
-                    actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
                 className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105 shadow-lg relative z-20 pointer-events-auto"
               >
                 בנה לי את הגוף שתמיד רציתי
@@ -2125,7 +2118,7 @@ export default function App() {
               {/* Professional Image */}
               <div className="professional-image w-48 h-48 md:w-56 md:h-56 mx-auto md:mx-0 rounded-full overflow-hidden border-2 border-white/20 shadow-lg flex-shrink-0">
                 <img 
-                  src={`${(import.meta as any).env.BASE_URL}assets/about/professional-image.webp`}
+                  src={`${(import.meta as any).env.BASE_URL}assets/Gemini_Generated_Image_4g6yhk4g6yhk4g6y.png`}
                   alt="גילעד דורון"
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -2309,13 +2302,6 @@ export default function App() {
             <div className="flex justify-center mt-6 md:mt-8 mb-4">
               <a
                 href="#action"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const actionSection = document.getElementById('action');
-                  if (actionSection) {
-                    actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
                 className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105"
               >
                 בוא נבדוק אם זה מתאים לך
@@ -2381,13 +2367,6 @@ export default function App() {
             <div className="flex justify-center mt-4 md:mt-6 mb-4">
               <a
                 href="#action"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const actionSection = document.getElementById('action');
-                  if (actionSection) {
-                    actionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
                 className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105 shadow-lg"
               >
                 מוכן להתחיל?

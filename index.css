@@ -414,10 +414,20 @@
   opacity: 0.95;
 }
 
+/* Zoom in on professional image - focus on face/upper body */
+.professional-image img {
+  object-position: center 20%; /* Focus on upper portion (face area) */
+  transform: scale(1.15); /* Zoom in 15% */
+}
+
 @media (max-width: 768px) {
   .professional-image {
     margin-top: 2rem;
     margin-bottom: 1rem;
+  }
+  
+  .professional-image img {
+    transform: scale(1.2); /* Slightly more zoom on mobile */
   }
 }
 
