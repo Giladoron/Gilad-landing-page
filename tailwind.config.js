@@ -12,6 +12,14 @@ export default {
         sans: ["Heebo", "sans-serif"],
         heading: ["Montserrat", "Heebo", "sans-serif"],
       },
+      screens: {
+        // Add tablet/laptop breakpoint for better 15.6" laptop support
+        // Default: mobile (0px+)
+        // md: 768px (tablets/small laptops) - Tailwind default
+        // lg: 1024px (laptops/desktops) - Tailwind default
+        // Ensure md breakpoint works well for 15.6" laptops (typically 1366px or 1920px width)
+        // Most 15.6" laptops are >= 1024px, so they should use lg: breakpoint
+      },
     },
   },
   plugins: [],

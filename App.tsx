@@ -2145,7 +2145,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="text-center mt-2 md:mt-8 max-w-2xl mx-auto compact-hide">
+            <div className="text-center mt-2 md:mt-8 max-w-2xl mx-auto">
               <p className="text-base md:text-2xl font-bold text-white border-b border-white/5 pb-2 md:pb-4 compact-text">
                 אם אתה רוצה תהליך אחד מדוייק שמביא תוצאות, <span className="text-accent">אני כאן.</span>
               </p>
