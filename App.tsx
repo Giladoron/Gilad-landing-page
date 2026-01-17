@@ -1221,12 +1221,12 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         height: '100%', 
         minHeight: '400px',
         position: 'relative', 
-        overflow: isIOSDevice ? 'visible' : 'hidden',
+        overflow: 'hidden',
         overflowX: 'hidden', // Always hide horizontal overflow
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom: isIOSDevice ? '60px' : '0'
+        paddingBottom: '0'
       }}
     >
       <iframe
@@ -1236,13 +1236,13 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         style={{ 
           border: 'none', 
           width: '100%', 
-          height: isIOSDevice ? 'calc(100% - 60px)' : '100%', 
+          height: '100%', 
           minHeight: '400px',
           backgroundColor: '#000',
           position: 'absolute',
           top: 0,
           left: 0,
-          bottom: isIOSDevice ? '60px' : 0,
+          bottom: 0,
           pointerEvents: 'auto' // Ensure touch events work on iOS
         }}
         frameBorder="0"
@@ -1256,13 +1256,14 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       <button
         onClick={handleToggleMute}
         aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
-        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-10 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
         style={{
           minWidth: '48px',
           minHeight: '48px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          zIndex: 30 // Ensure button is above iframe and all overlays
         }}
       >
         {isMuted ? (
@@ -1586,12 +1587,12 @@ const VideoPlayer: React.FC = () => {
         height: '100%', 
         minHeight: '400px',
         position: 'relative', 
-        overflow: isIOSDevice ? 'visible' : 'hidden',
+        overflow: 'hidden',
         overflowX: 'hidden', // Always hide horizontal overflow
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom: isIOSDevice ? '60px' : '0'
+        paddingBottom: '0'
       }}
     >
       <iframe
@@ -1601,13 +1602,13 @@ const VideoPlayer: React.FC = () => {
         style={{ 
           border: 'none', 
           width: '100%', 
-          height: isIOSDevice ? 'calc(100% - 60px)' : '100%', 
+          height: '100%', 
           minHeight: '400px',
           backgroundColor: '#000',
           position: 'absolute',
           top: 0,
           left: 0,
-          bottom: isIOSDevice ? '60px' : 0,
+          bottom: 0,
           pointerEvents: 'auto' // Ensure touch events work on iOS
         }}
         frameBorder="0"
@@ -1648,13 +1649,14 @@ const VideoPlayer: React.FC = () => {
       <button
         onClick={handleToggleMute}
         aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
-        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-10 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
         style={{
           minWidth: '48px',
           minHeight: '48px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          zIndex: 30 // Ensure button is above iframe and all overlays
         }}
       >
         {isMuted ? (
@@ -2157,10 +2159,10 @@ export default function App() {
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
                 {/* Video container with floating shadow */}
                 <div 
-                  className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10"
+                  className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
                   style={{ 
                     aspectRatio: '9/16', // Match actual video format (portrait)
-                    maxHeight: '75dvh', // Increased from 65vh to 75dvh for iOS Safari compatibility and to accommodate Vimeo controls
+                    maxHeight: isIOS() ? '85dvh' : '75dvh', // More space for controls on iOS
                     minHeight: '400px',
                     maxWidth: '100%',
                     margin: '0 auto',
@@ -2198,10 +2200,10 @@ export default function App() {
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
                 {/* Video container with floating shadow */}
                 <div 
-                  className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10" 
+                  className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
                   style={{ 
                     aspectRatio: '9/16', // Match actual video format (portrait)
-                    maxHeight: '75dvh', // Increased from 65vh to 75dvh for iOS Safari compatibility and to accommodate Vimeo controls
+                    maxHeight: isIOS() ? '85dvh' : '75dvh', // More space for controls on iOS
                     minHeight: '400px',
                     maxWidth: '100%',
                     margin: '0 auto',
