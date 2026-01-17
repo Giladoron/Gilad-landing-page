@@ -37,10 +37,12 @@ jobs:
         run: npm run build
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}
-          VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID }}
-          VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
-          VITE_RECIPIENT_EMAIL: ${{ secrets.VITE_RECIPIENT_EMAIL }}
+          # EmailJS vars are optional - code has fallbacks for SERVICE_ID and TEMPLATE_ID
+          # PUBLIC_KEY will log a warning but won't fail the build
+          VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY || '' }}
+          VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID || '' }}
+          VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID || '' }}
+          VITE_RECIPIENT_EMAIL: ${{ secrets.VITE_RECIPIENT_EMAIL || '' }}
       
       - name: Verify build output
         run: |
