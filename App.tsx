@@ -1798,7 +1798,7 @@ const VideoPlayer: React.FC = () => {
       <button
         onClick={handleToggleMute}
         aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
-        className="absolute bottom-6 right-6 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+        className="absolute bottom-8 right-6 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
         style={{
           minWidth: '48px',
           minHeight: '48px',
@@ -2334,7 +2334,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
             <StoryHeader text="מי עומד מאחורי התהליך" />
-            <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-4 h-full min-h-0 overflow-hidden">
+            <div className={`flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-4 h-full min-h-0 ${isIOS() ? '' : 'overflow-hidden'}`}>
               <div className="space-y-2 text-center md:text-right shrink-0">
                 <div className="space-y-1">
                   <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
@@ -2354,7 +2354,7 @@ export default function App() {
                   className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
                   style={{ 
                     aspectRatio: '9/16', // Match actual video format (portrait)
-                    maxHeight: isIOS() ? '85dvh' : '75dvh', // More space for controls on iOS
+                    maxHeight: isIOS() ? '90dvh' : '75dvh', // Even more space for controls on iOS
                     minHeight: '400px',
                     maxWidth: '100%',
                     margin: '0 auto',
