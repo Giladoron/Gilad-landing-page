@@ -2061,7 +2061,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 hero-overlay" aria-hidden="true"></div>
           <Navbar />
 
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-0 mobile-hero-spacing">
+          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-20 lg:pt-24 mobile-hero-spacing">
             <StoryHeader text="החלום שלך מתחיל כאן" />
             <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
               <div className="space-y-4 md:space-y-6 text-center md:text-right">
@@ -2094,7 +2094,7 @@ export default function App() {
             <StoryHeader text="למה נתקעת?" />
             
             <div className="text-center max-w-3xl mx-auto mb-2 md:mb-8 space-y-1 md:space-y-4">
-              <h2 className="text-xl md:text-5xl font-black heading-font leading-tight compact-heading">
+              <h2 className="text-xl md:text-3xl lg:text-5xl font-black heading-font leading-tight compact-heading">
                 אתה עובד 'קשה' <span className="text-accent">במקום לעבוד 'נכון'</span>
               </h2>
               <p className="text-sm md:text-xl text-gray-300 leading-relaxed compact-text">
@@ -2161,11 +2161,11 @@ export default function App() {
             
             {/* Header Section */}
             <div className="text-center mb-2 md:mb-3 flex-shrink-0">
-              <h2 className="text-4xl md:text-7xl font-black heading-font leading-tight mb-4">התוצאות מדברות</h2>
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-black heading-font leading-tight mb-4">התוצאות מדברות</h2>
               <div className="text-lg md:text-2xl text-accent font-black max-w-3xl mx-auto leading-relaxed mb-2">
                 התוצאה שלך – האחריות שלי.
               </div>
-              <p className="text-sm md:text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-sm md:text-base lg:text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
                 אנשים רגילים שהחליטו להפסיק לנחש ולהתחיל לראות תוצאות.
               </p>
             </div>
@@ -2366,7 +2366,7 @@ export default function App() {
               <div className="space-y-2 text-center md:text-right shrink-0">
                 <div className="space-y-1">
                   <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
-                  <h2 className="text-2xl md:text-5xl font-black heading-font leading-tight compact-heading">גילעד דורון</h2>
+                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight compact-heading">גילעד דורון</h2>
                 </div>
                 <p className="text-sm md:text-xl text-gray-300 leading-relaxed compact-text line-clamp-3 md:line-clamp-none">
                   אני לא 'מאמן כושר' שסופר חזרות. אני בונה <strong>מערכות חיים</strong> שמייצרות גוף חזק — ונשארות איתך לתמיד.
@@ -2414,7 +2414,7 @@ export default function App() {
                 />
               </div>
               <div className="space-y-6">
-                <h2 className="text-2xl md:text-5xl font-black heading-font leading-tight">למה אתה עומד במקום?</h2>
+                <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight">למה אתה עומד במקום?</h2>
                 <div className="space-y-6">
                   <p className="text-xl text-gray-300 leading-relaxed">רוב המתאמנים שמגיעים אלי משקיעים. הם מתאמנים מנסים ומשקיעים זמן ואנרגיה אבל לא רואים תוצאות</p>
                   <p className="text-xl font-bold text-white">זה קורה בדרך כלל בגלל:</p>
@@ -2486,7 +2486,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
             <StoryHeader text="מכאן מתחיל הסדר" />
-            <h2 className="text-2xl md:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4" id="get-cards-container">
               {[
                 { i: <Dumbbell />, t: "תוכנית אימונים אישית" },
@@ -2514,7 +2514,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-0 md:py-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
             <StoryHeader text="ככה נראה תהליך שעובד" />
-            <h2 className="text-xl md:text-5xl font-black heading-font text-center mb-4 md:mb-10 compact-heading">4 צעדים לתוצאה</h2>
+            <h2 className="text-xl md:text-3xl lg:text-5xl font-black heading-font text-center mb-4 md:mb-10 compact-heading">4 צעדים לתוצאה</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-6 relative mt-2 md:mt-4 min-h-0 mobile-steps-timeline">
               <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true"></div>
               {[
@@ -2683,7 +2683,7 @@ export default function App() {
             <StoryHeader text="יש לך שאלות? יש לנו תשובות" />
             
             <div className="text-center mb-4 md:mb-6">
-              <h2 className="text-2xl md:text-5xl font-black heading-font leading-tight mb-4">שאלות נפוצות</h2>
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight mb-4">שאלות נפוצות</h2>
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
                 כל מה שרצית לדעת על הליווי, התהליך, והתשובות
                   </p>
