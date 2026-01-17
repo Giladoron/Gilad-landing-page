@@ -66,10 +66,13 @@ declare global {
 }
 
 // --- EmailJS Configuration ---
-// Load from environment variables, fallback to hardcoded values for backward compatibility
+// Load from environment variables only (no hardcoded fallbacks for security)
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_fphe5xu';
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_8p1hgtg';
-const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'vT2iqiRsrq5f4D03A';
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+if (!EMAILJS_PUBLIC_KEY) {
+  console.error('VITE_EMAILJS_PUBLIC_KEY environment variable is required');
+}
 const RECIPIENT_EMAIL = import.meta.env.VITE_RECIPIENT_EMAIL || 'gilad042@gmail.com';
 
 // --- Constants ---
@@ -253,19 +256,25 @@ const LEGAL_CONTENT = {
     content: (
       <div className="space-y-4 text-gray-300">
         <p>אנחנו רואים חשיבות רבה בהנגשת האתר לכלל האוכלוסייה, מתוך אמונה כי לכל אדם מגיעה גישה שווה ונוחה לשירותים ולמידע ברשת.</p>
-        <p>האתר נבנה במטרה לעמוד בהנחיות WCAG 2.1 ברמה AA ככל הניתן.</p>
+        <p>האתר נבנה במטרה לעמוד בהנחיות WCAG 2.1 ברמה AA ככל הניתן. אנו ממשיכים לעבוד על שיפור הנגישות של האתר ומבצעים בדיקות נגישות שוטפות.</p>
+        <p><strong>מה אנחנו עושים כדי להבטיח נגישות:</strong></p>
         <ul className="list-disc pr-6 space-y-2">
-          <li>ניווט מלא באמצעות המקלדת.</li>
-          <li>היררכיית כותרות ברורה ותקינה.</li>
-          <li>טקסטים חלופיים (Alt-text) לתמונות משמעותיות.</li>
-          <li>ניגודיות צבעים המותאמת לקריאה נוחה.</li>
-          <li>תמיכה במצב העדפת תנועה מופחתת (Reduced Motion).</li>
+          <li>ניווט מלא באמצעות המקלדת – כל הפונקציות נגישות ללא עכבר</li>
+          <li>היררכיית כותרות ברורה ותקינה – מבנה לוגי של התוכן</li>
+          <li>טקסטים חלופיים (Alt-text) לתמונות משמעותיות – תמיכה בקוראי מסך</li>
+          <li>ניגודיות צבעים המותאמת לקריאה נוחה – עמידה בתקני WCAG AA</li>
+          <li>תמיכה במצב העדפת תנועה מופחתת (Reduced Motion) – כיבוד העדפות המשתמש</li>
+          <li>תמיכה בעברית RTL – ממשק מותאם לקריאה מימין לשמאל</li>
+          <li>מצבי מיקוד נראים – אינדיקטורים ברורים לניווט במקלדת</li>
         </ul>
+        <p>האתר עבר בדיקת נגישות ראשונית בינואר 2026. אנו ממשיכים לשפר את הנגישות באמצעות בדיקות שוטפות ומשוב מהמשתמשים.</p>
+        <p className="text-sm text-gray-400">אם נתקלתם בבעיית נגישות או אם יש לכם הצעות לשיפור, נשמח לשמוע מכם.</p>
         <div className="pt-4 border-t border-white/10">
           <p className="font-bold text-white mb-2">נתקלתם בבעיה? נשמח לעזור:</p>
           <p>רכז/ת נגישות: גילעד דורון</p>
-          <p>טלפון: 050-0000000</p>
-          <p>אימייל: support@giladdoron.co.il</p>
+          <p>טלפון: 052-8765992</p>
+          <p>אימייל: gilad042@gmail.com</p>
+          <p className="text-sm mt-2 text-gray-400">אנא צרו קשר ונשתדל לפתור את הבעיה בהקדם האפשרי.</p>
         </div>
       </div>
     )
@@ -274,14 +283,97 @@ const LEGAL_CONTENT = {
     title: 'מדיניות פרטיות',
     content: (
       <div className="space-y-4 text-gray-300">
-        <p>הפרטיות שלך חשובה לנו. המידע שאנו אוספים (שם, טלפון, אימייל) משמש אך ורק למטרות הבאות:</p>
+        <p className="font-bold text-white text-lg">1. מבוא</p>
+        <p>הפרטיות שלך חשובה לנו מאוד. מדיניות פרטיות זו מסבירה איזה מידע אנו אוספים, כיצד אנו משתמשים בו, עם מי אנו חולקים אותו, ומה הן הזכויות שלך ביחס למידע זה.</p>
+        <p>על ידי שימוש באתר זה והגשת טופס יצירת קשר, אתה מסכים לאיסוף ושימוש במידע בהתאם למדיניות זו.</p>
+
+        <p className="font-bold text-white text-lg mt-6">2. איזה מידע אנו אוספים</p>
+        <p>אנו אוספים את המידע הבא באמצעות טופס יצירת קשר:</p>
         <ul className="list-disc pr-6 space-y-2">
-          <li>יצירת קשר ראשוני ובדיקת התאמה לליווי.</li>
-          <li>מתן השירות המקצועי שסוכם עליו.</li>
-          <li>שיפור חוויית השימוש באתר.</li>
+          <li><strong>שם מלא</strong> – לצורך יצירת קשר אישי</li>
+          <li><strong>מספר טלפון</strong> – לצורך יצירת קשר</li>
+          <li><strong>כתובת אימייל</strong> – לצורך יצירת קשר ותקשורת</li>
+          <li><strong>העדפת התקשרות</strong> – דרך העדפתך ליצירת קשר (טלפון או וואטסאפ)</li>
         </ul>
-        <p>אנו מתחייבים כי לא נמכור את פרטיך לצדדים שלישיים. המידע נשמר באמצעי אבטחה סבירים ומקובלים.</p>
-        <p>לכל בקשה לעדכון או מחיקת המידע, ניתן לפנות אלינו בכתובת support@giladdoron.co.il.</p>
+        <p>אנו גם אוספים מידע טכני מסוים באופן אוטומטי כאשר אתה מבקר באתר:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>כתובת IP</li>
+          <li>סוג דפדפן ומכשיר</li>
+          <li>דפים שביקרת בהם באתר</li>
+          <li>זמן ומשך הביקור</li>
+        </ul>
+
+        <p className="font-bold text-white text-lg mt-6">3. בסיס חוקי לאיסוף המידע</p>
+        <p>אנו אוספים את המידע שלך על בסיס הסכמתך המפורשת. על ידי סימון תיבת ההסכמה בטופס, אתה מסכים לאיסוף ושימוש במידע שלך בהתאם למדיניות פרטיות זו.</p>
+
+        <p className="font-bold text-white text-lg mt-6">4. מטרת איסוף המידע</p>
+        <p>אנו משתמשים במידע שלך למטרות הבאות בלבד:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>יצירת קשר ראשוני ובדיקת התאמה לליווי</li>
+          <li>מתן השירות המקצועי שסוכם עליו (תוכנית אימונים ותזונה מותאמת אישית)</li>
+          <li>תקשורת שוטפת במהלך תקופת הליווי</li>
+          <li>שיפור חוויית השימוש באתר</li>
+          <li>עמידה בחובות משפטיות (אם נדרש)</li>
+        </ul>
+
+        <p className="font-bold text-white text-lg mt-6">5. שיתוף מידע עם צדדים שלישיים</p>
+        <p>אנו <strong>לא מוכרים ולא משכירים</strong> את המידע האישי שלך לצדדים שלישיים למטרות שיווק או פרסום.</p>
+        <p>אנו משתפים מידע עם ספקי שירותים צד שלישי הבאים, הנדרשים לפעילות האתר והשירותים:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li><strong>EmailJS</strong> – משמש לשליחת הודעות אימייל. המידע מועבר דרך שרתי EmailJS לכתובת האימייל שלנו. קרא את <a href="https://www.emailjs.com/legal/privacy-policy/" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">מדיניות הפרטיות של EmailJS</a>.</li>
+          <li><strong>Vimeo</strong> – וידאו מוטמע באתר דרך Vimeo. Vimeo עשויה להשתמש בעוגיות וכלי מעקב למטרות אנליטיקה ושיפור השירות. קרא את <a href="https://vimeo.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">מדיניות הפרטיות של Vimeo</a>.</li>
+          <li><strong>Google Fonts</strong> – גופנים נטענים דרך Google Fonts. Google עשויה לאסוף מידע על גישה לאתר (כתובת IP, סוג דפדפן). קרא את <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">מדיניות הפרטיות של Google</a>.</li>
+        </ul>
+        <p>ספקי שירותים אלה מחויבים להגן על המידע שלך ולהשתמש בו רק למטרות שנמסרו להם.</p>
+
+        <p className="font-bold text-white text-lg mt-6">6. עוגיות ואחסון בדפדפן</p>
+        <p>האתר משתמש ב:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li><strong>localStorage</strong> – לאחסון העדפות משתמש (למשל, האם הרחבת צעד בהדרכה). מידע זה אינו מידע אישי מזוהה.</li>
+          <li><strong>sessionStorage</strong> – לאחסון מידע זמני במהלך הפעלת הדפדפן (למשל, האם הוצג חלון קופץ). מידע זה נמחק כאשר סוגרים את הדפדפן.</li>
+        </ul>
+        <p>צדדים שלישיים (Vimeo, Google Fonts) עשויים להשתמש בעוגיות למטרות אנליטיקה. איננו שולטים בעוגיות אלה. אתה יכול לנהל עוגיות בהגדרות הדפדפן שלך.</p>
+
+        <p className="font-bold text-white text-lg mt-6">7. תקופת שמירת המידע</p>
+        <p>אנו שומרים את המידע שלך למשך הזמן הנדרש למטרות שפורטו במדיניות זו:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li><strong>מידע מטפס יצירת קשר:</strong> נשמר עד לביטול ההסכמה שלך או עד שנתיים של חוסר פעילות, לפי המוקדם מביניהם.</li>
+          <li><strong>מידע מתקופת הליווי:</strong> נשמר למשך תקופת הליווי ועד שנתיים לאחר סיום הליווי, למטרות מעקב ותמיכה.</li>
+        </ul>
+        <p>בסיום תקופת השמירה, המידע יימחק או יעבור אנונימיזציה באופן בטוח.</p>
+
+        <p className="font-bold text-white text-lg mt-6">8. אבטחת המידע</p>
+        <p>אנו נוקטים באמצעי אבטחה סבירים כדי להגן על המידע שלך:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>העברת מידע מוצפנת באמצעות HTTPS</li>
+          <li>שימוש בשירותי צד שלישי מאובטחים (EmailJS) עם תקני אבטחה תעשייתיים</li>
+          <li>גישה מוגבלת למידע – רק לאנשים הזקוקים לו למתן השירות</li>
+        </ul>
+        <p>למרות מאמצינו להגן על המידע, אין אמצעי אבטחה מושלמים. אנו לא יכולים להבטיח אבטחה מוחלטת של המידע במעבר באינטרנט.</p>
+
+        <p className="font-bold text-white text-lg mt-6">9. הזכויות שלך</p>
+        <p>לפי חוק הגנת הפרטיות הישראלי ו-GDPR (אם ישים), יש לך הזכויות הבאות:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li><strong>זכות גישה</strong> – אתה רשאי לבקש לקבל עותק של המידע האישי שאנו מחזיקים עליך</li>
+          <li><strong>זכות תיקון</strong> – אתה רשאי לבקש לתקן מידע לא מדויק או לא מעודכן</li>
+          <li><strong>זכות מחיקה</strong> – אתה רשאי לבקש למחוק את המידע שלך ("הזכות להישכח")</li>
+          <li><strong>זכות התנגדות</strong> – אתה רשאי להתנגד לעיבוד המידע שלך למטרות מסוימות</li>
+          <li><strong>זכות הגבלה</strong> – אתה רשאי לבקש להגביל את עיבוד המידע שלך</li>
+          <li><strong>זכות ניידות נתונים</strong> – אתה רשאי לקבל את המידע שלך בפורמט מובנה ולהעבירו לספק אחר</li>
+          <li><strong>זכות ביטול הסכמה</strong> – אתה רשאי לבטל את הסכמתך בכל עת</li>
+        </ul>
+        <p>למימוש הזכויות שלך, פנה אלינו בכתובת gilad042@gmail.com. נשתדל לענות לבקשה שלך תוך 30 יום.</p>
+
+        <p className="font-bold text-white text-lg mt-6">10. שינויים במדיניות פרטיות</p>
+        <p>אנו רשאים לעדכן מדיניות פרטיות זו מעת לעת. שינויים משמעותיים יפורסמו באתר זה, ונציין את תאריך העדכון. המשך השימוש באתר לאחר שינוי במדיניות מהווה הסכמה לעדכון.</p>
+
+        <p className="font-bold text-white text-lg mt-6">11. יצירת קשר</p>
+        <p>לכל שאלה, בקשה או תלונה הקשורה לפרטיות, ניתן לפנות אלינו:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>אימייל: gilad042@gmail.com</li>
+          <li>טלפון: 052-8765992</li>
+        </ul>
+        <p className="text-sm text-gray-400 mt-4">תאריך עדכון אחרון: ינואר 2026</p>
       </div>
     )
   },
@@ -289,14 +381,102 @@ const LEGAL_CONTENT = {
     title: 'תקנון שימוש',
     content: (
       <div className="space-y-4 text-gray-300">
-        <p>השימוש באתר ובשירותי הליווי של גילעד דורון כפוף לתנאים הבאים:</p>
+        <p className="font-bold text-white text-lg">1. הסכמה לתנאים</p>
+        <p>על ידי גישה לשימוש באתר זה ובשירותי הליווי של גילעד דורון, אתה מסכים לתנאי השימוש המפורטים להלן. אם אינך מסכים לתנאים אלה, אנא אל תשתמש באתר או בשירותים.</p>
+
+        <p className="font-bold text-white text-lg mt-6">2. תיאור השירות</p>
+        <p>גילעד דורון מספק שירותי ליווי אונליין לאימונים ותזונה בהתאמה אישית. השירות כולל:</p>
         <ul className="list-disc pr-6 space-y-2">
-          <li><strong>תיאור השירות:</strong> ליווי אונליין לאימונים ותזונה בהתאמה אישית.</li>
-          <li><strong>ייעוץ רפואי:</strong> המידע באתר ובליווי אינו מהווה ייעוץ רפואי. יש להיוועץ ברופא לפני תחילת כל פעילות גופנית או שינוי תזונתי.</li>
-          <li><strong>תוצאות:</strong> התוצאות משתנות מאדם לאדם ותלויות במידת היישום וההתמדה.</li>
-          <li><strong>קניין רוחני:</strong> כל התכנים, התוכניות והעיצובים באתר שייכים בלעדית לגילעד דורון.</li>
+          <li>תוכנית אימונים ותזונה מותאמת אישית</li>
+          <li>מעקב וליווי שוטף (באמצעות וואטסאפ או טלפון)</li>
+          <li>בדיקות התקדמות והתאמות תקופתיות</li>
+          <li>תמיכה ועזרה במהלך תקופת הליווי</li>
         </ul>
-        <p>אנו שואפים לתת את השירות הטוב ביותר ובשקיפות מלאה.</p>
+        <p>השירות מסופק באופן מקוון בלבד ואינו דורש פגישות פיזיות. המחיר והתנאים מותאמים אישית למטרות ולתוכנית שנבנית עבור כל לקוח.</p>
+
+        <p className="font-bold text-white text-lg mt-6">3. הגבלת גיל</p>
+        <p>השירות מיועד לבני 18 ומעלה בלבד. על ידי שימוש באתר, אתה מאשר כי אתה בן 18 לפחות או שיש לך אישור הורה/אפוטרופוס אם אתה קטין.</p>
+
+        <p className="font-bold text-white text-lg mt-6">4. אין ייעוץ רפואי או טיפול</p>
+        <p><strong>חשוב ביותר:</strong> השירותים שמספק גילעד דורון אינם מהווים ייעוץ רפואי, אבחון רפואי, או טיפול רפואי מכל סוג שהוא.</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>האתר והשירותים לא מהווים תחליף לייעוץ רפואי, פסיכולוגי, או טיפול מקצועי אחר</li>
+          <li>המידע באתר ובליווי אינו מהווה המלצה רפואית או פרוטוקול טיפול</li>
+          <li>יש להיוועץ ברופא מוסמך או אנשי מקצוע רפואיים לפני תחילת כל פעילות גופנית או שינוי תזונתי</li>
+          <li>חובה לעבור בדיקה רפואית ולהתייעץ עם רופא לפני תחילת כל תוכנית אימונים, במיוחד אם יש לך בעיות רפואיות, פציעות, או מצבים רפואיים קיימים</li>
+        </ul>
+        <p>אם אתה סובל מכל בעיה רפואית, פציעה, או מצב רפואי, יש לקבל אישור רפואי לפני שימוש בשירותים.</p>
+
+        <p className="font-bold text-white text-lg mt-6">5. אחריות המשתמש</p>
+        <p>אתה לוקח אחריות מלאה על:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>קבלת אישור רפואי לפני תחילת תוכנית אימונים או שינוי תזונתי</li>
+          <li>דיווח מדויק על מצבך הבריאותי, פציעות קודמות, ומגבלות פיזיות</li>
+          <li>יישום התוכנית בהתאם להוראות ולטווח היכולות והמגבלות שלך</li>
+          <li>הפסקת פעילות מיד אם אתה חווה כאב, סחרחורת, קוצר נשימה, או כל תסמין לא תקין</li>
+          <li>שימוש בהגיון בריא ושיפוט מקצועי במהלך האימונים</li>
+        </ul>
+        <p>השימוש באתר ובשירותים הוא על <strong>אחריותך הבלעדית</strong>.</p>
+
+        <p className="font-bold text-white text-lg mt-6">6. אין אחריות לתוצאות</p>
+        <p>תוצאות האימונים והשינויים התזונתיים <strong>משתנות מאדם לאדם</strong> ותלויות בגורמים רבים, כולל אך לא רק:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>מידת היישום וההתמדה בתוכנית</li>
+          <li>מצב בריאותי בסיסי וגנטיקה</li>
+          <li>גיל, מין, ומטבוליזם</li>
+          <li>אורח חיים כולל (שינה, לחץ, פעילות יומית)</li>
+          <li>עמידה בהנחיות ושינויים נדרשים</li>
+        </ul>
+        <p>אנו <strong>לא מבטיחים ולא מתחייבים</strong> לתוצאות ספציפיות, ירידה במשקל, עליה במסת שריר, או כל תוצאה אחרת. תוצאות העבר של לקוחות אחרים אינן מבטיחות תוצאות דומות עבורך.</p>
+        <p>תצוגת תוצאות (תמונות לפני/אחרי, הצהרות לקוחות) נועדה למטרות דוגמה בלבד ומייצגת תוצאות אמיתיות של לקוחות שהסכימו לשתף את סיפורם. תוצאות אלה אינן אופייניות ואינן מבטיחות תוצאות דומות.</p>
+
+        <p className="font-bold text-white text-lg mt-6">7. הגבלת אחריות</p>
+        <p>במידה המרבית המותרת בחוק:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>גילעד דורון, האתר, והשירותים מסופקים "כפי שהם" ללא כל הבטחות, הבטחות, או אחריות מכל סוג שהוא</li>
+          <li>אנו לא נושאים באחריות לנזק ישיר, עקיף, מקרי, תוצאתי, או מיוחד הנובע משימוש או אי יכולת להשתמש באתר או בשירותים</li>
+          <li>אנו לא נושאים באחריות לנזקי גוף, פציעות, או בעיות בריאותיות הנובעות משימוש בשירותים</li>
+          <li>אחריותנו מוגבלת לסכום התשלום ששולם עבור השירות (אם ישים)</li>
+        </ul>
+        <p>למרות האמור לעיל, לא נגביל או נשלול אחריות במקרים בהם אי אפשר להגביל או לשלול אחריות לפי חוק.</p>
+
+        <p className="font-bold text-white text-lg mt-6">8. תשלום והחזר כספי</p>
+        <p>המחיר והתנאים מותאמים אישית לכל לקוח ונקבעים לאחר שיחת התאמה. התשלום יכול להיות חד פעמי או במסגרת תכנית תשלום, לפי הסכם שנעשה בינך לבין גילעד דורון.</p>
+        <p><strong>החזר כספי:</strong> לפי מדיניות העסק, אם יישמת את התוכנית במלואה ולא הגעת למטרות שנקבעו, אתה זכאי להמשך ליווי בחינם עד להשגת המטרות או להחזר כספי מלא, לפי בחירתך. החזר כספי יחושב על בסיס הזמן שנותר מתקופת הליווי.</p>
+        <p>בקשות להחזר כספי יש לשלוח בכתב לכתובת gilad042@gmail.com. ההחזר יבוצע באמצעי התשלום המקורי תוך 14 ימי עסקים.</p>
+
+        <p className="font-bold text-white text-lg mt-6">9. ביטול וסיום שירות</p>
+        <p>אתה רשאי לבטל את השירות בכל עת באמצעות הודעה בכתב לכתובת gilad042@gmail.com. ביטול יעמוד בתנאי מדיניות ההחזר המפורטת לעיל.</p>
+        <p>גילעד דורון רשאי לסיים או להשעות את השירות במקרים הבאים:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>הפרת תנאי השימוש</li>
+          <li>שימוש לא הולם או התנהגות לא מכבדת</li>
+          <li>אי תשלום או הפרת תנאי תשלום</li>
+          <li>מצב רפואי המצריך הפסקת השירות (לפי המלצה רפואית)</li>
+        </ul>
+
+        <p className="font-bold text-white text-lg mt-6">10. קניין רוחני</p>
+        <p>כל התכנים, התוכניות, העיצובים, הלוגו, והחומרים באתר שייכים בלעדית לגילעד דורון או לבעלי הזכויות שלו ומוגנים בזכויות יוצרים ובחוקי הקניין הרוחני.</p>
+        <p>אין להעתיק, לשכפל, להפיץ, או להשתמש בכל חומר מהאתר או מהשירותים ללא אישור מפורש בכתב.</p>
+        <p>תוכניות האימונים והתזונה הן רכוש פרטי ומוגנות בזכויות יוצרים. אסור לשתף, להפיץ, או למכור את התוכניות לאחרים.</p>
+
+        <p className="font-bold text-white text-lg mt-6">11. קישורים לאתרים אחרים</p>
+        <p>האתר עשוי לכלול קישורים לאתרים של צדדים שלישיים (כמו וואטסאפ, אינסטגרם). איננו שולטים בתוכן של אתרים אלה ולא נושאים באחריות להם. שימוש בקישורים אלה הוא על אחריותך.</p>
+
+        <p className="font-bold text-white text-lg mt-6">12. שינויים בתנאים</p>
+        <p>אנו רשאים לעדכן תנאי שימוש אלה מעת לעת. שינויים משמעותיים יפורסמו באתר, ונציין את תאריך העדכון. המשך השימוש באתר לאחר שינוי בתנאים מהווה הסכמה לעדכון.</p>
+
+        <p className="font-bold text-white text-lg mt-6">13. דין שיפוט ומקום השיפוט</p>
+        <p>תנאי שימוש אלה כפופים לחוקי מדינת ישראל. כל מחלוקת הנובעת מתנאים אלה או הקשורה בהם תידון בבתי המשפט המוסמכים בישראל בלבד.</p>
+
+        <p className="font-bold text-white text-lg mt-6">14. יצירת קשר</p>
+        <p>לכל שאלה או בקשה הקשורה לתנאי השימוש, ניתן לפנות אלינו:</p>
+        <ul className="list-disc pr-6 space-y-2">
+          <li>אימייל: gilad042@gmail.com</li>
+          <li>טלפון: 052-8765992</li>
+        </ul>
+
+        <p className="text-sm text-gray-400 mt-4">תאריך עדכון אחרון: ינואר 2026</p>
       </div>
     )
   }
@@ -333,7 +513,17 @@ const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, 
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
+      <button
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-default focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset"
+        onClick={onClose}
+        aria-label="סגור חלון"
+        tabIndex={-1}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            onClose();
+          }
+        }}
+      />
       <FocusTrap>
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
         <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
@@ -391,7 +581,17 @@ const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => vo
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="client-story-title">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
+      <button
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-default focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset"
+        onClick={onClose}
+        aria-label="סגור חלון"
+        tabIndex={-1}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            onClose();
+          }
+        }}
+      />
       <FocusTrap>
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
         <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
@@ -796,7 +996,17 @@ const ExitIntentPopup: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="exit-intent-title">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={handleClose} aria-label="סגור חלון" role="button" tabIndex={-1} />
+      <button
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-default focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset"
+        onClick={handleClose}
+        aria-label="סגור חלון"
+        tabIndex={-1}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            handleClose();
+          }
+        }}
+      />
       <FocusTrap>
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-md relative z-10 p-6 md:p-8 shadow-2xl">
         <button 
@@ -853,7 +1063,7 @@ const Navbar: React.FC = () => (
   </header>
 );
 
-const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
+const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = ({ isFooter = false, onPrivacyClick }) => {
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     phone: '',
@@ -874,6 +1084,11 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
       // Check if EmailJS is loaded
       if (!window.emailjs) {
         throw new Error('EmailJS לא נטען. אנא רענן את הדף.');
+      }
+
+      // Check if EmailJS public key is configured
+      if (!EMAILJS_PUBLIC_KEY) {
+        throw new Error('תצורת EmailJS חסרה. אנא פנה לתמיכה.');
       }
 
       // Prepare template parameters
@@ -1012,8 +1227,9 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
             </div>
             <fieldset className="flex gap-4 py-2">
               <legend className="sr-only">העדפת התקשרות</legend>
-              <label className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <label htmlFor="contactPref-phone" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <input 
+                  id="contactPref-phone"
                   type="radio" 
                   name="contactPref" 
                   className="accent-accent"
@@ -1023,8 +1239,9 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
                 />
                 <span className="text-sm">טלפון</span>
               </label>
-              <label className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <label htmlFor="contactPref-whatsapp" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <input 
+                  id="contactPref-whatsapp"
                   type="radio" 
                   name="contactPref" 
                   className="accent-accent"
@@ -1049,7 +1266,22 @@ const LeadForm: React.FC<{ isFooter?: boolean }> = ({ isFooter = false }) => {
                 onChange={e => setFormData({...formData, consent: e.target.checked})}
               />
               <label htmlFor="consent" className={`text-xs opacity-70 cursor-pointer ${isFooter ? 'text-gray-300' : 'text-gray-700'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                אני מאשר/ת יצירת קשר בהתאם למדיניות פרטיות
+                אני מאשר/ת יצירת קשר בהתאם ל{' '}
+                {onPrivacyClick ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onPrivacyClick();
+                    }}
+                    className="underline hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 rounded"
+                    aria-label="קרא מדיניות פרטיות"
+                  >
+                    מדיניות פרטיות
+                  </button>
+                ) : (
+                  <span className="underline">מדיניות פרטיות</span>
+                )}
               </label>
             </div>
             <button 
@@ -2048,7 +2280,7 @@ export default function App() {
   return (
     <div className="min-h-screen selection:bg-accent selection:text-white">
       <div className="global-parallax-bg" aria-hidden="true" />
-      <a href="#main-content" className="sr-only">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[9999] focus:bg-accent focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-brandDark">
         דלג לתוכן הראשי
       </a>
       <MobileProgressBar activeStageIndex={activeStageIndex} />
@@ -2080,7 +2312,7 @@ export default function App() {
               </div>
               <div className="delay-100 w-full flex-1 flex flex-col justify-end pb-2 md:pb-0">
                 <div className="mobile-form-container">
-                  <LeadForm isFooter={true} />
+                  <LeadForm isFooter={true} onPrivacyClick={() => setModalType('privacy')} />
                 </div>
               </div>
             </div>
@@ -2752,7 +2984,7 @@ export default function App() {
                 </div>
               </div>
               <div className="mobile-form-container">
-                <LeadForm isFooter={true} />
+                <LeadForm isFooter={true} onPrivacyClick={() => setModalType('privacy')} />
               </div>
             </div>
           </div>
