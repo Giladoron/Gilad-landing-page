@@ -1084,43 +1084,193 @@ declare global {
   }
 }
 
-// Simple testimonial video component (no auto-play/pause, just basic embed)
+// Helper function to detect iOS devices
+const isIOS = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+};
+
+// Simple testimonial video component with Vimeo Player API and custom floating mute/unmute button
 const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
-  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=1&loop=0&controls=1&background=0`;
+  const [isIOSDevice, setIsIOSDevice] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Start muted (browser requirement for autoplay)
+  const [isVisible, setIsVisible] = useState(false);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const playerRef = useRef<any>(null);
+  const hasInitializedRef = useRef(false);
+  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isVisibleRef = useRef(false); // Track visibility in ref to avoid stale closures
+  const playTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isPlayingRef = useRef(false); // Track if we've started playing to prevent rapid toggles
+  
+  useEffect(() => {
+    setIsIOSDevice(isIOS());
+  }, []);
+  
+  // Sync refs when state changes
+  useEffect(() => {
+    isVisibleRef.current = isVisible;
+  }, [isVisible]);
+  
+  // Vimeo URL with controls enabled for interactivity (controls=1 to make video clickable, we use custom button for mute)
+  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=1&loop=0&controls=1&background=0&playsinline=1&responsive=1`;
+  
+  // Initialize Vimeo Player when iframe loads (similar to VideoPlayer)
+  useEffect(() => {
+    if (!iframeRef.current || hasInitializedRef.current) return;
+
+    let retryCount = 0;
+    const maxRetries = 50; // 5 seconds max wait
+    const timeoutIds: NodeJS.Timeout[] = [];
+
+    const initPlayer = async () => {
+      if (window.Vimeo?.Player && iframeRef.current && !playerRef.current) {
+        try {
+          playerRef.current = new window.Vimeo.Player(iframeRef.current);
+          hasInitializedRef.current = true;
+          
+          // Check initial mute state
+          try {
+            await new Promise(resolve => setTimeout(resolve, 200));
+            const initialMuted = await playerRef.current.getMuted();
+            setIsMuted(initialMuted);
+          } catch (err) {
+            // Ignore errors if player not fully ready yet
+          }
+          
+          // If section is already visible when player initializes, start playing
+          if (isVisibleRef.current) {
+            setTimeout(async () => {
+              try {
+                if (playerRef.current && isVisibleRef.current) {
+                  await playerRef.current.play();
+                  // Get initial mute state (video starts muted per browser requirements)
+                  try {
+                    const muted = await playerRef.current.getMuted();
+                    setIsMuted(muted);
+                  } catch (err) {
+                    // Ignore
+                  }
+                }
+              } catch (err) {
+                // Ignore play errors
+              }
+            }, 300);
+          }
+          
+          // Clear all timeouts once initialized
+          timeoutIds.forEach(id => clearTimeout(id));
+        } catch (error) {
+          // Failed to initialize Vimeo player - non-critical, video will still work
+        }
+      } else if (!window.Vimeo?.Player && retryCount < maxRetries) {
+        // Retry if Vimeo SDK hasn't loaded yet
+        retryCount++;
+        const id = setTimeout(initPlayer, 100);
+        timeoutIds.push(id);
+      }
+    };
+
+    // Wait for iframe to load first
+    const iframe = iframeRef.current;
+    const handleLoad = () => {
+      // Small delay to ensure Vimeo player is ready
+      const id = setTimeout(initPlayer, 300);
+      timeoutIds.push(id);
+      iframe.removeEventListener('load', handleLoad);
+    };
+    iframe.addEventListener('load', handleLoad);
+
+    // Also try to initialize after a short delay in case load event already fired
+    const initialTimeoutId = setTimeout(() => {
+      if (!hasInitializedRef.current) {
+        initPlayer();
+      }
+    }, 500);
+    timeoutIds.push(initialTimeoutId);
+
+    return () => {
+      timeoutIds.forEach(id => clearTimeout(id));
+      if (iframe) {
+        iframe.removeEventListener('load', handleLoad);
+      }
+    };
+  }, []);
+
+  // Toggle mute/unmute handler
+  const handleToggleMute = async () => {
+    if (!playerRef.current) return;
+
+    try {
+      const currentMuted = await playerRef.current.getMuted();
+      await playerRef.current.setMuted(!currentMuted);
+      setIsMuted(!currentMuted);
+    } catch (err) {
+      // Failed to toggle mute - non-critical, continue silently
+    }
+  };
   
   return (
     <div 
+      ref={videoContainerRef}
       style={{ 
         backgroundColor: '#000', 
         width: '100%', 
         height: '100%', 
         minHeight: '400px',
         position: 'relative', 
-        overflow: 'hidden',
+        overflow: isIOSDevice ? 'visible' : 'hidden',
+        overflowX: 'hidden', // Always hide horizontal overflow
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingBottom: isIOSDevice ? '60px' : '0'
       }}
     >
       <iframe
+        ref={iframeRef}
         src={vimeoUrl}
         className="w-full h-full absolute inset-0"
         style={{ 
           border: 'none', 
           width: '100%', 
-          height: '100%', 
+          height: isIOSDevice ? 'calc(100% - 60px)' : '100%', 
           minHeight: '400px',
           backgroundColor: '#000',
           position: 'absolute',
           top: 0,
-          left: 0
+          left: 0,
+          bottom: isIOSDevice ? '60px' : 0,
+          pointerEvents: 'auto' // Ensure touch events work on iOS
         }}
         frameBorder="0"
-        allow="autoplay; fullscreen"
+        allow="autoplay; fullscreen; picture-in-picture"
         allowFullScreen
+        playsInline
         loading="lazy"
         title="תעודת לקוח - וידאו"
       />
+      {/* Custom Mute/Unmute Button Overlay */}
+      <button
+        onClick={handleToggleMute}
+        aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
+        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-10 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+        style={{
+          minWidth: '48px',
+          minHeight: '48px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        {isMuted ? (
+          <VolumeX size={24} aria-hidden="true" />
+        ) : (
+          <Volume2 size={24} aria-hidden="true" />
+        )}
+      </button>
     </div>
   );
 };
@@ -1129,6 +1279,7 @@ const VideoPlayer: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMuted, setIsMuted] = useState(true); // Start muted (browser requirement for autoplay)
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const [isIOSDevice, setIsIOSDevice] = useState(false);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<any>(null);
@@ -1139,10 +1290,16 @@ const VideoPlayer: React.FC = () => {
   const playTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef(false); // Track if we've started playing to prevent rapid toggles
 
+  // Detect iOS device
+  useEffect(() => {
+    setIsIOSDevice(isIOS());
+  }, []);
+
   // Vimeo embed URL - single URL that won't change
   // Start muted (browser requirement) - we'll unmute when visible
+  // Added playsinline and responsive for better mobile support
   const baseUrl = "https://player.vimeo.com/video/1152174898?context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&h=6e172adfe8&s=e8675d0eb6c47f57274868162088cbf80f997c1c_1767884558";
-  const vimeoUrl = `${baseUrl}&autoplay=0&muted=1&loop=1&controls=1&background=0`;
+  const vimeoUrl = `${baseUrl}&autoplay=0&muted=1&loop=1&controls=1&background=0&playsinline=1&responsive=1`;
 
   // Initialize Vimeo Player when iframe loads
   useEffect(() => {
@@ -1429,10 +1586,12 @@ const VideoPlayer: React.FC = () => {
         height: '100%', 
         minHeight: '400px',
         position: 'relative', 
-        overflow: 'hidden',
+        overflow: isIOSDevice ? 'visible' : 'hidden',
+        overflowX: 'hidden', // Always hide horizontal overflow
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingBottom: isIOSDevice ? '60px' : '0'
       }}
     >
       <iframe
@@ -1442,16 +1601,19 @@ const VideoPlayer: React.FC = () => {
         style={{ 
           border: 'none', 
           width: '100%', 
-          height: '100%', 
+          height: isIOSDevice ? 'calc(100% - 60px)' : '100%', 
           minHeight: '400px',
           backgroundColor: '#000',
           position: 'absolute',
           top: 0,
-          left: 0
+          left: 0,
+          bottom: isIOSDevice ? '60px' : 0,
+          pointerEvents: 'auto' // Ensure touch events work on iOS
         }}
         frameBorder="0"
-        allow="autoplay; fullscreen"
+        allow="autoplay; fullscreen; picture-in-picture"
         allowFullScreen
+        playsInline
         loading="eager"
         title="גילעד דורון - וידאו אימון"
       />
@@ -1973,7 +2135,7 @@ export default function App() {
         {/* STAGE 3.5: CLIENT TESTIMONIAL VIDEO */}
         <section id="client-testimonial-video" data-stage="client-testimonial-video" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
+          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
             <StoryHeader text="הלקוח מדבר" />
             
             <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-6">
@@ -1992,12 +2154,13 @@ export default function App() {
               </div>
               
               {/* Video - Second on mobile, primary on desktop */}
-              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center">
+              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
+                {/* Video container with floating shadow */}
                 <div 
                   className="w-full rounded-2xl md:rounded-3xl overflow-hidden relative z-10 border border-white/10"
                   style={{ 
                     aspectRatio: '9/16', // Match actual video format (portrait)
-                    maxHeight: '75dvh',
+                    maxHeight: '75dvh', // Increased from 65vh to 75dvh for iOS Safari compatibility and to accommodate Vimeo controls
                     minHeight: '400px',
                     maxWidth: '100%',
                     margin: '0 auto',
@@ -2094,39 +2257,22 @@ export default function App() {
           <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
             <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
             
-            {/* Professional Image - Mobile below text, Desktop beside */}
-            <div className="flex flex-col md:flex-row md:items-center md:gap-8 md:text-right md:justify-center">
-              <div className="flex-1 space-y-2 md:space-y-3">
-                <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
-                  <span className="guarantee-part-1">אני לא צריך את הכסף שלך </span>
-                  <span className="guarantee-part-2"> – <span className="underline-responsibility">אם לא הבאתי לך תוצאות.</span></span>
-                </h2>
+            <div className="space-y-2 md:space-y-3">
+              <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
+                <span className="guarantee-part-1">אני לא צריך את הכסף שלך </span>
+                <span className="guarantee-part-2"> – <span className="underline-responsibility">אם לא הבאתי לך תוצאות.</span></span>
+              </h2>
 
-                <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto md:mx-0">
-                  <p className="font-medium text-white">אני לא מוכר ליווי.</p>
-                  <p>
-                    אני לוקח אחריות על תוצאה שסיכמנו עליה מראש — <span className="text-white font-medium">ביחד.</span>
-                  </p>
-                  <p className="text-base md:text-lg">
-                    אם עמדת בתהליך, יישמת את מה שבנינו, <br className="hidden md:block" />
-                    ועדיין לא הגעת לתוצאה שסיכמנו עליה —
-                  </p>
-                  <p className="text-white font-bold text-xl md:text-2xl">אני לא משאיר אותך לבד עם זה.</p>
-                </div>
-              </div>
-              
-              {/* Professional Image */}
-              <div className="professional-image w-48 h-48 md:w-56 md:h-56 mx-auto md:mx-0 rounded-full overflow-hidden border-2 border-white/20 shadow-lg flex-shrink-0">
-                <img 
-                  src={`${(import.meta as any).env.BASE_URL}assets/Gemini_Generated_Image_4g6yhk4g6yhk4g6y.png`}
-                  alt="גילעד דורון"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  onError={(e) => {
-                    // Hide image if it doesn't exist yet
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
+              <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
+                <p className="font-medium text-white">אני לא מוכר ליווי.</p>
+                <p>
+                  אני לוקח אחריות על תוצאה שסיכמנו עליה מראש — <span className="text-white font-medium">ביחד.</span>
+                </p>
+                <p className="text-base md:text-lg">
+                  אם עמדת בתהליך, יישמת את מה שבנינו, <br className="hidden md:block" />
+                  ועדיין לא הגעת לתוצאה שסיכמנו עליה —
+                </p>
+                <p className="text-white font-bold text-xl md:text-2xl">אני לא משאיר אותך לבד עם זה.</p>
               </div>
             </div>
 
