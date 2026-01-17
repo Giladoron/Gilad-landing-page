@@ -1046,8 +1046,19 @@ const ExitIntentPopup: React.FC = () => {
 
 const Navbar: React.FC = () => (
   <header className="absolute top-0 left-0 right-0 z-50 py-2 md:py-6 px-3 md:px-12 flex justify-between items-center bg-transparent w-full">
-    <div className="text-lg md:text-2xl font-black heading-font tracking-tighter text-white shrink-0">
+    <div className="flex items-center gap-3 shrink-0">
+      <div className="text-lg md:text-2xl font-black heading-font tracking-tighter text-white">
       גילעד <span className="text-accent">דורון</span>
+      </div>
+      <a 
+        href="https://www.instagram.com/gilad_doron?igsh=MWx3dmRlNXFzdzd4bQ==" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="text-white hover:text-accent transition-colors duration-300 flex items-center mt-0.5"
+        aria-label="Instagram של גילעד דורון"
+      >
+        <Instagram size={20} strokeWidth={1.5} />
+      </a>
     </div>
     <nav className="hidden md:flex gap-8 text-sm font-medium" aria-label="ניווט ראשי">
       <a href="#how" className="hover:text-accent transition-colors">איך זה עובד</a>
