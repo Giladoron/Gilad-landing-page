@@ -1211,6 +1211,153 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       // Failed to toggle mute - non-critical, continue silently
     }
   };
+
+  // Control playback when section is visible
+  useEffect(() => {
+    if (!playerRef.current) {
+      // If player not ready yet, wait a bit and retry
+      const checkPlayer = setTimeout(() => {
+        if (playerRef.current && isVisible) {
+          // Retry playing when player becomes ready
+          playerRef.current.play().catch(() => {});
+        }
+      }, 500);
+      return () => clearTimeout(checkPlayer);
+    }
+
+    const controlPlayback = async () => {
+      if (isVisible) {
+        // Clear any pending pause timeouts
+        if (pauseTimeoutRef.current) {
+          clearTimeout(pauseTimeoutRef.current);
+          pauseTimeoutRef.current = null;
+        }
+
+        // Clear any pending play timeouts and schedule new one
+        if (playTimeoutRef.current) {
+          clearTimeout(playTimeoutRef.current);
+        }
+
+        // Debounce play call to prevent rapid toggling
+        playTimeoutRef.current = setTimeout(async () => {
+          // Double-check visibility hasn't changed back during delay
+          if (!playerRef.current || !isVisibleRef.current) {
+            playTimeoutRef.current = null;
+            return;
+          }
+
+          try {
+            // Check if already playing to avoid unnecessary calls
+            const paused = await playerRef.current.getPaused();
+            if (paused) {
+              await playerRef.current.play();
+              isPlayingRef.current = true;
+            }
+            
+            // Update mute state
+            setTimeout(async () => {
+              try {
+                if (playerRef.current && isVisibleRef.current) {
+                  const muted = await playerRef.current.getMuted();
+                  setIsMuted(muted);
+                }
+              } catch (err) {
+                // Ignore errors
+              }
+            }, 300);
+          } catch (err) {
+            // If play fails, retry after delay
+            setTimeout(async () => {
+              if (playerRef.current && isVisibleRef.current) {
+                try {
+                  const paused = await playerRef.current.getPaused();
+                  if (paused) {
+                    await playerRef.current.play();
+                    isPlayingRef.current = true;
+                  }
+                } catch (retryErr) {
+                  // Ignore - might need user interaction
+                }
+              }
+            }, 500);
+          }
+          
+          playTimeoutRef.current = null;
+        }, 300); // 300ms debounce
+      } else {
+        // Clear any pending play timeouts
+        if (playTimeoutRef.current) {
+          clearTimeout(playTimeoutRef.current);
+          playTimeoutRef.current = null;
+        }
+        
+        // Add delay before pausing to allow scroll snap to complete
+        if (pauseTimeoutRef.current) {
+          clearTimeout(pauseTimeoutRef.current);
+        }
+        
+        pauseTimeoutRef.current = setTimeout(async () => {
+          // Double-check visibility hasn't changed back
+          if (!isVisibleRef.current && playerRef.current && videoContainerRef.current) {
+            const rect = videoContainerRef.current.getBoundingClientRect();
+            const isReallyOutOfView = rect.bottom < 0 || rect.top > window.innerHeight;
+            
+            if (isReallyOutOfView) {
+              try {
+                await playerRef.current.pause();
+                isPlayingRef.current = false;
+              } catch (err) {
+                // Ignore pause errors
+              }
+            }
+          }
+          pauseTimeoutRef.current = null;
+        }, 800); // 800ms delay before pausing
+      }
+    };
+
+    controlPlayback();
+
+    return () => {
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+        pauseTimeoutRef.current = null;
+      }
+      if (playTimeoutRef.current) {
+        clearTimeout(playTimeoutRef.current);
+        playTimeoutRef.current = null;
+      }
+    };
+  }, [isVisible]);
+
+  // Intersection Observer to detect when video section is visible
+  useEffect(() => {
+    if (!videoContainerRef.current) return;
+
+    const isMobile = window.innerWidth < 768;
+    const threshold = isMobile ? 0.1 : 0.2; // Lower threshold for more lenient detection
+    const rootMargin = isMobile ? '150px 0px' : '200px 0px'; // Larger margin to prevent false triggers during scroll snap
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const visible = entry.isIntersecting;
+          isVisibleRef.current = visible;
+          setIsVisible(visible);
+        });
+      },
+      {
+        threshold: threshold,
+        rootMargin: rootMargin
+      }
+    );
+
+    observer.observe(videoContainerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
   
   return (
     <div 
@@ -1243,7 +1390,8 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
           top: 0,
           left: 0,
           bottom: 0,
-          pointerEvents: 'auto' // Ensure touch events work on iOS
+          pointerEvents: 'auto', // Ensure touch events work on iOS
+          zIndex: 1 // Ensure iframe is above container but below button
         }}
         frameBorder="0"
         allow="autoplay; fullscreen; picture-in-picture"
@@ -1609,7 +1757,8 @@ const VideoPlayer: React.FC = () => {
           top: 0,
           left: 0,
           bottom: 0,
-          pointerEvents: 'auto' // Ensure touch events work on iOS
+          pointerEvents: 'auto', // Ensure touch events work on iOS
+          zIndex: 1 // Ensure iframe is above container but below button
         }}
         frameBorder="0"
         allow="autoplay; fullscreen; picture-in-picture"
@@ -1649,14 +1798,16 @@ const VideoPlayer: React.FC = () => {
       <button
         onClick={handleToggleMute}
         aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
-        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+        className="absolute bottom-6 right-6 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
         style={{
           minWidth: '48px',
           minHeight: '48px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 30 // Ensure button is above iframe and all overlays
+          zIndex: 30, // Ensure button is above iframe and all overlays
+          marginBottom: '0', // Ensure button is within bounds
+          marginRight: '0' // Ensure button is within bounds
         }}
       >
         {isMuted ? (
