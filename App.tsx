@@ -501,7 +501,7 @@ const MobileProgressBar: React.FC<{ activeStageIndex: number }> = ({ activeStage
 
 const StoryHeader: React.FC<{ text: string }> = ({ text }) => (
   <div className="text-center mb-2 sm:mb-4 md:mb-6 mt-4 sm:mt-8 md:mt-0 pt-2 sm:pt-4 md:pt-0 flex flex-col items-center">
-    <span className="story-header-text text-gray-400 text-sm md:text-lg font-medium tracking-wide">
+    <span className="story-header-text text-gray-400 text-sm md:text-lg lg:text-xl font-medium tracking-wide">
       {text}
     </span>
     <div className="w-16 h-0.5 bg-accent mt-3" aria-hidden="true" />
@@ -2366,7 +2366,7 @@ export default function App() {
               <div className="space-y-2 text-center md:text-right shrink-0">
                 <div className="space-y-1">
                   <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
-                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight compact-heading">גילעד דורון</h2>
+                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight">גילעד דורון</h2>
                 </div>
                 <p className="text-sm md:text-xl text-gray-300 leading-relaxed compact-text line-clamp-3 md:line-clamp-none">
                   אני לא 'מאמן כושר' שסופר חזרות. אני בונה <strong>מערכות חיים</strong> שמייצרות גוף חזק — ונשארות איתך לתמיד.

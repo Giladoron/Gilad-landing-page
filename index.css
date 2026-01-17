@@ -332,8 +332,8 @@
   /* Keep existing vignette - already defined in section-with-fitness-bg styles */
 }
 
-/* Small screen compaction utilities (iPhone SE) */
-@media (max-height: 700px) {
+/* Small screen compaction utilities (iPhone SE) - Only apply on small mobile devices */
+@media (max-height: 700px) and (max-width: 768px) {
   .compact-text {
     @apply text-sm !important;
   }
