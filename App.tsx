@@ -1115,7 +1115,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   }, [isVisible]);
   
   // Vimeo URL with controls enabled for interactivity (controls=1 to make video clickable, we use custom button for mute)
-  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=1&loop=0&controls=1&background=0&playsinline=1&responsive=1`;
+  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=1&loop=0&controls=1&background=0&playsinline=1&responsive=1&byline=0&title=0&portrait=0`;
   
   // Initialize Vimeo Player when iframe loads (similar to VideoPlayer)
   useEffect(() => {
@@ -1448,7 +1448,7 @@ const VideoPlayer: React.FC = () => {
   // Start muted (browser requirement) - we'll unmute when visible
   // Added playsinline and responsive for better mobile support
   const baseUrl = "https://player.vimeo.com/video/1152174898?context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&h=6e172adfe8&s=e8675d0eb6c47f57274868162088cbf80f997c1c_1767884558";
-  const vimeoUrl = `${baseUrl}&autoplay=0&muted=1&loop=1&controls=1&background=0&playsinline=1&responsive=1`;
+  const vimeoUrl = `${baseUrl}&autoplay=0&muted=1&loop=1&controls=1&background=0&playsinline=1&responsive=1&byline=0&title=0&portrait=0`;
 
   // Initialize Vimeo Player when iframe loads
   useEffect(() => {
@@ -2561,16 +2561,6 @@ export default function App() {
                       <div className="flex-1 md:flex-none">
                         <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">{item.t}</h3>
                         <p className="text-gray-400 text-xs md:text-sm leading-relaxed px-1 md:px-2 compact-text line-clamp-3 md:line-clamp-none">{item.d}</p>
-                        
-                        {/* Content preview - 1-line with fade-out */}
-                        {!isExpanded && (
-                          <div className="mt-2 px-2 relative overflow-hidden">
-                            <p className="text-gray-400 text-xs md:text-sm line-clamp-1">
-                              {item.explanation}
-                            </p>
-                            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-brandGray to-transparent pointer-events-none" />
-                          </div>
-                        )}
                         
                         {/* Desktop: Click to expand */}
                         <button
