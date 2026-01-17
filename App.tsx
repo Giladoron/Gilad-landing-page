@@ -1829,13 +1829,41 @@ export default function App() {
   const [expandedFAQIndex, setExpandedFAQIndex] = useState<number | null>(null);
   const [selectedClientIndex, setSelectedClientIndex] = useState<number | null>(null);
   const [expandedStepIndex, setExpandedStepIndex] = useState<number | null>(null);
+  const [hasExpandedAnyStep, setHasExpandedAnyStep] = useState(() => {
+    // Check localStorage on mount
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('hasExpandedStep') === 'true';
+    }
+    return false;
+  });
+
+  // Stop animation after 4 seconds
+  useEffect(() => {
+    if (!hasExpandedAnyStep) {
+      const timeout = setTimeout(() => {
+        setHasExpandedAnyStep(true);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('hasExpandedStep', 'true');
+        }
+      }, 4000);
+      return () => clearTimeout(timeout);
+    }
+  }, [hasExpandedAnyStep]);
 
   const toggleFAQ = (index: number) => {
     setExpandedFAQIndex(expandedFAQIndex === index ? null : index);
   };
 
   const toggleStep = (index: number) => {
+    const willExpand = expandedStepIndex !== index;
     setExpandedStepIndex(expandedStepIndex === index ? null : index);
+    
+    if (willExpand && !hasExpandedAnyStep) {
+      setHasExpandedAnyStep(true);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('hasExpandedStep', 'true');
+      }
+    }
   };
 
   const openClientStory = (index: number) => {
@@ -2534,11 +2562,26 @@ export default function App() {
                         <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">{item.t}</h3>
                         <p className="text-gray-400 text-xs md:text-sm leading-relaxed px-1 md:px-2 compact-text line-clamp-3 md:line-clamp-none">{item.d}</p>
                         
+                        {/* Content preview - 1-line with fade-out */}
+                        {!isExpanded && (
+                          <div className="mt-2 px-2 relative overflow-hidden">
+                            <p className="text-gray-400 text-xs md:text-sm line-clamp-1">
+                              {item.explanation}
+                            </p>
+                            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-brandGray to-transparent pointer-events-none" />
+                          </div>
+                        )}
+                        
                         {/* Desktop: Click to expand */}
                         <button
                           onClick={() => toggleStep(idx)}
-                          className="hidden md:flex justify-center w-fit mx-auto mt-3 text-accent hover:text-accent/80 transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1"
+                          className={`hidden md:flex items-center justify-center min-w-[44px] min-h-[44px] p-2.5 rounded-full text-accent mx-auto mt-3 transition-all duration-250 ease-out motion-safe:transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-brandGray group ${
+                            isExpanded 
+                              ? 'bg-accent/8 border border-accent/15' 
+                              : 'bg-accent/5 border border-accent/12 hover:bg-accent/8 hover:shadow-[0_0_0_4px_rgba(255,107,53,0.10)]'
+                          } ${!isExpanded && !hasExpandedAnyStep ? 'step-chevron-invite relative' : ''}`}
                           aria-expanded={isExpanded}
+                          aria-controls={`step-content-${idx}`}
                           aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
                           onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -2547,15 +2590,28 @@ export default function App() {
                             }
                           }}
                         >
-                          <ChevronDown className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} size={14} aria-hidden="true" />
+                          <ChevronDown 
+                            className={`transition-transform duration-250 ease-out motion-safe:transition-transform ${
+                              isExpanded 
+                                ? 'rotate-180' 
+                                : 'group-hover:rotate-12'
+                            }`} 
+                            size={14} 
+                            aria-hidden="true" 
+                          />
                         </button>
                         
                         {/* Mobile: Tap to expand accordion - centered with text content */}
                         <div className="md:hidden flex justify-center mt-3 px-1">
                           <button
                             onClick={() => toggleStep(idx)}
-                            className="flex justify-center w-fit text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-2 py-1"
+                            className={`flex items-center justify-center min-w-[44px] min-h-[44px] p-2.5 rounded-full text-accent transition-all duration-250 ease-out motion-safe:transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-brandGray ${
+                              isExpanded 
+                                ? 'bg-accent/8 border border-accent/15' 
+                                : 'bg-accent/5 border border-accent/12 active:bg-accent/8'
+                            } ${!isExpanded && !hasExpandedAnyStep ? 'step-chevron-invite relative' : ''}`}
                             aria-expanded={isExpanded}
+                            aria-controls={`step-content-${idx}`}
                             aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
@@ -2564,16 +2620,27 @@ export default function App() {
                               }
                             }}
                           >
-                            <ChevronDown className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} size={16} aria-hidden="true" />
+                            <ChevronDown 
+                              className={`transition-transform duration-250 ease-out motion-safe:transition-transform ${
+                                isExpanded ? 'rotate-180' : ''
+                              }`} 
+                              size={16} 
+                              aria-hidden="true" 
+                            />
                           </button>
                         </div>
                         
                         {/* Expanded explanation */}
-                        {isExpanded && (
-                          <div className="mt-3 text-gray-300 text-xs md:text-sm leading-relaxed px-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                            <p>{item.explanation}</p>
+                        <div 
+                          id={`step-content-${idx}`}
+                          className={`overflow-hidden transition-all duration-300 ease-out motion-safe:transition-all ${
+                            isExpanded 
+                              ? 'max-h-[500px] opacity-100 mt-3 border-t border-white/8 pt-3' 
+                              : 'max-h-0 opacity-0'
+                          }`}
+                        >
+                          <p className="text-gray-300 text-xs md:text-sm leading-relaxed px-2">{item.explanation}</p>
                           </div>
-                        )}
                       </div>
                     </div>
                   </div>

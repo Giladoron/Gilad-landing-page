@@ -508,3 +508,48 @@
     display: none;
   }
 }
+
+/* Step chevron invite animation */
+@keyframes subtleFloat {
+  0%, 100% { 
+    transform: translateY(0);
+  }
+  50% { 
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes pulseRing {
+  0% { 
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+.step-chevron-invite {
+  animation: subtleFloat 2s ease-in-out infinite;
+}
+
+.step-chevron-invite::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 107, 53, 0.3);
+  animation: pulseRing 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-chevron-invite,
+  .step-chevron-invite::before {
+    animation: none;
+  }
+}
