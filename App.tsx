@@ -1211,10 +1211,77 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       // Failed to toggle mute - non-critical, continue silently
     }
   };
+
+  // Handle center tap for play/pause on iOS
+  const handleContainerClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only handle on iOS and only if clicking center area (not edges)
+    if (!isIOSDevice || !playerRef.current) return;
+    
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const containerWidth = rect.width;
+    
+    // Only handle clicks in center 60% of the container (ignore edge taps)
+    const centerStart = containerWidth * 0.2;
+    const centerEnd = containerWidth * 0.8;
+    
+    if (clickX >= centerStart && clickX <= centerEnd) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      try {
+        const paused = await playerRef.current.getPaused();
+        if (paused) {
+          await playerRef.current.play();
+        } else {
+          await playerRef.current.pause();
+        }
+      } catch (err) {
+        // Ignore errors
+      }
+    }
+  };
+
+  // Handle touch events for iOS center tap
+  const handleContainerTouch = async (e: React.TouchEvent<HTMLDivElement>) => {
+    // Only handle on iOS and only if tapping center area (not edges)
+    if (!isIOSDevice || !playerRef.current) return;
+    
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const touch = e.touches[0] || e.changedTouches[0];
+    if (!touch) return;
+    
+    const touchX = touch.clientX - rect.left;
+    const containerWidth = rect.width;
+    
+    // Only handle taps in center 60% of the container (ignore edge taps)
+    const centerStart = containerWidth * 0.2;
+    const centerEnd = containerWidth * 0.8;
+    
+    if (touchX >= centerStart && touchX <= centerEnd) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      try {
+        const paused = await playerRef.current.getPaused();
+        if (paused) {
+          await playerRef.current.play();
+        } else {
+          await playerRef.current.pause();
+        }
+      } catch (err) {
+        // Ignore errors
+      }
+    }
+  };
   
   return (
     <div 
       ref={videoContainerRef}
+      onClick={handleContainerClick}
+      onTouchEnd={handleContainerTouch}
       style={{ 
         backgroundColor: '#000', 
         width: '100%', 
@@ -1226,7 +1293,9 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom: isIOSDevice ? '60px' : '0'
+        paddingBottom: isIOSDevice ? '60px' : '0',
+        touchAction: 'pan-y', // Allow vertical scroll but prevent pinch/resize on Android
+        userSelect: 'none' // Prevent text selection on mobile
       }}
     >
       <iframe
@@ -1256,13 +1325,14 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       <button
         onClick={handleToggleMute}
         aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
-        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-10 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
         style={{
           minWidth: '48px',
           minHeight: '48px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          zIndex: 30 // Ensure button is above iframe and all overlays
         }}
       >
         {isMuted ? (
@@ -1548,6 +1618,71 @@ const VideoPlayer: React.FC = () => {
               }
   };
 
+  // Handle center tap for play/pause on iOS
+  const handleContainerClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only handle on iOS and only if clicking center area (not edges)
+    if (!isIOSDevice || !playerRef.current) return;
+    
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const containerWidth = rect.width;
+    
+    // Only handle clicks in center 60% of the container (ignore edge taps)
+    const centerStart = containerWidth * 0.2;
+    const centerEnd = containerWidth * 0.8;
+    
+    if (clickX >= centerStart && clickX <= centerEnd) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      try {
+        const paused = await playerRef.current.getPaused();
+        if (paused) {
+          await playerRef.current.play();
+        } else {
+          await playerRef.current.pause();
+        }
+      } catch (err) {
+        // Ignore errors
+      }
+    }
+  };
+
+  // Handle touch events for iOS center tap
+  const handleContainerTouch = async (e: React.TouchEvent<HTMLDivElement>) => {
+    // Only handle on iOS and only if tapping center area (not edges)
+    if (!isIOSDevice || !playerRef.current) return;
+    
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const touch = e.touches[0] || e.changedTouches[0];
+    if (!touch) return;
+    
+    const touchX = touch.clientX - rect.left;
+    const containerWidth = rect.width;
+    
+    // Only handle taps in center 60% of the container (ignore edge taps)
+    const centerStart = containerWidth * 0.2;
+    const centerEnd = containerWidth * 0.8;
+    
+    if (touchX >= centerStart && touchX <= centerEnd) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      try {
+        const paused = await playerRef.current.getPaused();
+        if (paused) {
+          await playerRef.current.play();
+        } else {
+          await playerRef.current.pause();
+        }
+      } catch (err) {
+        // Ignore errors
+      }
+    }
+  };
+
   // Intersection Observer to detect when video section is visible
   useEffect(() => {
     if (!videoContainerRef.current) return;
@@ -1580,6 +1715,8 @@ const VideoPlayer: React.FC = () => {
   return (
     <div 
       ref={videoContainerRef}
+      onClick={handleContainerClick}
+      onTouchEnd={handleContainerTouch}
       style={{ 
         backgroundColor: '#000', 
         width: '100%', 
@@ -1591,7 +1728,9 @@ const VideoPlayer: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom: isIOSDevice ? '60px' : '0'
+        paddingBottom: isIOSDevice ? '60px' : '0',
+        touchAction: 'pan-y', // Allow vertical scroll but prevent pinch/resize on Android
+        userSelect: 'none' // Prevent text selection on mobile
       }}
     >
       <iframe
@@ -1648,13 +1787,14 @@ const VideoPlayer: React.FC = () => {
       <button
         onClick={handleToggleMute}
         aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
-        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-10 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
         style={{
           minWidth: '48px',
           minHeight: '48px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          zIndex: 30 // Ensure button is above iframe and all overlays
         }}
       >
         {isMuted ? (
