@@ -1358,7 +1358,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   }, [isVisible]);
   
   // Vimeo URL with controls enabled for interactivity (controls=1 to make video clickable, we use custom button for mute)
-  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=1&loop=0&controls=1&background=0&playsinline=1&responsive=1&byline=0&title=0&portrait=0`;
+  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=1&loop=1&controls=1&background=0&playsinline=1&responsive=1&byline=0&title=0&portrait=0`;
   
   // Initialize Vimeo Player when iframe loads (similar to VideoPlayer)
   useEffect(() => {
