@@ -327,3 +327,6 @@ The current Intersection Observer API usage is:
 
 **Conclusion:** The current implementation is better suited for this project's needs than `react-intersection-observer`.
 
+
+
+

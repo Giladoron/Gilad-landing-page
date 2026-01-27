@@ -7,6 +7,9 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     const buildVersion = Date.now().toString();
     
+    // Note: _meta/ folder is gitignored and excluded from build
+    // It contains workflow documentation only, not production code
+    
     return {
       base: '/Gilad-landing-page/',
       server: {

@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  // Note: _meta/ folder is gitignored and excluded from build
+  // It only contains .md files, so it won't match the content patterns below
   content: ["./index.html", "./**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {

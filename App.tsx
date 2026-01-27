@@ -111,15 +111,79 @@ interface ClientResult {
 
 const CLIENT_RESULTS: ClientResult[] = [
   {
-    name: 'דניאל ב.',
-    profession: 'מהנדס תוכנה',
-    age: 34,
-    quote: 'הפעם הראשונה שאני רואה תוצאות אמיתיות. התהליך היה ברור מהתחלה.',
+    name: 'לקוח 1',
+    profession: 'מתאמן',
+    age: 28,
+    quote: 'תוצאות מדהימות! התהליך היה מקצועי וברור מההתחלה.',
     goals: ['ירידה במשקל', 'עליה במסת שריר', 'שיפור בכושר'],
     duration: 3,
     commitment: 100,
-    image: 'result-01.webp',
-    imageAlt: 'תוצאות לפני ואחרי - דניאל ב.',
+    image: 'result1.webp',
+    imageAlt: 'תוצאות לפני ואחרי - לקוח 1',
+    stats: {
+      weight: '10 ק"ג-',
+      muscleMass: '+3 ק"ג',
+      strength: '+45%'
+    }
+  },
+  {
+    name: 'לקוח 2',
+    profession: 'יזם',
+    age: 32,
+    quote: 'הליווי של גילעד שינה לי את החיים. תוצאות מעבר למצופה.',
+    goals: ['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'],
+    duration: 4,
+    commitment: 100,
+    image: 'result2.webp',
+    imageAlt: 'תוצאות לפני ואחרי - לקוח 2',
+    stats: {
+      weight: '+4 ק"ג',
+      muscleMass: '+6 ק"ג',
+      strength: '+55%'
+    }
+  },
+  {
+    name: 'לקוח 3',
+    profession: 'מהנדס',
+    age: 35,
+    quote: 'פעם ראשונה שאני רואה תוצאות אמיתיות. התהליך היה מדויק וברור.',
+    goals: ['ירידה במשקל', 'שיפור בכושר', 'בריאות כללית'],
+    duration: 5,
+    commitment: 100,
+    image: 'result3.webp',
+    imageAlt: 'תוצאות לפני ואחרי - לקוח 3',
+    stats: {
+      weight: '15 ק"ג-',
+      muscleMass: '+2 ק"ג',
+      strength: '+50%'
+    }
+  },
+  {
+    name: 'לקוח 4',
+    profession: 'מתאמנת',
+    age: 27,
+    quote: 'הגעתי למטרות שלי מהר מהצפוי. הליווי היה מקצועי ומדויק.',
+    goals: ['חיטוב', 'עליה בכוח', 'שיפור בביטחון עצמי'],
+    duration: 3,
+    commitment: 100,
+    image: 'result4.webp',
+    imageAlt: 'תוצאות לפני ואחרי - לקוח 4',
+    stats: {
+      weight: '8 ק"ג-',
+      muscleMass: '+1.5 ק"ג',
+      strength: '+60%'
+    }
+  },
+  {
+    name: 'לקוח 5',
+    profession: 'רופא',
+    age: 38,
+    quote: 'תהליך מקצועי עם תוצאות מדהימות. המלצה חמה!',
+    goals: ['ירידה במשקל', 'שיפור בכושר', 'בריאות כללית'],
+    duration: 6,
+    commitment: 100,
+    image: 'result5.webp',
+    imageAlt: 'תוצאות לפני ואחרי - לקוח 5',
     stats: {
       weight: '12 ק"ג-',
       muscleMass: '+2.5 ק"ג',
@@ -127,51 +191,51 @@ const CLIENT_RESULTS: ClientResult[] = [
     }
   },
   {
-    name: 'אורי כ.',
-    profession: 'יזם',
-    age: 29,
-    quote: 'גילעד עזר לי להבין מה אני עושה לא נכון. התוצאות הגיעו מהר מהצפוי.',
-    goals: ['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'],
+    name: 'לקוח 6',
+    profession: 'מורה',
+    age: 31,
+    quote: 'התוכנית מותאמת אישית והתוצאות מדברות בעד עצמן.',
+    goals: ['חיטוב', 'עליה במסת שריר', 'שיפור בכושר'],
     duration: 4,
     commitment: 100,
-    image: 'result-02.webp',
-    imageAlt: 'תוצאות לפני ואחרי - אורי כ.',
+    image: 'result6.webp',
+    imageAlt: 'תוצאות לפני ואחרי - לקוח 6',
     stats: {
-      weight: '+3 ק"ג',
-      muscleMass: '+5 ק"ג',
-      strength: '+65%'
+      weight: '7 ק"ג-',
+      muscleMass: '+3.5 ק"ג',
+      strength: '+55%'
     }
   },
   {
-    name: 'דניאל ב.',
-    profession: 'מהנדס תוכנה',
-    age: 34,
-    quote: 'הפעם הראשונה שאני רואה תוצאות אמיתיות. התהליך היה ברור מהתחלה.',
+    name: 'לקוח 7',
+    profession: 'עורך דין',
+    age: 29,
+    quote: 'תהליך מקצועי עם ליווי צמוד. התוצאות הגיעו מהר מהצפוי.',
+    goals: ['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'],
+    duration: 5,
+    commitment: 100,
+    image: 'result7.webp',
+    imageAlt: 'תוצאות לפני ואחרי - לקוח 7',
+    stats: {
+      weight: '+5 ק"ג',
+      muscleMass: '+7 ק"ג',
+      strength: '+70%'
+    }
+  },
+  {
+    name: 'לקוח 8',
+    profession: 'מתאמן',
+    age: 26,
+    quote: 'הפעם הראשונה שהגעתי למטרות שלי. התהליך היה ברור ומדויק.',
     goals: ['ירידה במשקל', 'עליה במסת שריר', 'שיפור בכושר'],
     duration: 3,
     commitment: 100,
-    image: 'result-01.webp',
-    imageAlt: 'תוצאות לפני ואחרי - דניאל ב.',
+    image: 'result8.webp',
+    imageAlt: 'תוצאות לפני ואחרי - לקוח 8',
     stats: {
-      weight: '12 ק"ג-',
-      muscleMass: '+2.5 ק"ג',
-      strength: '+40%'
-    }
-  },
-  {
-    name: 'אורי כ.',
-    profession: 'יזם',
-    age: 29,
-    quote: 'גילעד עזר לי להבין מה אני עושה לא נכון. התוצאות הגיעו מהר מהצפוי.',
-    goals: ['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'],
-    duration: 4,
-    commitment: 100,
-    image: 'result-02.webp',
-    imageAlt: 'תוצאות לפני ואחרי - אורי כ.',
-    stats: {
-      weight: '+3 ק"ג',
-      muscleMass: '+5 ק"ג',
-      strength: '+65%'
+      weight: '9 ק"ג-',
+      muscleMass: '+2 ק"ג',
+      strength: '+48%'
     }
   }
 ];
@@ -2308,17 +2372,20 @@ export default function App() {
             <StoryHeader text="החלום שלך מתחיל כאן" />
             <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
               <div className="space-y-4 md:space-y-6 text-center md:text-right">
-                <h2 className="hero-headline text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן כבר חודשים <br /> <span className="text-accent underline decoration-accent underline-offset-8">והגוף מסרב להשתנות?</span></h2>
-                <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
+                <h2 className="hero-headline text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן – <br /> <span className="text-accent underline decoration-accent underline-offset-8">אבל מרגיש שאתה דורך במקום?</span></h2>
+                <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">אתה מנסה, משקיע,<br />אבל משהו בדרך לא מתחבר<br />והתוצאות פשוט לא מגיעות.</p>
                 <div className="space-y-3 md:space-y-4 flex flex-col items-center md:items-start">
-                  <div className="flex items-center gap-3 md:gap-4 text-base md:text-xl">
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><Phone size={20} className="md:w-6 md:h-6" /></div>
-                    <span>שיחה קצרה לתיאום ציפיות</span>
-                  </div>
-                  <div className="flex items-center gap-3 md:gap-4 text-base md:text-xl">
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-[#25D366]/10 text-[#25D366] rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true"><MessageCircle size={20} className="md:w-6 md:h-6" /></div>
-                    <span>מענה מהיר בוואטסאפ</span>
-                  </div>
+                  <p className="text-base md:text-xl text-gray-300 leading-relaxed">
+                    פה לא מנסים שוב.<br />
+                    פה נכנסים לתהליך ומגיעים לתוצאה.
+                  </p>
+                  <p className="text-base md:text-xl text-gray-300 leading-relaxed">
+                    אם תעבוד לפי מה שאני אומר לאורך הדרך<br />
+                    יש שתי אפשרויות בלבד:<br />
+                    או שזה התהליך שמביא אותך לתוצאה שאתה מחפש,<br />
+                    או שלא תשלם עליו.<br />
+                    עוד רגע אסביר בדיוק למה אני מתכוון.
+                  </p>
                 </div>
               </div>
               <div className="delay-100 w-full flex-1 flex flex-col justify-end pb-2 md:pb-0">
@@ -2483,7 +2550,7 @@ export default function App() {
                               <img 
                                 src={`${(import.meta as any).env.BASE_URL}assets/results/${client.image}`}
                                 alt={client.imageAlt}
-                                className="w-full h-full object-contain scale-x-[-1]"
+                                className="w-full h-full object-contain"
                                 loading="lazy"
                                 style={{ 
                                   display: 'block',
@@ -2567,7 +2634,7 @@ export default function App() {
               <div className="space-y-4 md:space-y-6 text-center md:text-right w-full md:w-auto">
                 <div>
                   <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
-                    ראובן כ. · מהנדס · גיל 31
+                    גיא · גיל 25
                   </h3>
                   <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-4 md:p-5">
                     <p className="text-gray-200 text-base md:text-lg leading-relaxed italic line-clamp-2">
@@ -2609,14 +2676,23 @@ export default function App() {
               <div className="space-y-2 text-center md:text-right shrink-0">
                 <div className="space-y-1">
                   <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
-                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight">גילעד דורון</h2>
+                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight">גילעד דורון.<br />התחלתי בדיוק כמוך - מתאמן שעושה הכול נכון, ועדיין לא רואה תוצאות.</h2>
                 </div>
-                <p className="text-sm md:text-xl text-gray-300 leading-relaxed compact-text line-clamp-3 md:line-clamp-none">
-                  אני לא 'מאמן כושר' שסופר חזרות. אני בונה <strong>מערכות חיים</strong> שמייצרות גוף חזק — ונשארות איתך לתמיד.
-                </p>
-                <div className="bg-brandGray/20 backdrop-blur-sm p-3 md:p-6 rounded-2xl border border-white/5 space-y-2 md:space-y-4">
-                  <h3 className="font-bold flex items-center gap-2 text-white justify-center md:justify-start compact-text"><ShieldCheck className="text-accent" size={16} aria-hidden="true" /> ההבטחה שלי:</h3>
-                  <p className="text-xs md:text-sm text-gray-400 compact-text leading-tight">אני לא מוכר הבטחות ריקות. אני מוכר תהליך. אם תעבוד לפי התוכנית ולא תראה תוצאות - אני איתך עד שזה קורה.</p>
+                <div className="text-sm md:text-xl text-gray-300 leading-relaxed compact-text space-y-2 md:space-y-3">
+                  <p>שרפתי שעות בחדר כושר.</p>
+                  <p>עשיתי כל תרגיל שמצאתי באינטרנט.</p>
+                  <p>אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
+                  <p>ושום דבר לא זז.</p>
+                  <p>יותר מזה, התחלתי לפקפק בעצמי.</p>
+                  <p>הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.</p>
+                  <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
+                  <p>הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
+                  <p>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
+                  <p>השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.</p>
+                  <p>ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.</p>
+                  <p>עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,</p>
+                  <p>אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,</p>
+                  <p>בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.</p>
                 </div>
               </div>
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
@@ -2683,20 +2759,15 @@ export default function App() {
             
             <div className="space-y-2 md:space-y-3">
               <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
-                <span className="guarantee-part-1">אני לא צריך את הכסף שלך </span>
-                <span className="guarantee-part-2"> – <span className="underline-responsibility">אם לא הבאתי לך תוצאות.</span></span>
+                אני מתחייב לתוצאה<br />כשעובדים יחד כמו שצריך.
               </h2>
 
               <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
-                <p className="font-medium text-white">אני לא מוכר ליווי.</p>
-                <p>
-                  אני לוקח אחריות על תוצאה שסיכמנו עליה מראש — <span className="text-white font-medium">ביחד.</span>
-                </p>
-                <p className="text-base md:text-lg">
-                  אם עמדת בתהליך, יישמת את מה שבנינו, <br className="hidden md:block" />
-                  ועדיין לא הגעת לתוצאה שסיכמנו עליה —
-                </p>
-                <p className="text-white font-bold text-xl md:text-2xl">אני לא משאיר אותך לבד עם זה.</p>
+                <p>כשאתה נכנס לליווי,<br />אנחנו מגדירים יחד תוצאה ברורה מראש.</p>
+                <p>זה תהליך עם דרך ברורה,<br />ועם נקודות בדיקה ידועות מראש.</p>
+                <p>כל עוד אתה עוקב אחרי ההנחיות,<br />מבצע את מה שסיכמנו עליו לאורך הדרך,<br />ונותן לתהליך את המקום שלו<br />האחריות על התוצאה היא עליי.</p>
+                <p>אם עמדת בכל מה שסיכמנו עליו,<br />ובנקודת הבדיקה שהגדרנו מראש היעד עדיין לא הושג,<br />האחריות עוברת אליי.</p>
+                <p>במקרה כזה יש שתי אפשרויות בלבד:<br />או שנמשיך בליווי עד להשגת היעד,<br />או שתקבל החזר כספי מלא.</p>
               </div>
             </div>
 
@@ -2717,7 +2788,7 @@ export default function App() {
 
             <div className="pt-2 md:pt-4">
               <p className="text-base md:text-lg font-medium text-gray-400 italic">
-                "כי כשאני לוקח מתאמן — השם שלי והאחריות שלי על הקו."
+                בלי אותיות קטנות.<br />בלי משחקים.<br />ובלי לגלגל אחריות.
               </p>
               <div className="w-16 h-px bg-accent/30 mx-auto mt-2"></div>
             </div>

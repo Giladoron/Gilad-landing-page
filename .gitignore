@@ -25,3 +25,6 @@ dist-ssr
 
 # ESLint cache
 .eslintcache
+
+# Meta workspace (workflow and process documentation)
+_meta/
