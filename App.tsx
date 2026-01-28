@@ -111,131 +111,131 @@ interface ClientResult {
 
 const CLIENT_RESULTS: ClientResult[] = [
   {
-    name: 'לקוח 1',
+    name: 'אלמוג',
     profession: 'מתאמן',
-    age: 28,
+    age: 26,
     quote: 'תוצאות מדהימות! התהליך היה מקצועי וברור מההתחלה.',
     goals: ['ירידה במשקל', 'עליה במסת שריר', 'שיפור בכושר'],
     duration: 3,
     commitment: 100,
     image: 'result1.webp',
-    imageAlt: 'תוצאות לפני ואחרי - לקוח 1',
+    imageAlt: 'תוצאות לפני ואחרי - אלמוג',
     stats: {
-      weight: '10 ק"ג-',
-      muscleMass: '+3 ק"ג',
-      strength: '+45%'
+      weight: '-2 ק"ג',
+      muscleMass: '+8 ק"ג',
+      strength: '+250%'
     }
   },
   {
-    name: 'לקוח 2',
-    profession: 'יזם',
-    age: 32,
+    name: 'מאור',
+    profession: 'סטודנט',
+    age: 25,
     quote: 'הליווי של גילעד שינה לי את החיים. תוצאות מעבר למצופה.',
     goals: ['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'],
     duration: 4,
     commitment: 100,
     image: 'result2.webp',
-    imageAlt: 'תוצאות לפני ואחרי - לקוח 2',
+    imageAlt: 'תוצאות לפני ואחרי - מאור',
     stats: {
-      weight: '+4 ק"ג',
-      muscleMass: '+6 ק"ג',
-      strength: '+55%'
+      weight: '-8 ק"ג',
+      muscleMass: '+4 ק"ג',
+      strength: '+150%'
     }
   },
   {
-    name: 'לקוח 3',
-    profession: 'מהנדס',
-    age: 35,
+    name: 'בניה',
+    profession: 'הנדסאי חשמל',
+    age: 23,
     quote: 'פעם ראשונה שאני רואה תוצאות אמיתיות. התהליך היה מדויק וברור.',
     goals: ['ירידה במשקל', 'שיפור בכושר', 'בריאות כללית'],
     duration: 5,
     commitment: 100,
     image: 'result3.webp',
-    imageAlt: 'תוצאות לפני ואחרי - לקוח 3',
+    imageAlt: 'תוצאות לפני ואחרי - בניה',
     stats: {
-      weight: '15 ק"ג-',
-      muscleMass: '+2 ק"ג',
-      strength: '+50%'
+      weight: '+11 ק"ג',
+      muscleMass: '+10 ק"ג',
+      strength: '+400%'
     }
   },
   {
-    name: 'לקוח 4',
-    profession: 'מתאמנת',
-    age: 27,
+    name: 'שרון',
+    profession: 'משווק',
+    age: 25,
     quote: 'הגעתי למטרות שלי מהר מהצפוי. הליווי היה מקצועי ומדויק.',
     goals: ['חיטוב', 'עליה בכוח', 'שיפור בביטחון עצמי'],
     duration: 3,
     commitment: 100,
     image: 'result4.webp',
-    imageAlt: 'תוצאות לפני ואחרי - לקוח 4',
+    imageAlt: 'תוצאות לפני ואחרי - שרון',
     stats: {
-      weight: '8 ק"ג-',
-      muscleMass: '+1.5 ק"ג',
-      strength: '+60%'
+      weight: '-6 ק"ג',
+      muscleMass: '+2 ק"ג',
+      strength: '+100%'
     }
   },
   {
-    name: 'לקוח 5',
-    profession: 'רופא',
-    age: 38,
+    name: 'אלכס',
+    profession: 'מתכנת',
+    age: 30,
     quote: 'תהליך מקצועי עם תוצאות מדהימות. המלצה חמה!',
     goals: ['ירידה במשקל', 'שיפור בכושר', 'בריאות כללית'],
     duration: 6,
     commitment: 100,
     image: 'result5.webp',
-    imageAlt: 'תוצאות לפני ואחרי - לקוח 5',
+    imageAlt: 'תוצאות לפני ואחרי - אלכס',
     stats: {
-      weight: '12 ק"ג-',
-      muscleMass: '+2.5 ק"ג',
-      strength: '+40%'
+      weight: '-12 ק"ג',
+      muscleMass: '+4 ק"ג',
+      strength: '+200%'
     }
   },
   {
-    name: 'לקוח 6',
-    profession: 'מורה',
-    age: 31,
+    name: 'מלי',
+    profession: 'מורה ליוגה',
+    age: 26,
     quote: 'התוכנית מותאמת אישית והתוצאות מדברות בעד עצמן.',
     goals: ['חיטוב', 'עליה במסת שריר', 'שיפור בכושר'],
     duration: 4,
     commitment: 100,
     image: 'result6.webp',
-    imageAlt: 'תוצאות לפני ואחרי - לקוח 6',
+    imageAlt: 'תוצאות לפני ואחרי - מלי',
     stats: {
-      weight: '7 ק"ג-',
-      muscleMass: '+3.5 ק"ג',
-      strength: '+55%'
+      weight: '+6 ק"ג',
+      muscleMass: '+5.5 ק"ג',
+      strength: '+200%'
     }
   },
   {
-    name: 'לקוח 7',
-    profession: 'עורך דין',
-    age: 29,
+    name: 'עומר',
+    profession: 'מתכנת',
+    age: 32,
     quote: 'תהליך מקצועי עם ליווי צמוד. התוצאות הגיעו מהר מהצפוי.',
     goals: ['בניית שריר', 'עליה בכוח', 'שיפור בביצועים'],
     duration: 5,
     commitment: 100,
     image: 'result7.webp',
-    imageAlt: 'תוצאות לפני ואחרי - לקוח 7',
+    imageAlt: 'תוצאות לפני ואחרי - עומר',
     stats: {
-      weight: '+5 ק"ג',
-      muscleMass: '+7 ק"ג',
-      strength: '+70%'
+      weight: '-7 ק"ג',
+      muscleMass: '+3 ק"ג',
+      strength: '+150%'
     }
   },
   {
-    name: 'לקוח 8',
-    profession: 'מתאמן',
+    name: 'דניאל',
+    profession: 'סטודנט',
     age: 26,
     quote: 'הפעם הראשונה שהגעתי למטרות שלי. התהליך היה ברור ומדויק.',
     goals: ['ירידה במשקל', 'עליה במסת שריר', 'שיפור בכושר'],
     duration: 3,
     commitment: 100,
     image: 'result8.webp',
-    imageAlt: 'תוצאות לפני ואחרי - לקוח 8',
+    imageAlt: 'תוצאות לפני ואחרי - דניאל',
     stats: {
-      weight: '9 ק"ג-',
+      weight: '-4 ק"ג',
       muscleMass: '+2 ק"ג',
-      strength: '+48%'
+      strength: '+80%'
     }
   }
 ];
@@ -661,7 +661,7 @@ const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => vo
         <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
           <div>
             <h2 id="client-story-title" className="text-2xl font-bold heading-font text-white mb-1">{client.name}</h2>
-            <p className="text-gray-400 text-sm">{client.profession}, גיל {client.age}</p>
+            <p className="text-gray-400 text-sm">{client.profession}, {client.age}</p>
           </div>
           <button 
             onClick={onClose}
@@ -1239,7 +1239,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
         </div>
       ) : (
         <>
-          <h3 className={`text-xl font-bold mb-6 text-center ${isFooter ? 'text-white' : 'text-brandDark'}`}>השאר פרטים לבדיקת התאמה לליווי</h3>
+          <h3 className={`text-xl md:text-2xl font-bold mb-8 text-center ${isFooter ? 'text-white' : 'text-brandDark'}`}>השאר פרטים לבדיקת התאמה לליווי</h3>
           {error && (
             <div id="form-error" className={`mb-4 p-4 rounded-lg border ${isFooter ? 'bg-red-900/20 border-red-500/30' : 'bg-red-50 border-red-200'}`} role="alert" aria-live="assertive">
               <div className={`flex items-center gap-2 ${isFooter ? 'text-red-300' : 'text-red-800'}`}>
@@ -1248,9 +1248,9 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
               </div>
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-2 md:space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
             <div>
-              <label htmlFor="fullName" className={`block text-[10px] md:text-xs font-bold mb-0.5 md:mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>שם מלא</label>
+              <label htmlFor="fullName" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 opacity-60 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>שם מלא</label>
               <input 
                 id="fullName"
                 name="name"
@@ -1261,14 +1261,14 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 disabled={isSubmitting}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
-                className={`w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
+                className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
                 placeholder="ישראל ישראלי"
                 value={formData.fullName}
                 onChange={e => setFormData({...formData, fullName: e.target.value})}
               />
             </div>
             <div>
-              <label htmlFor="phone" className={`block text-[10px] md:text-xs font-bold mb-0.5 md:mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>טלפון</label>
+              <label htmlFor="phone" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 opacity-60 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>טלפון</label>
               <input 
                 id="phone"
                 name="tel"
@@ -1279,14 +1279,14 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 disabled={isSubmitting}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
-                className={`w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
+                className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
                 placeholder="050-0000000"
                 value={formData.phone}
                 onChange={e => setFormData({...formData, phone: e.target.value})}
               />
             </div>
             <div>
-              <label htmlFor="email" className={`block text-[10px] md:text-xs font-bold mb-0.5 md:mb-1 opacity-70 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>אימייל</label>
+              <label htmlFor="email" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 opacity-60 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>אימייל</label>
               <input 
                 id="email"
                 name="email"
@@ -1297,15 +1297,15 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 disabled={isSubmitting}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
-                className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
+                className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
                 placeholder="example@email.com"
                 value={formData.email}
                 onChange={e => setFormData({...formData, email: e.target.value})}
               />
             </div>
-            <fieldset className="flex gap-4 py-2">
+            <fieldset className="flex gap-4 py-1">
               <legend className="sr-only">העדפת התקשרות</legend>
-              <label htmlFor="contactPref-phone" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <label htmlFor="contactPref-phone" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white/80' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <input 
                   id="contactPref-phone"
                   type="radio" 
@@ -1317,7 +1317,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 />
                 <span className="text-sm">טלפון</span>
               </label>
-              <label htmlFor="contactPref-whatsapp" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <label htmlFor="contactPref-whatsapp" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white/80' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <input 
                   id="contactPref-whatsapp"
                   type="radio" 
@@ -1330,7 +1330,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 <span className="text-sm">וואטסאפ</span>
               </label>
             </fieldset>
-            <div className="flex items-start gap-2 pt-2">
+            <div className="flex items-start gap-2 pt-1">
               <input 
                 type="checkbox" 
                 required 
@@ -1343,7 +1343,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 checked={formData.consent}
                 onChange={e => setFormData({...formData, consent: e.target.checked})}
               />
-              <label htmlFor="consent" className={`text-xs opacity-70 cursor-pointer ${isFooter ? 'text-gray-300' : 'text-gray-700'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <label htmlFor="consent" className={`text-xs opacity-60 cursor-pointer ${isFooter ? 'text-gray-300' : 'text-gray-700'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 אני מאשר/ת יצירת קשר בהתאם ל{' '}
                 {onPrivacyClick ? (
                   <button
@@ -1365,7 +1365,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="w-full bg-accent text-white py-4 rounded-xl font-bold text-lg hover:brightness-110 shadow-lg shadow-accent/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2"
+              className="w-full bg-accent text-white py-4 md:py-5 rounded-xl font-bold text-lg hover:brightness-110 shadow-lg shadow-accent/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2 mt-2"
             >
               {isSubmitting ? (
                 <>
@@ -2317,21 +2317,21 @@ export default function App() {
 
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-20 lg:pt-24 mobile-hero-spacing">
             <StoryHeader text="החלום שלך מתחיל כאן" />
-            <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
-              <div className="space-y-4 md:space-y-6 text-center md:text-right order-2 md:order-1">
-                <h1 className="hero-headline text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן – <br /> <span className="text-accent underline decoration-accent underline-offset-8">אבל מרגיש שאתה דורך במקום?</span></h1>
-                <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">אתה מנסה, משקיע,<br />אבל משהו בדרך לא מתחבר<br />והתוצאות פשוט לא מגיעות.</p>
-                <div className="space-y-3 md:space-y-4 flex flex-col items-center md:items-start">
-                  <p className="text-base md:text-xl text-gray-300 leading-relaxed">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mt-8 md:mt-12">
+              <div className="space-y-6 md:space-y-8 text-center md:text-right order-2 md:order-1">
+                <h1 className="hero-headline text-2xl md:text-4xl lg:text-5xl font-bold heading-font leading-tight tracking-tight"><span className="font-normal text-white">מתאמן</span> <span className="text-accent">אבל מרגיש שאתה דורך במקום?</span></h1>
+                <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-gray-300/75 leading-loose font-normal">אתה מנסה, משקיע,<br />אבל משהו בדרך לא מתחבר<br />והתוצאות פשוט לא מגיעות.</p>
+                <div className="mt-10 md:mt-14 max-w-2xl space-y-3 md:space-y-4 flex flex-col items-center md:items-start">
+                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal">
                     פה לא מנסים שוב. פה נכנסים לתהליך ומגיעים לתוצאה.
                   </p>
-                  <p className="text-base md:text-xl text-gray-300 leading-relaxed">
+                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal mt-0">
                     אם תעבוד לפי מה שאני אומר לאורך הדרך יש שתי אפשרויות בלבד:
                   </p>
-                  <p className="text-base md:text-xl text-gray-300 leading-relaxed">
+                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal">
                     או שזה התהליך שמביא אותך לתוצאה שאתה מחפש, או שלא תשלם עליו.
                   </p>
-                  <p className="text-base md:text-xl text-gray-300 leading-relaxed">
+                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal">
                     עוד רגע אסביר בדיוק למה אני מתכוון.
                   </p>
                   </div>
@@ -2472,7 +2472,7 @@ export default function App() {
                           perspective: '1000px'
                         }}
                         role="article"
-                        aria-label={`תוצאות לקוח: ${client.name}, ${client.profession}, גיל ${client.age}`}
+                        aria-label={`תוצאות לקוח: ${client.name}, ${client.profession}, ${client.age}`}
                       >
                         <div className={`bg-brandGray/50 border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.6)] ${
                           isActive 
@@ -2488,7 +2488,7 @@ export default function App() {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h3 className="text-lg md:text-xl font-black text-white truncate">{client.name}</h3>
-                                <p className="text-gray-400 text-xs md:text-sm">{client.profession}, גיל {client.age}</p>
+                                <p className="text-gray-400 text-xs md:text-sm">{client.profession}, {client.age}</p>
                               </div>
                             </div>
 
@@ -2587,8 +2587,8 @@ export default function App() {
                     גיא · גיל 25
                   </h3>
                   <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-4 md:p-5">
-                    <p className="text-gray-200 text-base md:text-lg leading-relaxed italic line-clamp-2">
-                      "טקסט עד 2 שורות מקסימום - תוכן עדכני יוזן מאוחר יותר"
+                    <p className="text-gray-200 text-base md:text-lg leading-relaxed italic line-clamp-2 pr-1">
+                      "הגעתי למצב שאני הרבה יותר חטוב, יותר אוהב את עצמי ויותר נוח לי להסתובב בלי חולצה"
                     </p>
                   </div>
                 </div>
@@ -2700,23 +2700,23 @@ export default function App() {
                     );
                   })}
                 </div>
-                {/* Desktop: Full text visible */}
-                <div className="hidden md:block text-sm md:text-xl text-gray-300 leading-relaxed compact-text space-y-2 md:space-y-3">
-                  <p>שרפתי שעות בחדר כושר.</p>
-                  <p>עשיתי כל תרגיל שמצאתי באינטרנט.</p>
-                  <p>אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
-                  <p>ושום דבר לא זז.</p>
-                  <p>יותר מזה, התחלתי לפקפק בעצמי.</p>
-                  <p>הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.</p>
-                  <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
-                  <p>הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
-                  <p>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
-                  <p>השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.</p>
-                  <p>ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.</p>
-                  <p>עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,</p>
-                  <p>אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,</p>
-                  <p>בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.</p>
-                </div>
+              {/* Desktop: Full text visible */}
+              <div className="hidden md:block text-sm md:text-xl text-gray-300 leading-relaxed compact-text space-y-2 md:space-y-3">
+                <p>שרפתי שעות בחדר כושר.</p>
+                <p>עשיתי כל תרגיל שמצאתי באינטרנט.</p>
+                <p>אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
+                <p>ושום דבר לא זז.</p>
+                <p>יותר מזה, התחלתי לפקפק בעצמי.</p>
+                <p>הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.</p>
+                <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
+                <p>הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
+                <p>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
+                <p>השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.</p>
+                <p>ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.</p>
+                <p>עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,</p>
+                <p>אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,</p>
+                <p>בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.</p>
+              </div>
               </div>
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
                 {/* Video container with floating shadow */}
@@ -2780,50 +2780,26 @@ export default function App() {
           <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
             <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
             
-            <div className="space-y-2 md:space-y-3">
+            <div className="space-y-3 md:space-y-4">
               <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
                 אני מתחייב לתוצאה<br />כשעובדים יחד כמו שצריך.
               </h2>
 
-              <div className="space-y-3 md:space-y-4 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
-                {/* Visual timeline for guarantee process */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
-                  <div className="bg-brandGray/30 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-4 text-center" aria-label="שלב 1: הגדרת תוצאה, ביחד, מראש">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black" aria-hidden="true">1</div>
-                    <p className="text-sm md:text-base font-medium text-white">הגדרת תוצאה</p>
-                    <p className="text-xs md:text-sm text-gray-400 mt-1">ביחד, מראש</p>
-                  </div>
-                  <div className="bg-brandGray/30 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-4 text-center" aria-label="שלב 2: נקודות בדיקה, ידועות מראש">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black" aria-hidden="true">2</div>
-                    <p className="text-sm md:text-base font-medium text-white">נקודות בדיקה</p>
-                    <p className="text-xs md:text-sm text-gray-400 mt-1">ידועות מראש</p>
-                  </div>
-                  <div className="bg-brandGray/30 backdrop-blur-sm border border-accent/30 rounded-lg p-3 md:p-4 text-center" aria-label="שלב 3: אחריות, על התוצאה">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black" aria-hidden="true">3</div>
-                    <p className="text-sm md:text-base font-medium text-white">אחריות</p>
-                    <p className="text-xs md:text-sm text-gray-400 mt-1">על התוצאה</p>
-                  </div>
-                </div>
-                
-                {/* Key phrase callout */}
-                <div className="bg-accent/10 border-r-4 border-accent rounded-lg p-4 md:p-5 mb-3">
-                  <p className="text-white font-bold text-lg md:text-xl text-center md:text-right">
-                    כל עוד אתה עוקב אחרי ההנחיות,<br className="md:hidden" />
-                    <span className="text-accent">האחריות על התוצאה היא עליי.</span>
-                  </p>
-                </div>
-                
+              <div className="space-y-4 md:space-y-5 text-lg md:text-xl text-gray-300 font-normal leading-relaxed max-w-3xl mx-auto">
                 {/* Detailed explanation */}
-                <div className="space-y-2 md:space-y-3">
-                  <p>כשאתה נכנס לליווי,<br />אנחנו מגדירים יחד תוצאה ברורה מראש.</p>
-                  <p>זה תהליך עם דרך ברורה,<br />ועם נקודות בדיקה ידועות מראש.</p>
-                  <p>אם עמדת בכל מה שסיכמנו עליו,<br />ובנקודת הבדיקה שהגדרנו מראש היעד עדיין לא הושג,<br />האחריות עוברת אליי.</p>
-                  <p className="font-medium text-white">במקרה כזה יש שתי אפשרויות בלבד:<br />או שנמשיך בליווי עד להשגת היעד,<br />או שתקבל החזר כספי מלא.</p>
+                <div>
+                  <p className="mb-2">כשאתה נכנס לליווי, אנחנו מגדירים יחד תוצאה ברורה מראש.</p>
+                  <p className="mb-6">זה תהליך עם דרך ברורה, ועם נקודות בדיקה ידועות מראש.</p>
+                  <p className="mb-2">אם עמדת בכל מה שסיכמנו עליו, ובנקודת הבדיקה שהגדרנו מראש היעד עדיין לא הושג —</p>
+                  
+                  <p className="text-gray-300 font-medium text-lg md:text-xl tracking-wide mt-[18px] mb-3">האחריות עוברת אליי.</p>
+                  
+                  <p className="font-bold text-white text-[25px] mt-3">במקרה כזה, יש שתי אפשרויות בלבד:</p>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto mt-6 md:mt-8">
               <div className="bg-white/5 border border-white/10 p-4 md:p-6 rounded-2xl transition-all hover:border-accent/40 group">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                   <CheckCircle2 size={18} aria-hidden="true" />
@@ -2840,7 +2816,7 @@ export default function App() {
 
             <div className="pt-2 md:pt-4">
               <p className="text-base md:text-lg font-medium text-gray-400 italic">
-                בלי אותיות קטנות.<br />בלי משחקים.<br />ובלי לגלגל אחריות.
+                בלי אותיות קטנות. בלי משחקים. ובלי לגלגל אחריות.
               </p>
               <div className="w-16 h-px bg-accent/30 mx-auto mt-2"></div>
             </div>
