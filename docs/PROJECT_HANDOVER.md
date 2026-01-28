@@ -809,14 +809,21 @@ npm run dev
 
 #### Git Ownership
 
+- [ ] **Repository URL**: `https://github.com/<<<USERNAME>>>/<<<REPO_NAME>>>.git` (fill in actual values)
+- [ ] **Default Branch**: `<<<MAIN_BRANCH>>>` (fill in: `main` or `master`)
 - [ ] **Repository Access**: Verify you have access to the repository on the new account
 - [ ] **Git Config**: Set correct user name and email for new account
   ```bash
   git config user.name "Your Name"
   git config user.email "your.email@example.com"
   ```
+- [ ] **Git Remote**: Verify remote is configured correctly
+  ```bash
+  git remote -v
+  # Should show: origin  https://github.com/username/repo-name.git
+  ```
 - [ ] **SSH Keys**: If using SSH, add new SSH key to GitHub account
-- [ ] **HTTPS Credentials**: If using HTTPS, update Git credentials
+- [ ] **HTTPS Credentials**: If using HTTPS, update Git credentials (PAT token)
 
 #### SSH / Tokens
 
@@ -826,18 +833,20 @@ npm run dev
 
 #### Environment Variables
 
-- [ ] **Create `.env.local`**: Copy environment variables to new workspace
+- [ ] **Create `.env.local`**: Copy from `.env.example` template
   ```bash
-  # Required
-  VITE_EMAILJS_PUBLIC_KEY=your_actual_key_here
-  
-  # Optional (have defaults)
+  cp .env.example .env.local
+  # Edit .env.local and add your actual VITE_EMAILJS_PUBLIC_KEY
+  ```
+- [ ] **Required Variable**: `VITE_EMAILJS_PUBLIC_KEY=your_actual_key_here` (get from EmailJS dashboard)
+- [ ] **Optional Variables** (have defaults, only override if needed):
+  ```bash
   VITE_EMAILJS_SERVICE_ID=service_fphe5xu
   VITE_EMAILJS_TEMPLATE_ID=template_8p1hgtg
   VITE_RECIPIENT_EMAIL=gilad042@gmail.com
   ```
 - [ ] **Verify `.env.local` is Gitignored**: Check `.gitignore:13` (pattern `*.local`)
-- [ ] **Deployment Environment**: If deploying, set env vars in deployment platform (GitHub Actions, Vercel, etc.)
+- [ ] **Note**: Environment variables are embedded at build time (Vite convention), so `.env.local` must exist before `npm run build`
 
 #### External Service Ownership
 
@@ -852,8 +861,9 @@ npm run dev
   - Test video playback manually
 - [ ] **GitHub Pages**:
   - Verify repository access
-  - Verify deployment settings (base path: `/Gilad-landing-page/`)
-  - Verify custom domain (if used)
+  - Verify Pages source is set to `gh-pages` branch (Settings → Pages → Source: `gh-pages` branch)
+  - Verify base path in `vite.config.ts:11` is `/Gilad-landing-page/`
+  - Verify custom domain (if used) - check for `CNAME` file in `gh-pages` branch
 
 #### Build & Deploy Verification Steps
 
@@ -861,7 +871,9 @@ npm run dev
 - [ ] **Build Test**: `npm run build` (verify build succeeds)
 - [ ] **Lint Test**: `npm run lint` (verify no errors)
 - [ ] **Dev Server**: `npm run dev` (verify site loads locally)
-- [ ] **Deploy Test**: `npm run deploy` (verify deployment succeeds)
+- [ ] **Deploy Test**: `npm run deploy` (verify deployment succeeds, `gh-pages` branch updated)
+  - **Note**: First deployment creates `gh-pages` branch automatically
+  - **Verify**: Check GitHub repository → `gh-pages` branch exists and contains `dist/` contents
 - [ ] **Production Test**: Visit deployed site, verify:
   - Form submission works
   - Videos play
@@ -891,6 +903,7 @@ npm run lint:a11y
 
 # 5. Start dev server
 npm run dev
+# Site will be available at: http://localhost:3000/Gilad-landing-page/
 ```
 
 **Expected Results**:
@@ -1078,6 +1091,331 @@ npm run dev
 
 ---
 
+## 11. Deployment (GitHub Pages)
+
+### Deployment Method
+
+**Important**: This project uses **manual deployment via `gh-pages` npm package**, NOT GitHub Actions.
+
+- **Deployment Script**: `npm run deploy` (defined in `package.json:10`)
+- **Command**: `npm run build && gh-pages -d dist`
+- **What It Does**: Builds the project and pushes `dist/` folder to `gh-pages` branch
+- **Package**: `gh-pages` v6.3.0 (devDependency in `package.json:35`)
+
+### Prerequisites
+
+Before deploying, ensure:
+
+1. **Git Remote Configured**:
+   ```bash
+   git remote -v
+   # Should show 'origin' pointing to your GitHub repository
+   ```
+
+2. **Git Credentials**:
+   - SSH key added to GitHub account, OR
+   - HTTPS with Personal Access Token (PAT) configured
+   - Write access to repository (required to push to `gh-pages` branch)
+
+3. **Environment Variables**:
+   - `.env.local` file exists with `VITE_EMAILJS_PUBLIC_KEY` (for local testing)
+   - Note: Environment variables are **embedded at build time** (Vite convention)
+   - For production, ensure `.env.local` has correct values before building
+
+### GitHub Pages Configuration
+
+**Critical**: GitHub Pages must be configured to serve from `gh-pages` branch (NOT `main` branch or `/docs` folder).
+
+#### How to Configure GitHub Pages
+
+1. Go to repository on GitHub: `Settings` → `Pages`
+2. Under "Source", select:
+   - **Branch**: `gh-pages`
+   - **Folder**: `/ (root)`
+3. Click "Save"
+4. Wait 1-2 minutes for GitHub Pages to build
+5. Site will be available at: `https://yourusername.github.io/Gilad-landing-page/`
+
+**Why `/gh-pages` branch?**
+- `vite.config.ts:11` sets `base: '/Gilad-landing-page/'` (subdirectory path)
+- `gh-pages` package automatically creates/updates this branch
+- GitHub Pages serves from `gh-pages` branch root
+
+### First-Time Deployment Setup
+
+If this is the first deployment (or `gh-pages` branch doesn't exist):
+
+1. **Verify Git Remote**:
+   ```bash
+   git remote -v
+   # Should show: origin  https://github.com/username/repo-name.git (or SSH URL)
+   ```
+
+2. **Create `.env.local`** (if not exists):
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local and add your VITE_EMAILJS_PUBLIC_KEY
+   ```
+
+3. **Build Locally** (test before deploying):
+   ```bash
+   npm run build
+   # Verify dist/ folder is created and contains index.html
+   ```
+
+4. **Deploy**:
+   ```bash
+   npm run deploy
+   ```
+
+5. **What Happens**:
+   - `gh-pages` package creates `gh-pages` branch automatically (if doesn't exist)
+   - Pushes `dist/` folder contents to `gh-pages` branch
+   - GitHub Pages automatically rebuilds site from `gh-pages` branch
+
+6. **Verify Deployment**:
+   - Check GitHub repository: `gh-pages` branch should exist
+   - Visit: `https://yourusername.github.io/Gilad-landing-page/`
+   - Wait 1-2 minutes if site doesn't load immediately
+
+### Regular Deployment Process
+
+After first deployment, routine deployments:
+
+1. **Make Changes**: Edit code, commit to `main` branch
+2. **Test Locally**:
+   ```bash
+   npm run dev
+   # Visit http://localhost:3000/Gilad-landing-page/
+   # Test all functionality
+   ```
+3. **Build Test**:
+   ```bash
+   npm run build
+   npm run preview
+   # Verify production build works
+   ```
+4. **Deploy**:
+   ```bash
+   npm run deploy
+   ```
+5. **Verify Production**:
+   - Visit production URL
+   - Test form submission, videos, carousel
+   - Check browser console for errors
+
+### Deployment Verification Checklist
+
+After each deployment, verify:
+
+- [ ] `gh-pages` branch updated (check GitHub repository)
+- [ ] Production site loads: `https://yourusername.github.io/Gilad-landing-page/`
+- [ ] Form submission works (test with real form)
+- [ ] Videos play correctly
+- [ ] Carousel navigation works
+- [ ] Modals open/close
+- [ ] RTL layout renders correctly
+- [ ] Mobile responsiveness works
+- [ ] No console errors (check browser DevTools)
+
+### Custom Domain (If Applicable)
+
+If using a custom domain:
+
+1. **CNAME File**: Must exist in `gh-pages` branch root
+   ```bash
+   # After deployment, manually add CNAME file to gh-pages branch:
+   echo "yourdomain.com" > dist/CNAME
+   npm run deploy
+   ```
+
+2. **DNS Configuration**: Point domain to GitHub Pages:
+   - Add CNAME record: `yourdomain.com` → `yourusername.github.io`
+   - Or A records: Point to GitHub Pages IPs (check GitHub docs)
+
+3. **GitHub Pages Settings**: Enable custom domain in repository Settings → Pages
+
+**Note**: Custom domain setup is manual and must be repeated if `gh-pages` branch is recreated.
+
+---
+
+## 12. Disaster Recovery
+
+### Rollback a Bad Deployment
+
+If a deployment breaks production:
+
+1. **Identify Last Good Commit**:
+   ```bash
+   git log --oneline
+   # Find commit hash of last working version
+   ```
+
+2. **Checkout Last Good Version**:
+   ```bash
+   git checkout <commit-hash>
+   ```
+
+3. **Rebuild and Redeploy**:
+   ```bash
+   npm run build
+   npm run deploy
+   ```
+
+4. **Alternative: Revert via GitHub**:
+   - Go to repository → `gh-pages` branch
+   - Find last good commit
+   - Create new commit reverting bad changes
+   - GitHub Pages will automatically rebuild
+
+### Redeploy After Failure
+
+If deployment fails:
+
+1. **Check Error Message**:
+   ```bash
+   npm run deploy
+   # Read error output carefully
+   ```
+
+2. **Common Issues**:
+   - **Git remote not configured**: `git remote add origin <repo-url>`
+   - **No write access**: Check GitHub permissions, SSH keys, or PAT
+   - **Build fails**: Fix build errors first (`npm run build`)
+   - **Network error**: Retry deployment
+
+3. **Force Redeploy**:
+   ```bash
+   # Clean build
+   rm -rf dist node_modules/.vite
+   npm run build
+   npm run deploy
+   ```
+
+### Common Deployment Failures
+
+#### Issue: "gh-pages: command not found"
+
+**Solution**:
+```bash
+npm install
+# Ensures gh-pages package is installed
+```
+
+#### Issue: "Permission denied (publickey)"
+
+**Solution**:
+- Check SSH key is added to GitHub account
+- Or switch to HTTPS: `git remote set-url origin https://github.com/username/repo.git`
+- Configure Git credentials for HTTPS
+
+#### Issue: "Site loads but assets are broken (404 errors)"
+
+**Solution**:
+- Verify `vite.config.ts:11` has correct base path: `base: '/Gilad-landing-page/'`
+- Check GitHub Pages is serving from `gh-pages` branch (not `main` or `/docs`)
+- Verify asset paths in `dist/index.html` are relative (not absolute)
+
+#### Issue: "Form submission fails in production"
+
+**Solution**:
+- Verify `VITE_EMAILJS_PUBLIC_KEY` is set in `.env.local` before building
+- Check EmailJS dashboard for API errors
+- Verify EmailJS service ID and template ID are correct
+- Test form submission manually on production site
+
+#### Issue: "Videos don't play in production"
+
+**Solution**:
+- Check Vimeo video IDs are correct and videos are accessible
+- Verify Vimeo Player API script loads (check browser console)
+- Check CORS settings if videos are private
+
+### Verification After Recovery
+
+After fixing deployment:
+
+1. **Build Test**: `npm run build` (must succeed)
+2. **Local Preview**: `npm run preview` (test locally)
+3. **Deploy**: `npm run deploy` (must succeed)
+4. **Production Test**: Visit production URL, test all functionality
+5. **Monitor**: Check browser console for errors, test on mobile
+
+---
+
+## 13. Transfer Readiness Checklist
+
+### Pre-Transfer (Before Switching Accounts)
+
+Use this checklist to ensure smooth transfer:
+
+#### Repository Information
+
+- [ ] **Repository URL**: `https://github.com/username/repo-name.git` (fill in actual URL)
+- [ ] **Default Branch**: `main` or `master` (fill in actual branch)
+- [ ] **Production URL**: `https://username.github.io/Gilad-landing-page/` (fill in actual URL)
+- [ ] **Git Remote**: Verify `git remote -v` shows correct repository
+
+#### Local Setup
+
+- [ ] **Node.js Installed**: Version 18+ (`node --version`)
+- [ ] **Git Configured**: Name and email set (`git config user.name`, `git config user.email`)
+- [ ] **Repository Cloned**: `git clone <repo-url>`
+- [ ] **Dependencies Installed**: `npm install` (no errors)
+- [ ] **Environment Variables**: `.env.local` created from `.env.example`
+- [ ] **Local Dev Works**: `npm run dev` (site loads at `http://localhost:3000/Gilad-landing-page/`)
+
+#### Build & Test
+
+- [ ] **Build Succeeds**: `npm run build` (no errors, `dist/` folder created)
+- [ ] **Lint Passes**: `npm run lint` (no errors)
+- [ ] **Preview Works**: `npm run preview` (production build works locally)
+
+#### External Services
+
+- [ ] **EmailJS Account**: Access verified, public key obtained
+- [ ] **Vimeo Account**: Access verified, video IDs confirmed
+- [ ] **GitHub Account**: Repository access, write permissions
+
+#### GitHub Pages Configuration
+
+- [ ] **Pages Source**: Configured to serve from `gh-pages` branch (Settings → Pages)
+- [ ] **Base Path**: Verified `/Gilad-landing-page/` in `vite.config.ts:11`
+- [ ] **Custom Domain**: If used, DNS and CNAME configured
+
+### Post-Transfer (After Switching Accounts)
+
+#### Git Configuration
+
+- [ ] **Git Config Updated**: Name and email set for new account
+  ```bash
+  git config user.name "Your New Name"
+  git config user.email "your.new.email@example.com"
+  ```
+
+- [ ] **Git Remote Verified**: `git remote -v` shows correct repository
+- [ ] **SSH/HTTPS Configured**: Can push to repository (test with `git push`)
+
+#### Credentials & Access
+
+- [ ] **GitHub Access**: Can clone, push, and deploy
+- [ ] **EmailJS Key**: `VITE_EMAILJS_PUBLIC_KEY` in `.env.local`
+- [ ] **Vimeo Access**: Videos accessible and playable
+
+#### First Deployment Test
+
+- [ ] **Build Test**: `npm run build` (succeeds)
+- [ ] **Deploy Test**: `npm run deploy` (succeeds, no errors)
+- [ ] **Production Verification**: Site loads, all features work
+
+### Success Criteria
+
+All items checked = ✅ **Ready for seamless transfer**
+
+If any item unchecked = ⚠️ **Fix before transferring**
+
+---
+
 ## Additional Resources
 
 ### Documentation Files
@@ -1130,7 +1468,105 @@ This handover document is designed to be **self-contained**. A new Cursor instan
 
 ---
 
-**Document Version**: 1.0  
+**Document Version**: 2.0  
 **Last Updated**: January 2026  
 **Maintained By**: Project owner / development team
+
+---
+
+## Appendix: Environment Variables Reference Table
+
+### Complete Environment Variables Audit
+
+| Variable Name | Required | Default Value | Where Used | How to Obtain |
+|--------------|----------|---------------|------------|---------------|
+| `VITE_EMAILJS_PUBLIC_KEY` | ✅ **YES** | None (required) | `App.tsx:72`, `App.tsx:1127` | EmailJS Dashboard → Account → API Keys → Public Key |
+| `VITE_EMAILJS_SERVICE_ID` | ❌ No | `'service_fphe5xu'` | `App.tsx:70`, `App.tsx:1124` | EmailJS Dashboard → Email Services → Service ID |
+| `VITE_EMAILJS_TEMPLATE_ID` | ❌ No | `'template_8p1hgtg'` | `App.tsx:71`, `App.tsx:1125` | EmailJS Dashboard → Email Templates → Template ID |
+| `VITE_RECIPIENT_EMAIL` | ❌ No | `'gilad042@gmail.com'` | `App.tsx:76`, `App.tsx:1107` | Owner-provided email address |
+
+### Environment Variable Details
+
+#### `VITE_EMAILJS_PUBLIC_KEY` (REQUIRED)
+
+- **Purpose**: EmailJS API authentication for form submissions
+- **Where Consumed**: 
+  - `App.tsx:72` (validation check)
+  - `App.tsx:1127` (EmailJS API call)
+- **What Breaks If Missing**: 
+  - Form submissions fail with error: "תצורת EmailJS חסרה. אנא פנה לתמיכה."
+  - Console error: "VITE_EMAILJS_PUBLIC_KEY environment variable is required"
+- **How to Obtain**:
+  1. Log in to EmailJS Dashboard: https://dashboard.emailjs.com
+  2. Go to: Account → API Keys
+  3. Copy "Public Key" value
+  4. Add to `.env.local`: `VITE_EMAILJS_PUBLIC_KEY=your_public_key_here`
+- **Security**: 
+  - Public key is safe to expose (designed for client-side use)
+  - Must be in `.env.local` (gitignored, never commit)
+  - No hardcoded fallback (security best practice)
+
+#### `VITE_EMAILJS_SERVICE_ID` (OPTIONAL)
+
+- **Purpose**: EmailJS service identifier
+- **Default**: `'service_fphe5xu'`
+- **Where Consumed**: `App.tsx:70`, `App.tsx:1124`
+- **When to Override**: Only if using a different EmailJS service
+- **How to Obtain**: EmailJS Dashboard → Email Services → Service ID
+
+#### `VITE_EMAILJS_TEMPLATE_ID` (OPTIONAL)
+
+- **Purpose**: EmailJS email template identifier
+- **Default**: `'template_8p1hgtg'`
+- **Where Consumed**: `App.tsx:71`, `App.tsx:1125`
+- **When to Override**: Only if using a different EmailJS template
+- **How to Obtain**: EmailJS Dashboard → Email Templates → Template ID
+
+#### `VITE_RECIPIENT_EMAIL` (OPTIONAL)
+
+- **Purpose**: Override recipient email address for form submissions
+- **Default**: `'gilad042@gmail.com'`
+- **Where Consumed**: `App.tsx:76`, `App.tsx:1107`
+- **When to Override**: Only if sending to a different email address
+
+### Environment Variable Setup
+
+1. **Copy Template**:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. **Edit `.env.local`**:
+   ```bash
+   # Required - get from EmailJS Dashboard
+   VITE_EMAILJS_PUBLIC_KEY=your_actual_public_key_here
+   
+   # Optional - only override if needed
+   # VITE_EMAILJS_SERVICE_ID=service_fphe5xu
+   # VITE_EMAILJS_TEMPLATE_ID=template_8p1hgtg
+   # VITE_RECIPIENT_EMAIL=gilad042@gmail.com
+   ```
+
+3. **Verify Setup**:
+   ```bash
+   # Check .env.local exists and is gitignored
+   cat .env.local
+   git status
+   # .env.local should NOT appear in git status
+   ```
+
+### Environment Variable Loading
+
+- **Vite Convention**: All env vars must be prefixed with `VITE_`
+- **Build Time**: Environment variables are embedded at build time (not runtime)
+- **Access Pattern**: `import.meta.env.VITE_*` (Vite convention)
+- **File Location**: `.env.local` in project root (gitignored)
+- **Loading**: Vite automatically loads `.env.local` via `loadEnv()` in `vite.config.ts:7`
+
+### Security Notes
+
+1. **Never Commit Secrets**: `.env.local` is gitignored (`.gitignore:13` pattern `*.local`)
+2. **No Hardcoded Fallbacks**: `VITE_EMAILJS_PUBLIC_KEY` has no fallback (security best practice)
+3. **Public Key is Safe**: EmailJS public key is designed for client-side exposure
+4. **Rotation**: If key is compromised, rotate in EmailJS Dashboard and update `.env.local`
 

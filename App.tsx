@@ -894,8 +894,11 @@ const FloatingCTA: React.FC = () => {
           }
         }
 
-        // Show after scrolling 100px, hide before action section
-        if (scrollY > 100 && !newHasReachedAction) {
+        // Show after scrolling 50% of page height OR 300px (whichever is smaller), hide before action section
+        const pageHeight = document.documentElement.scrollHeight;
+        const scrollThreshold = Math.min(pageHeight * 0.5, 300);
+        
+        if (scrollY >= scrollThreshold && !newHasReachedAction) {
           newIsVisible = true;
         } else {
           newIsVisible = false;
@@ -1403,6 +1406,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   const [isIOSDevice, setIsIOSDevice] = useState(false);
   const [isMuted, setIsMuted] = useState(true); // Start muted (browser requirement for autoplay)
   const [isVisible, setIsVisible] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false); // Track scroll state to prevent accidental interactions
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<any>(null);
@@ -1411,6 +1415,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   const isVisibleRef = useRef(false); // Track visibility in ref to avoid stale closures
   const playTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef(false); // Track if we've started playing to prevent rapid toggles
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track scroll end timeout
   
   useEffect(() => {
     setIsIOSDevice(isIOS());
@@ -1447,25 +1452,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
             // Ignore errors if player not fully ready yet
           }
           
-          // If section is already visible when player initializes, start playing
-          if (isVisibleRef.current) {
-            setTimeout(async () => {
-              try {
-                if (playerRef.current && isVisibleRef.current) {
-                  await playerRef.current.play();
-                  // Get initial mute state (video starts muted per browser requirements)
-                  try {
-                    const muted = await playerRef.current.getMuted();
-                    setIsMuted(muted);
-                  } catch (err) {
-                    // Ignore
-                  }
-                }
-              } catch (err) {
-                // Ignore play errors
-              }
-            }, 300);
-          }
+          // Note: Testimonial video does NOT autoplay - user must click play button
           
           // Clear all timeouts once initialized
           timeoutIds.forEach(id => clearTimeout(id));
@@ -1665,6 +1652,36 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       observer.disconnect();
     };
   }, []);
+
+  // Scroll detection to prevent accidental video interactions during scroll (mobile 2x speed issue)
+  useEffect(() => {
+    const handleScroll = () => {
+      // Mark as scrolling
+      setIsScrolling(true);
+      
+      // Clear any existing timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      // Set scroll end detection with debounce (300ms after scroll stops)
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+        scrollTimeoutRef.current = null;
+      }, 300);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('touchmove', handleScroll, { passive: true }); // Also detect touch scrolling
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('touchmove', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
   
   return (
     <div 
@@ -1697,7 +1714,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
           top: 0,
           left: 0,
           bottom: 0,
-          pointerEvents: 'auto', // Ensure touch events work on iOS
+          pointerEvents: isScrolling ? 'none' : 'auto', // Disable interactions during scroll to prevent 2x speed issue
           zIndex: 1 // Ensure iframe is above container but below button
         }}
         frameBorder="0"
@@ -1736,6 +1753,7 @@ const VideoPlayer: React.FC = () => {
   const [isMuted, setIsMuted] = useState(true); // Start muted (browser requirement for autoplay)
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isIOSDevice, setIsIOSDevice] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false); // Track scroll state to prevent accidental interactions
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<any>(null);
@@ -1745,6 +1763,7 @@ const VideoPlayer: React.FC = () => {
   const isVisibleRef = useRef(false); // Track visibility in ref to avoid stale closures
   const playTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef(false); // Track if we've started playing to prevent rapid toggles
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track scroll end timeout
 
   // Detect iOS device
   useEffect(() => {
@@ -2064,7 +2083,7 @@ const VideoPlayer: React.FC = () => {
           top: 0,
           left: 0,
           bottom: 0,
-          pointerEvents: 'auto', // Ensure touch events work on iOS
+          pointerEvents: isScrolling ? 'none' : 'auto', // Disable interactions during scroll to prevent 2x speed issue
           zIndex: 1 // Ensure iframe is above container but below button
         }}
         frameBorder="0"
@@ -2136,6 +2155,7 @@ export default function App() {
   const [expandedFAQIndex, setExpandedFAQIndex] = useState<number | null>(null);
   const [selectedClientIndex, setSelectedClientIndex] = useState<number | null>(null);
   const [expandedStepIndex, setExpandedStepIndex] = useState<number | null>(null);
+  const [expandedAboutSection, setExpandedAboutSection] = useState<number | null>(null);
   const [hasExpandedAnyStep, setHasExpandedAnyStep] = useState(() => {
     // Check localStorage on mount
     if (typeof window !== 'undefined') {
@@ -2371,7 +2391,7 @@ export default function App() {
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-20 lg:pt-24 mobile-hero-spacing">
             <StoryHeader text="החלום שלך מתחיל כאן" />
             <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
-              <div className="space-y-4 md:space-y-6 text-center md:text-right">
+              <div className="space-y-4 md:space-y-6 text-center md:text-right order-2 md:order-1">
                 <h2 className="hero-headline text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן – <br /> <span className="text-accent underline decoration-accent underline-offset-8">אבל מרגיש שאתה דורך במקום?</span></h2>
                 <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">אתה מנסה, משקיע,<br />אבל משהו בדרך לא מתחבר<br />והתוצאות פשוט לא מגיעות.</p>
                 <div className="space-y-3 md:space-y-4 flex flex-col items-center md:items-start">
@@ -2388,7 +2408,7 @@ export default function App() {
                   </p>
                 </div>
               </div>
-              <div className="delay-100 w-full flex-1 flex flex-col justify-end pb-2 md:pb-0">
+              <div className="delay-100 w-full flex-1 flex flex-col justify-center md:justify-end pb-2 md:pb-0 order-1 md:order-2">
                 <div className="mobile-form-container">
                   <LeadForm isFooter={true} onPrivacyClick={() => setModalType('privacy')} />
                 </div>
@@ -2414,9 +2434,11 @@ export default function App() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-2 md:gap-8 flex-1 min-h-0">
-              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-white/10 p-3 md:p-10 rounded-xl relative group transition-all flex flex-col justify-center">
+              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-white/10 p-3 md:p-10 rounded-xl relative group transition-all flex flex-col justify-center hover:border-white/20">
                 <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-6 text-gray-300 flex items-center gap-2 md:gap-3 compact-heading">
-                  <MinusCircle className="text-gray-500 opacity-50" size={20} aria-hidden="true" />
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-gray-600/30 rounded-full flex items-center justify-center flex-shrink-0">
+                    <MinusCircle className="text-gray-500 opacity-70" size={20} aria-hidden="true" />
+                  </div>
                   ככה זה מרגיש בלי הליווי
                 </h3>
                 <ul className="space-y-1.5 md:space-y-4">
@@ -2434,9 +2456,11 @@ export default function App() {
                 </ul>
               </div>
 
-              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-accent/20 p-3 md:p-10 rounded-xl relative group transition-all flex flex-col justify-center">
+              <div className="bg-brandGray/20 backdrop-blur-sm border-r-2 border-accent/30 p-3 md:p-10 rounded-xl relative group transition-all flex flex-col justify-center hover:border-accent/40 shadow-[0_0_20px_rgba(255,107,53,0.1)]">
                 <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-8 text-white flex items-center gap-2 md:gap-3 compact-heading">
-                  <PlusCircle className="text-accent opacity-80" size={20} aria-hidden="true" />
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <PlusCircle className="text-accent opacity-90" size={20} aria-hidden="true" />
+                  </div>
                   ככה זה נראה עם התהליך הנכון
                 </h3>
                 <ul className="space-y-1.5 md:space-y-4">
@@ -2678,7 +2702,78 @@ export default function App() {
                   <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
                   <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight">גילעד דורון.<br />התחלתי בדיוק כמוך - מתאמן שעושה הכול נכון, ועדיין לא רואה תוצאות.</h2>
                 </div>
-                <div className="text-sm md:text-xl text-gray-300 leading-relaxed compact-text space-y-2 md:space-y-3">
+                {/* Mobile: Accordion structure, Desktop: Full text */}
+                <div className="md:hidden space-y-2">
+                  {[
+                    {
+                      title: 'המאבק',
+                      content: [
+                        'שרפתי שעות בחדר כושר.',
+                        'עשיתי כל תרגיל שמצאתי באינטרנט.',
+                        'אכלתי חלבונים כאילו זה אמור לפתור הכול.',
+                        'ושום דבר לא זז.',
+                        'יותר מזה, התחלתי לפקפק בעצמי.',
+                        'הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.'
+                      ]
+                    },
+                    {
+                      title: 'ההבנה',
+                      content: [
+                        'רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:',
+                        'הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.',
+                        'ברגע שהבנתי את זה, לא השתנה רק הגוף,',
+                        'השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.'
+                      ]
+                    },
+                    {
+                      title: 'התוצאה',
+                      content: [
+                        'ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.',
+                        'עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,',
+                        'אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,',
+                        'בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.'
+                      ]
+                    }
+                  ].map((section, idx) => {
+                    const isExpanded = expandedAboutSection === idx;
+                    return (
+                      <div
+                        key={idx}
+                        className="bg-brandGray/20 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden transition-all"
+                      >
+                        <button
+                          onClick={() => setExpandedAboutSection(expandedAboutSection === idx ? null : idx)}
+                          className="w-full flex items-center justify-between p-3 text-right hover:bg-white/5 transition-colors"
+                          aria-expanded={isExpanded}
+                          aria-controls={`about-section-${idx}`}
+                        >
+                          <h3 className="text-base font-bold text-white pl-3 flex-1 text-right">
+                            {section.title}
+                          </h3>
+                          <ChevronDown
+                            className={`text-white flex-shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                            size={20}
+                            aria-hidden="true"
+                          />
+                        </button>
+                        <div
+                          id={`about-section-${idx}`}
+                          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                            isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                          }`}
+                        >
+                          <div className="px-3 pb-3 pt-0 text-gray-300 text-sm leading-relaxed space-y-2">
+                            {section.content.map((paragraph, pIdx) => (
+                              <p key={pIdx}>{paragraph}</p>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* Desktop: Full text visible */}
+                <div className="hidden md:block text-sm md:text-xl text-gray-300 leading-relaxed compact-text space-y-2 md:space-y-3">
                   <p>שרפתי שעות בחדר כושר.</p>
                   <p>עשיתי כל תרגיל שמצאתי באינטרנט.</p>
                   <p>אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
@@ -2762,12 +2857,41 @@ export default function App() {
                 אני מתחייב לתוצאה<br />כשעובדים יחד כמו שצריך.
               </h2>
 
-              <div className="space-y-2 md:space-y-3 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
-                <p>כשאתה נכנס לליווי,<br />אנחנו מגדירים יחד תוצאה ברורה מראש.</p>
-                <p>זה תהליך עם דרך ברורה,<br />ועם נקודות בדיקה ידועות מראש.</p>
-                <p>כל עוד אתה עוקב אחרי ההנחיות,<br />מבצע את מה שסיכמנו עליו לאורך הדרך,<br />ונותן לתהליך את המקום שלו<br />האחריות על התוצאה היא עליי.</p>
-                <p>אם עמדת בכל מה שסיכמנו עליו,<br />ובנקודת הבדיקה שהגדרנו מראש היעד עדיין לא הושג,<br />האחריות עוברת אליי.</p>
-                <p>במקרה כזה יש שתי אפשרויות בלבד:<br />או שנמשיך בליווי עד להשגת היעד,<br />או שתקבל החזר כספי מלא.</p>
+              <div className="space-y-3 md:space-y-4 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
+                {/* Visual timeline for guarantee process */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
+                  <div className="bg-brandGray/30 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-4 text-center">
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black">1</div>
+                    <p className="text-sm md:text-base font-medium text-white">הגדרת תוצאה</p>
+                    <p className="text-xs md:text-sm text-gray-400 mt-1">ביחד, מראש</p>
+                  </div>
+                  <div className="bg-brandGray/30 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-4 text-center">
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black">2</div>
+                    <p className="text-sm md:text-base font-medium text-white">נקודות בדיקה</p>
+                    <p className="text-xs md:text-sm text-gray-400 mt-1">ידועות מראש</p>
+                  </div>
+                  <div className="bg-brandGray/30 backdrop-blur-sm border border-accent/30 rounded-lg p-3 md:p-4 text-center">
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black">3</div>
+                    <p className="text-sm md:text-base font-medium text-white">אחריות</p>
+                    <p className="text-xs md:text-sm text-gray-400 mt-1">על התוצאה</p>
+                  </div>
+                </div>
+                
+                {/* Key phrase callout */}
+                <div className="bg-accent/10 border-r-4 border-accent rounded-lg p-4 md:p-5 mb-3">
+                  <p className="text-white font-bold text-lg md:text-xl text-center md:text-right">
+                    כל עוד אתה עוקב אחרי ההנחיות,<br className="md:hidden" />
+                    <span className="text-accent">האחריות על התוצאה היא עליי.</span>
+                  </p>
+                </div>
+                
+                {/* Detailed explanation */}
+                <div className="space-y-2 md:space-y-3">
+                  <p>כשאתה נכנס לליווי,<br />אנחנו מגדירים יחד תוצאה ברורה מראש.</p>
+                  <p>זה תהליך עם דרך ברורה,<br />ועם נקודות בדיקה ידועות מראש.</p>
+                  <p>אם עמדת בכל מה שסיכמנו עליו,<br />ובנקודת הבדיקה שהגדרנו מראש היעד עדיין לא הושג,<br />האחריות עוברת אליי.</p>
+                  <p className="font-medium text-white">במקרה כזה יש שתי אפשרויות בלבד:<br />או שנמשיך בליווי עד להשגת היעד,<br />או שתקבל החזר כספי מלא.</p>
+                </div>
               </div>
             </div>
 

@@ -7,9 +7,6 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     const buildVersion = Date.now().toString();
     
-    // Note: _meta/ folder is gitignored and excluded from build
-    // It contains workflow documentation only, not production code
-    
     return {
       base: '/Gilad-landing-page/',
       server: {
@@ -29,10 +26,6 @@ export default defineConfig(({ mode }) => {
           },
         },
       ],
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
