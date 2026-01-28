@@ -1506,120 +1506,47 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
     }
   };
 
-  // Control playback when section is visible
+  // Pause video when scrolling out of view (but do NOT autoplay - user must click play)
   useEffect(() => {
-    if (!playerRef.current) {
-      // If player not ready yet, wait a bit and retry
-      const checkPlayer = setTimeout(() => {
-        if (playerRef.current && isVisible) {
-          // Retry playing when player becomes ready
-          playerRef.current.play().catch(() => {});
-        }
-      }, 500);
-      return () => clearTimeout(checkPlayer);
-    }
+    if (!playerRef.current) return;
 
-    const controlPlayback = async () => {
-      if (isVisible) {
-        // Clear any pending pause timeouts
-        if (pauseTimeoutRef.current) {
-          clearTimeout(pauseTimeoutRef.current);
-          pauseTimeoutRef.current = null;
-        }
-
-        // Clear any pending play timeouts and schedule new one
-        if (playTimeoutRef.current) {
-          clearTimeout(playTimeoutRef.current);
-        }
-
-        // Debounce play call to prevent rapid toggling
-        playTimeoutRef.current = setTimeout(async () => {
-          // Double-check visibility hasn't changed back during delay
-          if (!playerRef.current || !isVisibleRef.current) {
-            playTimeoutRef.current = null;
-            return;
-          }
-
-          try {
-            // Check if already playing to avoid unnecessary calls
-            const paused = await playerRef.current.getPaused();
-            if (paused) {
-              await playerRef.current.play();
-              isPlayingRef.current = true;
-            }
-            
-            // Update mute state
-            setTimeout(async () => {
-              try {
-                if (playerRef.current && isVisibleRef.current) {
-                  const muted = await playerRef.current.getMuted();
-                  setIsMuted(muted);
-                }
-              } catch (err) {
-                // Ignore errors
-              }
-            }, 300);
-          } catch (err) {
-            // If play fails, retry after delay
-            setTimeout(async () => {
-              if (playerRef.current && isVisibleRef.current) {
-                try {
-                  const paused = await playerRef.current.getPaused();
-                  if (paused) {
-                    await playerRef.current.play();
-                    isPlayingRef.current = true;
-                  }
-                } catch (retryErr) {
-                  // Ignore - might need user interaction
-                }
-              }
-            }, 500);
-          }
-          
-          playTimeoutRef.current = null;
-        }, 300); // 300ms debounce
-      } else {
-        // Clear any pending play timeouts
-        if (playTimeoutRef.current) {
-          clearTimeout(playTimeoutRef.current);
-          playTimeoutRef.current = null;
-        }
-        
-        // Add delay before pausing to allow scroll snap to complete
-        if (pauseTimeoutRef.current) {
-          clearTimeout(pauseTimeoutRef.current);
-        }
-        
-        pauseTimeoutRef.current = setTimeout(async () => {
-          // Double-check visibility hasn't changed back
-          if (!isVisibleRef.current && playerRef.current && videoContainerRef.current) {
-            const rect = videoContainerRef.current.getBoundingClientRect();
-            const isReallyOutOfView = rect.bottom < 0 || rect.top > window.innerHeight;
-            
-            if (isReallyOutOfView) {
-              try {
-                await playerRef.current.pause();
-                isPlayingRef.current = false;
-              } catch (err) {
-                // Ignore pause errors
-              }
-            }
-          }
-          pauseTimeoutRef.current = null;
-        }, 800); // 800ms delay before pausing
+    // Only handle pausing when out of view - NO autoplay logic
+    if (!isVisible) {
+      // Clear any pending pause timeouts
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
       }
-    };
-
-    controlPlayback();
+      
+      // Add delay before pausing to allow scroll snap to complete
+      pauseTimeoutRef.current = setTimeout(async () => {
+        // Double-check visibility hasn't changed back
+        if (!isVisibleRef.current && playerRef.current && videoContainerRef.current) {
+          const rect = videoContainerRef.current.getBoundingClientRect();
+          const isReallyOutOfView = rect.bottom < 0 || rect.top > window.innerHeight;
+          
+          if (isReallyOutOfView) {
+            try {
+              await playerRef.current.pause();
+              isPlayingRef.current = false;
+            } catch (err) {
+              // Ignore pause errors
+            }
+          }
+        }
+        pauseTimeoutRef.current = null;
+      }, 800); // 800ms delay before pausing
+    } else {
+      // When visible, clear any pending pause timeouts but do NOT play
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+        pauseTimeoutRef.current = null;
+      }
+    }
 
     return () => {
       if (pauseTimeoutRef.current) {
         clearTimeout(pauseTimeoutRef.current);
         pauseTimeoutRef.current = null;
-      }
-      if (playTimeoutRef.current) {
-        clearTimeout(playTimeoutRef.current);
-        playTimeoutRef.current = null;
       }
     };
   }, [isVisible]);
@@ -1722,7 +1649,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         allowFullScreen
         playsInline
         loading="lazy"
-        title="תעודת לקוח - וידאו"
+        title="תעודת לקוח - גיא, גיל 25, מספר על התוצאות שהשיג בליווי של גילעד דורון"
       />
       {/* Custom Mute/Unmute Button Overlay */}
       <button
@@ -2091,7 +2018,7 @@ const VideoPlayer: React.FC = () => {
         allowFullScreen
         playsInline
         loading="eager"
-        title="גילעד דורון - וידאו אימון"
+        title="גילעד דורון - וידאו אימון והסבר על התהליך והשיטה"
       />
       {/* Left side overlay to hide white areas */}
       <div 
@@ -2392,22 +2319,23 @@ export default function App() {
             <StoryHeader text="החלום שלך מתחיל כאן" />
             <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
               <div className="space-y-4 md:space-y-6 text-center md:text-right order-2 md:order-1">
-                <h2 className="hero-headline text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן – <br /> <span className="text-accent underline decoration-accent underline-offset-8">אבל מרגיש שאתה דורך במקום?</span></h2>
+                <h1 className="hero-headline text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מתאמן – <br /> <span className="text-accent underline decoration-accent underline-offset-8">אבל מרגיש שאתה דורך במקום?</span></h1>
                 <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">אתה מנסה, משקיע,<br />אבל משהו בדרך לא מתחבר<br />והתוצאות פשוט לא מגיעות.</p>
                 <div className="space-y-3 md:space-y-4 flex flex-col items-center md:items-start">
                   <p className="text-base md:text-xl text-gray-300 leading-relaxed">
-                    פה לא מנסים שוב.<br />
-                    פה נכנסים לתהליך ומגיעים לתוצאה.
+                    פה לא מנסים שוב. פה נכנסים לתהליך ומגיעים לתוצאה.
                   </p>
                   <p className="text-base md:text-xl text-gray-300 leading-relaxed">
-                    אם תעבוד לפי מה שאני אומר לאורך הדרך<br />
-                    יש שתי אפשרויות בלבד:<br />
-                    או שזה התהליך שמביא אותך לתוצאה שאתה מחפש,<br />
-                    או שלא תשלם עליו.<br />
+                    אם תעבוד לפי מה שאני אומר לאורך הדרך יש שתי אפשרויות בלבד:
+                  </p>
+                  <p className="text-base md:text-xl text-gray-300 leading-relaxed">
+                    או שזה התהליך שמביא אותך לתוצאה שאתה מחפש, או שלא תשלם עליו.
+                  </p>
+                  <p className="text-base md:text-xl text-gray-300 leading-relaxed">
                     עוד רגע אסביר בדיוק למה אני מתכוון.
                   </p>
-                </div>
-              </div>
+                  </div>
+                  </div>
               <div className="delay-100 w-full flex-1 flex flex-col justify-center md:justify-end pb-2 md:pb-0 order-1 md:order-2">
                 <div className="mobile-form-container">
                   <LeadForm isFooter={true} onPrivacyClick={() => setModalType('privacy')} />
@@ -2527,7 +2455,7 @@ export default function App() {
               )}
 
               {/* Embla Carousel Container */}
-              <div className="embla overflow-hidden" ref={emblaRef}>
+              <div className="embla overflow-hidden" ref={emblaRef} aria-live="polite" aria-atomic="false">
                 <div className="embla__container flex gap-6 md:gap-8 py-8">
                   {CLIENT_RESULTS.map((client, index) => {
                     const isActive = index === selectedIndex;
@@ -2543,6 +2471,8 @@ export default function App() {
                         style={{
                           perspective: '1000px'
                         }}
+                        role="article"
+                        aria-label={`תוצאות לקוח: ${client.name}, ${client.profession}, גיל ${client.age}`}
                       >
                         <div className={`bg-brandGray/50 border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.6)] ${
                           isActive 
@@ -2586,10 +2516,6 @@ export default function App() {
                               <div className="absolute top-2 left-2 right-2 flex justify-between">
                                 <div className="bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-lg text-xs font-bold">לפני</div>
                                 <div className="bg-accent text-white px-2 py-1 rounded-lg text-xs font-bold">אחרי</div>
-                              </div>
-                              {/* Time Badge */}
-                              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-lg text-xs font-bold">
-                                {client.duration} חודשים
                               </div>
                             </div>
                             
@@ -2746,6 +2672,7 @@ export default function App() {
                           className="w-full flex items-center justify-between p-3 text-right hover:bg-white/5 transition-colors"
                           aria-expanded={isExpanded}
                           aria-controls={`about-section-${idx}`}
+                          aria-label={isExpanded ? `סגור ${section.title}` : `פתח ${section.title}`}
                         >
                           <h3 className="text-base font-bold text-white pl-3 flex-1 text-right">
                             {section.title}
@@ -2761,6 +2688,7 @@ export default function App() {
                           className={`overflow-hidden transition-all duration-300 ease-in-out ${
                             isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
                           }`}
+                          aria-live={isExpanded ? "polite" : "off"}
                         >
                           <div className="px-3 pb-3 pt-0 text-gray-300 text-sm leading-relaxed space-y-2">
                             {section.content.map((paragraph, pIdx) => (
@@ -2860,18 +2788,18 @@ export default function App() {
               <div className="space-y-3 md:space-y-4 text-lg md:text-xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
                 {/* Visual timeline for guarantee process */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
-                  <div className="bg-brandGray/30 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-4 text-center">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black">1</div>
+                  <div className="bg-brandGray/30 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-4 text-center" aria-label="שלב 1: הגדרת תוצאה, ביחד, מראש">
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black" aria-hidden="true">1</div>
                     <p className="text-sm md:text-base font-medium text-white">הגדרת תוצאה</p>
                     <p className="text-xs md:text-sm text-gray-400 mt-1">ביחד, מראש</p>
                   </div>
-                  <div className="bg-brandGray/30 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-4 text-center">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black">2</div>
+                  <div className="bg-brandGray/30 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-4 text-center" aria-label="שלב 2: נקודות בדיקה, ידועות מראש">
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black" aria-hidden="true">2</div>
                     <p className="text-sm md:text-base font-medium text-white">נקודות בדיקה</p>
                     <p className="text-xs md:text-sm text-gray-400 mt-1">ידועות מראש</p>
                   </div>
-                  <div className="bg-brandGray/30 backdrop-blur-sm border border-accent/30 rounded-lg p-3 md:p-4 text-center">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black">3</div>
+                  <div className="bg-brandGray/30 backdrop-blur-sm border border-accent/30 rounded-lg p-3 md:p-4 text-center" aria-label="שלב 3: אחריות, על התוצאה">
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-2 text-lg md:text-xl font-black" aria-hidden="true">3</div>
                     <p className="text-sm md:text-base font-medium text-white">אחריות</p>
                     <p className="text-xs md:text-sm text-gray-400 mt-1">על התוצאה</p>
                   </div>
@@ -2997,7 +2925,10 @@ export default function App() {
                       
                       {/* Step content */}
                       <div className="flex-1 md:flex-none">
-                        <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">{item.t}</h3>
+                        <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">
+                          <span className="sr-only">שלב {item.s}: </span>
+                          {item.t}
+                        </h3>
                         <p className="text-gray-400 text-xs md:text-sm leading-relaxed px-1 md:px-2 compact-text line-clamp-3 md:line-clamp-none">{item.d}</p>
                         
                         {/* Desktop: Click to expand */}
@@ -3066,6 +2997,7 @@ export default function App() {
                               ? 'max-h-[500px] opacity-100 mt-3 border-t border-white/8 pt-3' 
                               : 'max-h-0 opacity-0'
                           }`}
+                          aria-live={isExpanded ? "polite" : "off"}
                         >
                           <p className="text-gray-300 text-xs md:text-sm leading-relaxed px-2">{item.explanation}</p>
                           </div>
@@ -3130,6 +3062,7 @@ export default function App() {
                       className="w-full flex items-center justify-between p-4 md:p-6 text-right hover:bg-white/5 transition-colors"
                       aria-expanded={isExpanded}
                       aria-controls={`faq-answer-${index}`}
+                      aria-label={isExpanded ? `סגור שאלה: ${item.question}` : `פתח שאלה: ${item.question}`}
                     >
                       <h3 className="text-lg md:text-xl font-bold text-white pl-4 flex-1 text-right">
                         {item.question}
@@ -3145,6 +3078,7 @@ export default function App() {
                       className={`overflow-hidden transition-all duration-300 ease-in-out ${
                         isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
                       }`}
+                      aria-live={isExpanded ? "polite" : "off"}
                     >
                       <div className="px-4 md:px-6 pb-4 md:pb-6 pt-0 text-gray-300">
                         {typeof item.answer === 'string' ? (
