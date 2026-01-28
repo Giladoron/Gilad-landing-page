@@ -112,7 +112,7 @@ interface ClientResult {
 const CLIENT_RESULTS: ClientResult[] = [
   {
     name: 'אלמוג',
-    profession: 'מתאמן',
+    profession: 'בודק תוכנה',
     age: 26,
     quote: 'תוצאות מדהימות! התהליך היה מקצועי וברור מההתחלה.',
     goals: ['ירידה במשקל', 'עליה במסת שריר', 'שיפור בכושר'],
@@ -2622,42 +2622,48 @@ export default function App() {
           <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
             <StoryHeader text="מי עומד מאחורי התהליך" />
+            {/* Full-width headline container */}
+            <div className="w-full max-w-5xl mx-auto mt-6 md:mt-10 mb-8 md:mb-12">
+              <div className="space-y-1 text-center md:text-right">
+                <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
+                <h2 className="w-full text-center md:text-right space-y-4 md:space-y-5">
+                  <div className="text-4xl md:text-6xl lg:text-7xl font-black heading-font leading-tight tracking-tight">גילעד דורון</div>
+                  <div className="text-2xl md:text-4xl lg:text-5xl font-semibold heading-font leading-tight tracking-tight w-full">התחלתי בדיוק כמוך — מתאמן שעושה הכול נכון, <span className="text-accent">ועדיין לא רואה תוצאות.</span></div>
+                </h2>
+              </div>
+            </div>
             <div className={`flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-4 h-full min-h-0 ${isIOS() ? '' : 'overflow-hidden'}`}>
-              <div className="space-y-2 text-center md:text-right shrink-0">
-                <div className="space-y-1">
-                  <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
-                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight">גילעד דורון.<br />התחלתי בדיוק כמוך - מתאמן שעושה הכול נכון, ועדיין לא רואה תוצאות.</h2>
-                </div>
+              <div className="space-y-3 text-center md:text-right shrink-0">
                 {/* Mobile: Accordion structure, Desktop: Full text */}
-                <div className="md:hidden space-y-2">
+                <div className="md:hidden space-y-3">
                   {[
                     {
                       title: 'המאבק',
                       content: [
-                        'שרפתי שעות בחדר כושר.',
-                        'עשיתי כל תרגיל שמצאתי באינטרנט.',
-                        'אכלתי חלבונים כאילו זה אמור לפתור הכול.',
-                        'ושום דבר לא זז.',
-                        'יותר מזה, התחלתי לפקפק בעצמי.',
-                        'הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.'
+                        { text: 'שרפתי שעות בחדר כושר.', isAnchor: false },
+                        { text: 'עשיתי כל תרגיל שמצאתי באינטרנט.', isAnchor: false },
+                        { text: 'אכלתי חלבונים כאילו זה אמור לפתור הכול.', isAnchor: false },
+                        { text: 'ושום דבר לא זז.', isAnchor: false },
+                        { text: 'יותר מזה, התחלתי לפקפק בעצמי.', isAnchor: false },
+                        { text: 'הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.', isAnchor: true }
                       ]
                     },
                     {
                       title: 'ההבנה',
                       content: [
-                        'רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:',
-                        'הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.',
-                        'ברגע שהבנתי את זה, לא השתנה רק הגוף,',
-                        'השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.'
+                        { text: 'רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:', isAnchor: false },
+                        { text: 'הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.', isAnchor: true },
+                        { text: 'ברגע שהבנתי את זה, לא השתנה רק הגוף,', isAnchor: false },
+                        { text: 'השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.', isAnchor: false }
                       ]
                     },
                     {
                       title: 'התוצאה',
                       content: [
-                        'ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.',
-                        'עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,',
-                        'אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,',
-                        'בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.'
+                        { text: 'ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.', isAnchor: false },
+                        { text: 'עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,', isAnchor: false },
+                        { text: 'אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,', isAnchor: true },
+                        { text: 'בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.', isAnchor: false }
                       ]
                     }
                   ].map((section, idx) => {
@@ -2674,7 +2680,7 @@ export default function App() {
                           aria-controls={`about-section-${idx}`}
                           aria-label={isExpanded ? `סגור ${section.title}` : `פתח ${section.title}`}
                         >
-                          <h3 className="text-base font-bold text-white pl-3 flex-1 text-right">
+                          <h3 className="text-base font-semibold text-white pl-3 flex-1 text-right">
                             {section.title}
                           </h3>
                           <ChevronDown
@@ -2690,9 +2696,13 @@ export default function App() {
                           }`}
                           aria-live={isExpanded ? "polite" : "off"}
                         >
-                          <div className="px-3 pb-3 pt-0 text-gray-300 text-sm leading-relaxed space-y-2">
-                            {section.content.map((paragraph, pIdx) => (
-                              <p key={pIdx}>{paragraph}</p>
+                          <div className="px-3 pb-3 pt-0 text-gray-300 text-sm leading-loose space-y-3">
+                            {section.content.map((item, pIdx) => (
+                              item.isAnchor ? (
+                                <p key={pIdx} className="text-accent my-4">{item.text}</p>
+                              ) : (
+                                <p key={pIdx}>{item.text}</p>
+                              )
                             ))}
                           </div>
                         </div>
@@ -2701,21 +2711,41 @@ export default function App() {
                   })}
                 </div>
               {/* Desktop: Full text visible */}
-              <div className="hidden md:block text-sm md:text-xl text-gray-300 leading-relaxed compact-text space-y-2 md:space-y-3">
-                <p>שרפתי שעות בחדר כושר.</p>
-                <p>עשיתי כל תרגיל שמצאתי באינטרנט.</p>
-                <p>אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
-                <p>ושום דבר לא זז.</p>
-                <p>יותר מזה, התחלתי לפקפק בעצמי.</p>
-                <p>הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.</p>
-                <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
-                <p>הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
-                <p>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
-                <p>השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.</p>
-                <p>ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.</p>
-                <p>עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,</p>
-                <p>אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,</p>
-                <p>בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.</p>
+              <div className="hidden md:block space-y-12 md:space-y-16">
+                {/* Block 1: המאבק */}
+                <div className="space-y-4 md:space-y-5">
+                  <h3 className="text-lg md:text-xl font-semibold text-white mb-6 md:mb-6">המאבק שלי</h3>
+                  <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                    <p>שרפתי שעות בחדר כושר.</p>
+                    <p>עשיתי כל תרגיל שמצאתי באינטרנט.</p>
+                    <p>אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
+                    <p>ושום דבר לא זז.</p>
+                    <p>יותר מזה, התחלתי לפקפק בעצמי.</p>
+                    <p className="text-accent my-5 md:my-6">הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.</p>
+                  </div>
+                </div>
+                
+                {/* Block 2: ההבנה */}
+                <div className="space-y-4 md:space-y-5">
+                  <h3 className="text-lg md:text-xl font-semibold text-white mb-6 md:mb-6">ההבנה המכרעת</h3>
+                  <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                    <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
+                    <p className="text-accent my-5 md:my-6">הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
+                    <p>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
+                    <p>השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.</p>
+                  </div>
+                </div>
+                
+                {/* Block 3: התוצאה */}
+                <div className="space-y-4 md:space-y-5">
+                  <h3 className="text-lg md:text-xl font-semibold text-white mb-6 md:mb-6">התוצאה הסופית</h3>
+                  <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                    <p>ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.</p>
+                    <p>עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,</p>
+                    <p className="text-accent my-5 md:my-6">אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,</p>
+                    <p className="text-xl md:text-2xl lg:text-3xl font-medium text-white mt-6 md:mt-8" style={{ lineHeight: '28px' }}>בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.</p>
+                  </div>
+                </div>
               </div>
               </div>
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">

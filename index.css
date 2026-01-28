@@ -608,3 +608,8 @@
     animation: none;
   }
 }
+
+/* Override margin-top for p elements */
+p {
+  margin-top: 0;
+}
