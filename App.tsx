@@ -2328,7 +2328,7 @@ export default function App() {
                   <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal mt-0">
                     אם תעבוד לפי מה שאני אומר לאורך הדרך יש שתי אפשרויות בלבד:
                   </p>
-                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal">
+                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal mt-0">
                     או שזה התהליך שמביא אותך לתוצאה שאתה מחפש, או שלא תשלם עליו.
                   </p>
                   <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal">
