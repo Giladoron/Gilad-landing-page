@@ -1,0 +1,23 @@
+---
+description: When user says "commit and deploy", run git add, commit, push to main; CI deploys to GitHub Pages.
+alwaysApply: true
+---
+
+# Commit and Deploy
+
+When the user asks to **"commit and deploy"** (or equivalent: "deploy", "commit and push", "ship it"):
+
+1. **Stage all changes**: `git add -A`
+2. **Check status**: `git status` (show user what will be committed)
+3. **Commit**: `git commit -m "<message>"`  
+   Use a short, clear message (e.g. "Update hero copy", "Fix form validation"). If the user gave a message, use that.
+4. **Push**: `git push origin main`
+
+**Requirements:**
+- Request **git_write** permission when running git commit/push.
+- Only commit if there are staged changes; if nothing to commit, say so and skip.
+- Default branch is `main`; if the repo uses `master`, use that instead.
+
+**After push:** GitHub Actions runs the "Deploy to GitHub Pages" workflow. The site updates at `https://<username>.github.io/Gilad-landing-page/` when the workflow completes. No need to run `npm run deploy` locally—CI does it with GitHub Secrets.
+
+**Docs:** See `docs/DEPLOY_FROM_NEW_ACCOUNT.md` for one-time repo setup and GitHub Secrets.
