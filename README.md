@@ -51,7 +51,7 @@ A high-converting RTL Hebrew landing page for online fitness and nutrition coach
 
 ## Deployment
 
-**Preferred (CI):** Push to `main` triggers GitHub Actions, which builds with **GitHub Secrets** and deploys to GitHub Pages. No secrets in repo or local deploy needed. In Cursor you can say **"commit and deploy"** and the agent will run `git add`, `git commit`, `git push origin main` for you.
+**Preferred (CI):** Push to `main` triggers GitHub Actions, which builds with **GitHub Secrets** and deploys to GitHub Pages. The form needs `VITE_EMAILJS_PUBLIC_KEY` set in repo Secrets so the build includes it. No secrets in repo or local deploy needed. In Cursor you can say **"commit and deploy"** and the agent will run `git add`, `git commit`, `git push origin main` for you.
 
 - **New GitHub account?** Add repository secrets (at least `VITE_EMAILJS_PUBLIC_KEY`) and enable Pages from `gh-pages` branch. See **`docs/DEPLOY_FROM_NEW_ACCOUNT.md`** for step-by-step.
 
