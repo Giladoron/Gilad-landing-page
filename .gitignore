@@ -28,3 +28,6 @@ dist-ssr
 
 # Meta workspace (workflow and process documentation)
 _meta/
+
+# Large video (76MB, over GitHub 50MB recommendation; keep locally or host elsewhere)
+public/assets/סרטון 9 - המלצה גיא.mp4
