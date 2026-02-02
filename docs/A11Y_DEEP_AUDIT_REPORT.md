@@ -972,3 +972,4 @@ title="תעודת לקוח - גיא, גיל 25, מספר על התוצאות ש�
 
 **Next Steps**: Review this audit, approve fixes, then implement in priority order.
 
+

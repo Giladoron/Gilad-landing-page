@@ -291,3 +291,4 @@ Fill out this template for each of the 9 carousel cards. Copy the section below 
 - **Stats:** Use format like "+3 ק\"ג" for gains, "-12 ק\"ג" for weight loss, "+40%" for percentage increases
 - **Image filenames:** Make sure they match exactly what you write in the template
 
+
