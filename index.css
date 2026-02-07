@@ -36,7 +36,8 @@
   }
 
   /* Global focus-visible styles for accessibility */
-  *:focus-visible {
+  *:focus-visible,
+  *:focus {
     outline: 2px solid #FF6B35; /* accent color */
     outline-offset: 2px;
     border-radius: 2px;
@@ -413,7 +414,8 @@
     padding-right: 1rem;
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
-    margin-bottom: 2rem; /* Vertical separation */
+    margin-top: -10px !important;
+    margin-bottom: -10px !important;
   }
   
   .mobile-form-container > div {
@@ -434,7 +436,7 @@
   /* Subheadline - Strong but Secondary */
   .hero-subheadline {
     line-height: 1.4 !important;
-    font-weight: 300; /* Keep light but readable */
+    font-weight: 700; /* Bold for emphasis */
   }
   
   /* Body Text - Readable, Not Compressed */

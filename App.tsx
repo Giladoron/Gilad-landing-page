@@ -2,16 +2,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import FocusTrap from 'focus-trap-react';
-import { 
-  CheckCircle2, 
-  XCircle, 
-  ArrowLeft, 
-  Phone, 
-  MessageCircle, 
-  Dumbbell, 
-  Apple, 
-  BarChart3, 
-  Clock, 
+import {
+  CheckCircle2,
+  XCircle,
+  ArrowLeft,
+  Phone,
+  MessageCircle,
+  Dumbbell,
+  Apple,
+  BarChart3,
+  Clock,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -52,14 +52,14 @@ declare global {
       ) => Promise<{ status: number; text: string }>;
     };
   }
-  
+
   interface ImportMetaEnv {
     readonly VITE_EMAILJS_SERVICE_ID?: string;
     readonly VITE_EMAILJS_TEMPLATE_ID?: string;
     readonly VITE_EMAILJS_PUBLIC_KEY?: string;
     readonly VITE_RECIPIENT_EMAIL?: string;
   }
-  
+
   interface ImportMeta {
     readonly env: ImportMetaEnv;
   }
@@ -67,13 +67,15 @@ declare global {
 
 // --- EmailJS Configuration ---
 // Load from environment variables only (no hardcoded fallbacks for security)
-const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_fphe5xu';
-const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_8p1hgtg';
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+if (!EMAILJS_SERVICE_ID) console.error('VITE_EMAILJS_SERVICE_ID is required');
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+if (!EMAILJS_TEMPLATE_ID) console.error('VITE_EMAILJS_TEMPLATE_ID is required');
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 if (!EMAILJS_PUBLIC_KEY) {
   console.error('VITE_EMAILJS_PUBLIC_KEY environment variable is required');
 }
-const RECIPIENT_EMAIL = import.meta.env.VITE_RECIPIENT_EMAIL || 'gilad042@gmail.com';
+const RECIPIENT_EMAIL = import.meta.env.VITE_RECIPIENT_EMAIL;
 
 // --- Constants ---
 
@@ -560,10 +562,10 @@ const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, 
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleEsc);
-    
+
     // Disable scrolling when modal is open
     document.body.style.overflow = 'hidden';
-    
+
     return () => {
       window.removeEventListener('keydown', handleEsc);
       // Restore scrolling when modal closes
@@ -590,27 +592,27 @@ const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, 
       />
       <FocusTrap>
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
-        <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
-          <h2 id="modal-title" className="text-2xl font-bold heading-font text-white">{title}</h2>
-          <button 
-            onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-            aria-label="סגור חלון"
-          >
-            <X size={24} />
-          </button>
-        </div>
-        <div className="leading-relaxed">
-          {content}
-        </div>
-        <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
-          <button 
-            onClick={onClose}
-            className="bg-accent text-white px-8 py-2 rounded-lg font-bold hover:brightness-110 transition-all"
-          >
-            הבנתי
-          </button>
-        </div>
+          <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
+            <h2 id="modal-title" className="text-2xl font-bold heading-font text-white">{title}</h2>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+              aria-label="סגור חלון"
+            >
+              <X size={24} />
+            </button>
+          </div>
+          <div className="leading-relaxed">
+            {content}
+          </div>
+          <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
+            <button
+              onClick={onClose}
+              className="bg-accent text-white px-8 py-2 rounded-lg font-bold hover:brightness-110 transition-all"
+            >
+              הבנתי
+            </button>
+          </div>
         </div>
       </FocusTrap>
     </div>
@@ -629,9 +631,9 @@ const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => vo
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleEsc);
-    
+
     document.body.style.overflow = 'hidden';
-    
+
     return () => {
       window.removeEventListener('keydown', handleEsc);
       document.body.style.overflow = '';
@@ -658,93 +660,93 @@ const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => vo
       />
       <FocusTrap>
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
-        <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
-          <div>
-            <h2 id="client-story-title" className="text-2xl font-bold heading-font text-white mb-1">{client.name}</h2>
-            <p className="text-gray-400 text-sm">{client.profession}, {client.age}</p>
-          </div>
-          <button 
-            onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-            aria-label="סגור חלון"
-          >
-            <X size={24} />
-          </button>
-        </div>
-        <div className="leading-relaxed space-y-6">
-          {/* Full Quote */}
-          <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-4 md:p-5">
-            <p className="text-gray-200 text-base md:text-lg leading-relaxed italic">
-              "{client.quote}"
-            </p>
-          </div>
-
-          {/* Before/After Image */}
-          <div className="relative rounded-2xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10">
-            <img 
-              src={`${(import.meta as any).env.BASE_URL}assets/results/${client.image}`}
-              alt={client.imageAlt}
-              className="w-full h-auto object-cover scale-x-[-1]"
-              loading="lazy"
-            />
-            <div className="absolute top-4 left-4 right-4 flex justify-between">
-              <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-sm font-bold">לפני</div>
-              <div className="bg-accent text-white px-3 py-1.5 rounded-lg text-sm font-bold">אחרי</div>
-            </div>
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-bold">
-              {client.duration} חודשים
-            </div>
-          </div>
-
-          {/* Statistics */}
-          <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-4 grid grid-cols-3 gap-4 text-center">
+          <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
             <div>
-              <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.weight}</div>
-              <div className="text-xs text-gray-400">משקל</div>
+              <h2 id="client-story-title" className="text-2xl font-bold heading-font text-white mb-1">{client.name}</h2>
+              <p className="text-gray-400 text-sm">{client.profession}, {client.age}</p>
             </div>
-            <div>
-              <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.muscleMass}</div>
-              <div className="text-xs text-gray-400">מסת שריר</div>
-            </div>
-            <div>
-              <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.strength}</div>
-              <div className="text-xs text-gray-400">כוח</div>
-            </div>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+              aria-label="סגור חלון"
+            >
+              <X size={24} />
+            </button>
           </div>
+          <div className="leading-relaxed space-y-6">
+            {/* Full Quote */}
+            <div className="bg-brandGray/60 backdrop-blur-sm border-r-4 border-accent rounded-lg p-4 md:p-5">
+              <p className="text-gray-200 text-base md:text-lg leading-relaxed italic">
+                "{client.quote}"
+              </p>
+            </div>
 
-          {/* Goals Achieved */}
-          <div>
-            <h4 className="text-lg font-bold text-white mb-3">יעדים שהושגו:</h4>
-            <ul className="space-y-2">
-              {client.goals.map((goal, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-gray-300">
-                  <CheckCircle2 className="text-accent flex-shrink-0" size={18} aria-hidden="true" />
-                  <span>{goal}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Before/After Image */}
+            <div className="relative rounded-2xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10">
+              <img
+                src={`${(import.meta as any).env.BASE_URL}assets/results/${client.image}`}
+                alt={client.imageAlt}
+                className="w-full h-auto object-cover scale-x-[-1]"
+                loading="lazy"
+              />
+              <div className="absolute top-4 left-4 right-4 flex justify-between">
+                <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-sm font-bold">לפני</div>
+                <div className="bg-accent text-white px-3 py-1.5 rounded-lg text-sm font-bold">אחרי</div>
+              </div>
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-bold">
+                {client.duration} חודשים
+              </div>
+            </div>
 
-          {/* Duration and Commitment */}
-          <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-4 md:p-5 flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="text-2xl md:text-3xl font-black text-accent mb-1">{client.duration}</div>
-              <div className="text-sm text-gray-400">חודשים משך התהליך</div>
+            {/* Statistics */}
+            <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-4 grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.weight}</div>
+                <div className="text-xs text-gray-400">משקל</div>
+              </div>
+              <div>
+                <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.muscleMass}</div>
+                <div className="text-xs text-gray-400">מסת שריר</div>
+              </div>
+              <div>
+                <div className="text-lg md:text-xl font-black text-accent mb-1">{client.stats.strength}</div>
+                <div className="text-xs text-gray-400">כוח</div>
+              </div>
             </div>
-            <div className="flex-1">
-              <div className="text-2xl md:text-3xl font-black text-accent mb-1">{client.commitment}%</div>
-              <div className="text-sm text-gray-400">מחויבות לתוכנית</div>
+
+            {/* Goals Achieved */}
+            <div>
+              <h4 className="text-lg font-bold text-white mb-3">יעדים שהושגו:</h4>
+              <ul className="space-y-2">
+                {client.goals.map((goal, idx) => (
+                  <li key={idx} className="flex items-center gap-3 text-gray-300">
+                    <CheckCircle2 className="text-accent flex-shrink-0" size={18} aria-hidden="true" />
+                    <span>{goal}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Duration and Commitment */}
+            <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-4 md:p-5 flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <div className="text-2xl md:text-3xl font-black text-accent mb-1">{client.duration}</div>
+                <div className="text-sm text-gray-400">חודשים משך התהליך</div>
+              </div>
+              <div className="flex-1">
+                <div className="text-2xl md:text-3xl font-black text-accent mb-1">{client.commitment}%</div>
+                <div className="text-sm text-gray-400">מחויבות לתוכנית</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
-          <button 
-            onClick={onClose}
-            className="bg-accent text-white px-8 py-2 rounded-lg font-bold hover:brightness-110 transition-all"
-          >
-            סגור
-          </button>
-        </div>
+          <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
+            <button
+              onClick={onClose}
+              className="bg-accent text-white px-8 py-2 rounded-lg font-bold hover:brightness-110 transition-all"
+            >
+              סגור
+            </button>
+          </div>
         </div>
       </FocusTrap>
     </div>
@@ -764,7 +766,7 @@ const MobileProgressBar: React.FC<{ activeStageIndex: number }> = ({ activeStage
 };
 
 const StoryHeader: React.FC<{ text: string }> = ({ text }) => (
-  <div className="text-center mb-2 sm:mb-4 md:mb-6 mt-4 sm:mt-8 md:mt-0 pt-2 sm:pt-4 md:pt-0 flex flex-col items-center">
+  <div className="text-center mb-0 mt-4 sm:mt-8 md:mt-0 pt-2 sm:pt-4 md:pt-0 flex flex-col items-center">
     <span className="story-header-text text-gray-400 text-sm md:text-lg lg:text-xl font-medium tracking-wide">
       {text}
     </span>
@@ -776,8 +778,8 @@ const JourneyRail: React.FC<{ activeStage: string }> = ({ activeStage }) => {
   return (
     <nav className="journey-rail" aria-label="ניווט בין מקטעים">
       {STAGES.map((stage) => (
-        <a 
-          key={stage.id} 
+        <a
+          key={stage.id}
           href={`#${stage.id}`}
           className={`journey-dot ${activeStage === stage.id ? 'active' : ''}`}
           aria-label={`מעבר למקטע: ${stage.label}`}
@@ -814,15 +816,15 @@ const WhatsAppButton: React.FC = () => {
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-6 right-6 md:right-auto md:left-6 z-40 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 group flex items-center gap-2 max-w-fit md:max-w-none"
+      className="fixed bottom-6 right-6 md:right-auto md:left-6 z-40 bg-[#25D366] text-white p-3 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 group flex items-center gap-2 max-w-fit md:max-w-none opacity-95 hover:opacity-100"
       aria-label="צור קשר בוואטסאפ"
-      style={isMobile ? { 
+      style={isMobile ? {
         bottom: '1.5rem',
         right: '1.5rem'
       } : undefined}
     >
       <span className="hidden group-hover:block font-bold pr-2 whitespace-nowrap">דברו איתי בוואטסאפ</span>
-      <MessageCircle size={32} aria-hidden="true" />
+      <MessageCircle size={28} aria-hidden="true" />
     </button>
   );
 };
@@ -830,7 +832,7 @@ const WhatsAppButton: React.FC = () => {
 const FloatingCTA: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [hasReachedAction, setHasReachedAction] = useState(false);
-  
+
   // Cache action section position to avoid layout thrashing
   const actionSectionRef = useRef<HTMLElement | null>(null);
   const actionTopRef = useRef<number>(0);
@@ -874,7 +876,7 @@ const FloatingCTA: React.FC = () => {
       rafIdRef.current = requestAnimationFrame(() => {
         const scrollY = window.scrollY;
         const actionSection = actionSectionRef.current;
-        
+
         let newHasReachedAction = hasReachedActionRef.current;
         let newIsVisible = isVisibleRef.current;
 
@@ -885,7 +887,7 @@ const FloatingCTA: React.FC = () => {
             const actionRect = actionSection.getBoundingClientRect();
             actionTopRef.current = actionRect.top + window.scrollY;
           }
-          
+
           if (scrollY + window.innerHeight >= actionTopRef.current - 100) {
             newHasReachedAction = true;
             newIsVisible = false;
@@ -897,7 +899,7 @@ const FloatingCTA: React.FC = () => {
         // Show after scrolling 50% of page height OR 300px (whichever is smaller), hide before action section
         const pageHeight = document.documentElement.scrollHeight;
         const scrollThreshold = Math.min(pageHeight * 0.5, 300);
-        
+
         if (scrollY >= scrollThreshold && !newHasReachedAction) {
           newIsVisible = true;
         } else {
@@ -1076,35 +1078,35 @@ const ExitIntentPopup: React.FC = () => {
       />
       <FocusTrap>
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-md relative z-10 p-6 md:p-8 shadow-2xl">
-        <button 
-          onClick={handleClose}
-          className="absolute top-4 left-4 p-2 hover:bg-white/10 rounded-full transition-colors"
-          aria-label="סגור חלון"
-        >
-          <X size={24} />
-        </button>
-        <div className="text-center space-y-6">
-          <h2 id="exit-intent-title" className="text-2xl md:text-3xl font-black heading-font text-white">
-            רגע לפני שאתה עוזב...
-          </h2>
-          <p className="text-gray-300 text-lg">
-            בוא נבדוק ביחד אם זה מתאים לך
-          </p>
-          <div className="flex flex-col gap-3">
-            <button 
-              onClick={handleCTAClick}
-              className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all shadow-lg"
-            >
-              בדיקת התאמה
-            </button>
-            <button 
-              onClick={handleClose}
-              className="text-gray-400 hover:text-white text-sm transition-colors"
-            >
-              אולי מאוחר יותר
-            </button>
+          <button
+            onClick={handleClose}
+            className="absolute top-4 left-4 p-2 hover:bg-white/10 rounded-full transition-colors"
+            aria-label="סגור חלון"
+          >
+            <X size={24} />
+          </button>
+          <div className="text-center space-y-6">
+            <h2 id="exit-intent-title" className="text-2xl md:text-3xl font-black heading-font text-white">
+              רגע לפני שאתה עוזב...
+            </h2>
+            <p className="text-gray-300 text-lg">
+              בוא נבדוק ביחד אם זה מתאים לך
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={handleCTAClick}
+                className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all shadow-lg"
+              >
+                בדיקת התאמה
+              </button>
+              <button
+                onClick={handleClose}
+                className="text-gray-400 hover:text-white text-sm transition-colors"
+              >
+                אולי מאוחר יותר
+              </button>
+            </div>
           </div>
-        </div>
         </div>
       </FocusTrap>
     </div>
@@ -1115,11 +1117,11 @@ const Navbar: React.FC = () => (
   <header className="absolute top-0 left-0 right-0 z-50 py-2 md:py-6 px-3 md:px-12 flex justify-between items-center bg-transparent w-full">
     <div className="flex items-center gap-3 shrink-0">
       <div className="text-lg md:text-2xl font-black heading-font tracking-tighter text-white">
-      גילעד <span className="text-accent">דורון</span>
+        גילעד <span className="text-accent">דורון</span>
       </div>
-      <a 
-        href="https://www.instagram.com/gilad_doron?igsh=MWx3dmRlNXFzdzd4bQ==" 
-        target="_blank" 
+      <a
+        href="https://www.instagram.com/gilad_doron?igsh=MWx3dmRlNXFzdzd4bQ=="
+        target="_blank"
         rel="noopener noreferrer"
         className="text-white hover:text-accent transition-colors duration-300 flex items-center mt-0.5"
         aria-label="Instagram של גילעד דורון"
@@ -1132,8 +1134,8 @@ const Navbar: React.FC = () => (
       <a href="#about" className="hover:text-accent transition-colors">מי אני</a>
       <a href="#faq" className="hover:text-accent transition-colors">שאלות נפוצות</a>
     </nav>
-    <a 
-      href="#action" 
+    <a
+      href="#action"
       className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-bold transition-all whitespace-nowrap"
     >
       בדיקת התאמה
@@ -1169,6 +1171,11 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
         throw new Error('תצורת EmailJS חסרה. אנא פנה לתמיכה.');
       }
 
+      if (!RECIPIENT_EMAIL) {
+        console.error('VITE_RECIPIENT_EMAIL is required');
+        throw new Error('תצורת EmailJS חסרה. אנא פנה לתמיכה.');
+      }
+
       // Prepare template parameters
       const templateParams = {
         to_email: RECIPIENT_EMAIL,
@@ -1177,9 +1184,9 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
         email: formData.email,
         contactPref: formData.contactPref === 'phone' ? 'טלפון' : 'וואטסאפ',
         message: `בקשת התאמה חדשה מ-${formData.fullName}`,
-        date: new Date().toLocaleDateString('he-IL', { 
-          year: 'numeric', 
-          month: 'long', 
+        date: new Date().toLocaleDateString('he-IL', {
+          year: 'numeric',
+          month: 'long',
           day: 'numeric',
           hour: '2-digit',
           minute: '2-digit'
@@ -1207,8 +1214,8 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
       // Handle errors
       console.error('Form submission error:', err);
       setError(
-        err instanceof Error 
-          ? err.message 
+        err instanceof Error
+          ? err.message
           : 'אירעה שגיאה בשליחת הטופס. אנא נסה שוב מאוחר יותר.'
       );
     } finally {
@@ -1228,7 +1235,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
             <p className={isFooter ? 'text-gray-300' : 'text-gray-600'}>הפרטים שלך התקבלו. אחזור אליך בהקדם לבדיקת התאמה.</p>
           </div>
           <div className={`pt-4 border-t ${isFooter ? 'border-white/10' : 'border-gray-100'}`}>
-            <button 
+            <button
               onClick={() => window.open('https://wa.me/972528765992', '_blank')}
               className="w-full bg-[#25D366] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-90 transition-all"
             >
@@ -1250,11 +1257,11 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
           )}
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
             <div>
-              <label htmlFor="fullName" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 opacity-60 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>שם מלא</label>
-              <input 
+              <label htmlFor="fullName" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>שם מלא</label>
+              <input
                 id="fullName"
                 name="name"
-                type="text" 
+                type="text"
                 required
                 aria-required="true"
                 autoComplete="name"
@@ -1264,15 +1271,15 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
                 placeholder="ישראל ישראלי"
                 value={formData.fullName}
-                onChange={e => setFormData({...formData, fullName: e.target.value})}
+                onChange={e => setFormData({ ...formData, fullName: e.target.value })}
               />
             </div>
             <div>
-              <label htmlFor="phone" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 opacity-60 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>טלפון</label>
-              <input 
+              <label htmlFor="phone" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>טלפון</label>
+              <input
                 id="phone"
                 name="tel"
-                type="tel" 
+                type="tel"
                 required
                 aria-required="true"
                 autoComplete="tel"
@@ -1282,15 +1289,15 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
                 placeholder="050-0000000"
                 value={formData.phone}
-                onChange={e => setFormData({...formData, phone: e.target.value})}
+                onChange={e => setFormData({ ...formData, phone: e.target.value })}
               />
             </div>
             <div>
-              <label htmlFor="email" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 opacity-60 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>אימייל</label>
-              <input 
+              <label htmlFor="email" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>אימייל</label>
+              <input
                 id="email"
                 name="email"
-                type="email" 
+                type="email"
                 required
                 aria-required="true"
                 autoComplete="email"
@@ -1300,48 +1307,48 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
                 placeholder="example@email.com"
                 value={formData.email}
-                onChange={e => setFormData({...formData, email: e.target.value})}
+                onChange={e => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
             <fieldset className="flex gap-4 py-1">
               <legend className="sr-only">העדפת התקשרות</legend>
               <label htmlFor="contactPref-phone" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white/80' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                <input 
+                <input
                   id="contactPref-phone"
-                  type="radio" 
-                  name="contactPref" 
+                  type="radio"
+                  name="contactPref"
                   className="accent-accent"
                   disabled={isSubmitting}
                   checked={formData.contactPref === 'phone'}
-                  onChange={() => setFormData({...formData, contactPref: 'phone'})}
+                  onChange={() => setFormData({ ...formData, contactPref: 'phone' })}
                 />
                 <span className="text-sm">טלפון</span>
               </label>
               <label htmlFor="contactPref-whatsapp" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white/80' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                <input 
+                <input
                   id="contactPref-whatsapp"
-                  type="radio" 
-                  name="contactPref" 
+                  type="radio"
+                  name="contactPref"
                   className="accent-accent"
                   disabled={isSubmitting}
                   checked={formData.contactPref === 'whatsapp'}
-                  onChange={() => setFormData({...formData, contactPref: 'whatsapp'})}
+                  onChange={() => setFormData({ ...formData, contactPref: 'whatsapp' })}
                 />
                 <span className="text-sm">וואטסאפ</span>
               </label>
             </fieldset>
             <div className="flex items-start gap-2 pt-1">
-              <input 
-                type="checkbox" 
-                required 
+              <input
+                type="checkbox"
+                required
                 aria-required="true"
-                id="consent" 
+                id="consent"
                 disabled={isSubmitting}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
                 className="mt-1 accent-accent disabled:opacity-50 disabled:cursor-not-allowed"
                 checked={formData.consent}
-                onChange={e => setFormData({...formData, consent: e.target.checked})}
+                onChange={e => setFormData({ ...formData, consent: e.target.checked })}
               />
               <label htmlFor="consent" className={`text-xs opacity-60 cursor-pointer ${isFooter ? 'text-gray-300' : 'text-gray-700'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 אני מאשר/ת יצירת קשר בהתאם ל{' '}
@@ -1362,8 +1369,8 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 )}
               </label>
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSubmitting}
               className="w-full bg-accent text-white py-4 md:py-5 rounded-xl font-bold text-lg hover:brightness-110 shadow-lg shadow-accent/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2 mt-2"
             >
@@ -1397,14 +1404,14 @@ declare global {
 // Helper function to detect iOS devices
 const isIOS = (): boolean => {
   if (typeof window === 'undefined') return false;
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 };
 
 // Simple testimonial video component with Vimeo Player API and custom floating mute/unmute button
 const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   const [isIOSDevice, setIsIOSDevice] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Start muted (browser requirement for autoplay)
+  const [isMuted, setIsMuted] = useState(false); // Start unmuted
   const [isVisible, setIsVisible] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false); // Track scroll state to prevent accidental interactions
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -1416,19 +1423,19 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   const playTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef(false); // Track if we've started playing to prevent rapid toggles
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track scroll end timeout
-  
+
   useEffect(() => {
     setIsIOSDevice(isIOS());
   }, []);
-  
+
   // Sync refs when state changes
   useEffect(() => {
     isVisibleRef.current = isVisible;
   }, [isVisible]);
-  
+
   // Vimeo URL with controls enabled for interactivity (controls=1 to make video clickable, we use custom button for mute)
-  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=1&loop=1&controls=1&background=0&playsinline=1&responsive=1&byline=0&title=0&portrait=0`;
-  
+  const vimeoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=0&loop=1&controls=1&background=0&playsinline=1&responsive=1&byline=0&title=0&portrait=0`;
+
   // Initialize Vimeo Player when iframe loads (similar to VideoPlayer)
   useEffect(() => {
     if (!iframeRef.current || hasInitializedRef.current) return;
@@ -1442,7 +1449,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         try {
           playerRef.current = new window.Vimeo.Player(iframeRef.current);
           hasInitializedRef.current = true;
-          
+
           // Check initial mute state
           try {
             await new Promise(resolve => setTimeout(resolve, 200));
@@ -1451,9 +1458,9 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
           } catch (err) {
             // Ignore errors if player not fully ready yet
           }
-          
+
           // Note: Testimonial video does NOT autoplay - user must click play button
-          
+
           // Clear all timeouts once initialized
           timeoutIds.forEach(id => clearTimeout(id));
         } catch (error) {
@@ -1516,14 +1523,14 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       if (pauseTimeoutRef.current) {
         clearTimeout(pauseTimeoutRef.current);
       }
-      
+
       // Add delay before pausing to allow scroll snap to complete
       pauseTimeoutRef.current = setTimeout(async () => {
         // Double-check visibility hasn't changed back
         if (!isVisibleRef.current && playerRef.current && videoContainerRef.current) {
           const rect = videoContainerRef.current.getBoundingClientRect();
           const isReallyOutOfView = rect.bottom < 0 || rect.top > window.innerHeight;
-          
+
           if (isReallyOutOfView) {
             try {
               await playerRef.current.pause();
@@ -1585,12 +1592,12 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
     const handleScroll = () => {
       // Mark as scrolling
       setIsScrolling(true);
-      
+
       // Clear any existing timeout
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
-      
+
       // Set scroll end detection with debounce (300ms after scroll stops)
       scrollTimeoutRef.current = setTimeout(() => {
         setIsScrolling(false);
@@ -1609,16 +1616,16 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       }
     };
   }, []);
-  
+
   return (
-    <div 
+    <div
       ref={videoContainerRef}
-      style={{ 
-        backgroundColor: '#000', 
-        width: '100%', 
-        height: '100%', 
+      style={{
+        backgroundColor: '#000',
+        width: '100%',
+        height: '100%',
         minHeight: '400px',
-        position: 'relative', 
+        position: 'relative',
         overflow: 'hidden',
         overflowX: 'hidden', // Always hide horizontal overflow
         display: 'flex',
@@ -1631,10 +1638,10 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         ref={iframeRef}
         src={vimeoUrl}
         className="w-full h-full absolute inset-0"
-        style={{ 
-          border: 'none', 
-          width: '100%', 
-          height: '100%', 
+        style={{
+          border: 'none',
+          width: '100%',
+          height: '100%',
           minHeight: '400px',
           backgroundColor: '#000',
           position: 'absolute',
@@ -1677,7 +1684,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
 
 const VideoPlayer: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Start muted (browser requirement for autoplay)
+  const [isMuted, setIsMuted] = useState(false); // Start unmuted
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isIOSDevice, setIsIOSDevice] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false); // Track scroll state to prevent accidental interactions
@@ -1698,10 +1705,9 @@ const VideoPlayer: React.FC = () => {
   }, []);
 
   // Vimeo embed URL - single URL that won't change
-  // Start muted (browser requirement) - we'll unmute when visible
   // Added playsinline and responsive for better mobile support
   const baseUrl = "https://player.vimeo.com/video/1152174898?context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&h=6e172adfe8&s=e8675d0eb6c47f57274868162088cbf80f997c1c_1767884558";
-  const vimeoUrl = `${baseUrl}&autoplay=0&muted=1&loop=1&controls=1&background=0&playsinline=1&responsive=1&byline=0&title=0&portrait=0`;
+  const vimeoUrl = `${baseUrl}&autoplay=0&muted=0&loop=1&controls=1&background=0&playsinline=1&responsive=1&byline=0&title=0&portrait=0`;
 
   // Initialize Vimeo Player when iframe loads
   useEffect(() => {
@@ -1716,16 +1722,16 @@ const VideoPlayer: React.FC = () => {
         try {
           playerRef.current = new window.Vimeo.Player(iframeRef.current);
           hasInitializedRef.current = true;
-          
+
           // Set up volume change listener after player is ready
           try {
             // Wait a bit for player to be fully ready
             await new Promise(resolve => setTimeout(resolve, 200));
-            
+
             // Check initial mute state
             const initialMuted = await playerRef.current.getMuted();
             setIsMuted(initialMuted);
-            
+
             // Create handler function for volume changes
             const volumeChangeHandler = async () => {
               try {
@@ -1737,23 +1743,24 @@ const VideoPlayer: React.FC = () => {
                 // Ignore errors
               }
             };
-            
+
             // Store handler reference for cleanup
             volumeChangeHandlerRef.current = volumeChangeHandler;
-            
+
             // Listen for volume changes
             playerRef.current.on('volumechange', volumeChangeHandler);
-            
+
             // Mark player as ready
             setIsPlayerReady(true);
-            
+
             // If section is already visible when player initializes, start playing
+            // If section is already visible when player initializes, DO NOT start playing automatically (accessibility)
+            // But we can still update mute state
             if (isVisibleRef.current) {
               setTimeout(async () => {
                 try {
                   if (playerRef.current && isVisibleRef.current) {
-                    await playerRef.current.play();
-                    // Get initial mute state (video starts muted per browser requirements)
+                    // Get initial mute state from player
                     try {
                       const muted = await playerRef.current.getMuted();
                       setIsMuted(muted);
@@ -1762,7 +1769,7 @@ const VideoPlayer: React.FC = () => {
                     }
                   }
                 } catch (err) {
-                  // Ignore play errors
+                  // Ignore
                 }
               }, 300);
             }
@@ -1772,7 +1779,7 @@ const VideoPlayer: React.FC = () => {
             // Still mark as ready even if listener setup fails
             setIsPlayerReady(true);
           }
-          
+
           // Clear all timeouts once initialized
           timeoutIds.forEach(id => clearTimeout(id));
         } catch (error) {
@@ -1807,7 +1814,7 @@ const VideoPlayer: React.FC = () => {
     return () => {
       timeoutIds.forEach(id => clearTimeout(id));
       iframe.removeEventListener('load', handleLoad);
-      
+
       // Clean up volume change listener
       if (playerRef.current && volumeChangeHandlerRef.current) {
         try {
@@ -1821,256 +1828,212 @@ const VideoPlayer: React.FC = () => {
 
   // Control playback when section is visible
   useEffect(() => {
-    if (!playerRef.current) {
-      // If player not ready yet, wait a bit and retry
-      const checkPlayer = setTimeout(() => {
-        if (playerRef.current && isVisible) {
-          // Retry playing when player becomes ready
-          playerRef.current.play().catch(() => {});
-        }
-      }, 500);
-      return () => clearTimeout(checkPlayer);
-    }
-
-    const controlPlayback = async () => {
-      if (isVisible) {
-        // Clear any pending pause timeouts
-        if (pauseTimeoutRef.current) {
-          clearTimeout(pauseTimeoutRef.current);
-          pauseTimeoutRef.current = null;
-        }
-
-        // Clear any pending play timeouts and schedule new one
-        if (playTimeoutRef.current) {
-          clearTimeout(playTimeoutRef.current);
-        }
-
-        // Debounce play call to prevent rapid toggling
-        playTimeoutRef.current = setTimeout(async () => {
-          // Double-check visibility hasn't changed back during delay
-          if (!playerRef.current || !isVisibleRef.current) {
-            playTimeoutRef.current = null;
-            return;
-          }
-
-          try {
-            // Check if already playing to avoid unnecessary calls
-            const paused = await playerRef.current.getPaused();
-            if (paused) {
-              await playerRef.current.play();
-              isPlayingRef.current = true;
-            }
-            
-            // Update mute state (video stays muted - user must manually unmute via button)
-            setTimeout(async () => {
-              try {
-                if (playerRef.current && isVisibleRef.current) {
-                  const muted = await playerRef.current.getMuted();
-                  setIsMuted(muted);
-                }
-              } catch (err) {
-                // Ignore errors
-              }
-            }, 300);
-          } catch (err) {
-            // If play fails, retry after delay
-            setTimeout(async () => {
-              if (playerRef.current && isVisibleRef.current) {
-                try {
-                  const paused = await playerRef.current.getPaused();
-                  if (paused) {
-                    await playerRef.current.play();
-                    isPlayingRef.current = true;
-                  }
-                } catch (retryErr) {
-                  // Ignore - might need user interaction
-                }
-              }
-            }, 500);
-          }
-          
-          playTimeoutRef.current = null;
-        }, 300); // 300ms debounce
-      } else {
-        // Clear any pending play timeouts
-        if (playTimeoutRef.current) {
-          clearTimeout(playTimeoutRef.current);
-          playTimeoutRef.current = null;
-        }
-        
-        // Add delay before pausing to allow scroll snap to complete
-        if (pauseTimeoutRef.current) {
-          clearTimeout(pauseTimeoutRef.current);
-        }
-        
-        pauseTimeoutRef.current = setTimeout(async () => {
-          // Double-check visibility hasn't changed back
-          if (!isVisibleRef.current && playerRef.current && videoContainerRef.current) {
-            const rect = videoContainerRef.current.getBoundingClientRect();
-            const isReallyOutOfView = rect.bottom < 0 || rect.top > window.innerHeight;
-            
-            if (isReallyOutOfView) {
-              try {
-                await playerRef.current.pause();
-                isPlayingRef.current = false;
-              } catch (err) {
-                // Ignore pause errors
-              }
-            }
-          }
-          pauseTimeoutRef.current = null;
-        }, 800); // 800ms delay before pausing
-      }
-    };
-
-    controlPlayback();
-
-    return () => {
+  const controlPlayback = async () => {
+    if (isVisible) {
+      // Clear any pending pause timeouts
       if (pauseTimeoutRef.current) {
         clearTimeout(pauseTimeoutRef.current);
         pauseTimeoutRef.current = null;
       }
+
+      // Clear any pending play timeouts and schedule new one
+      if (playTimeoutRef.current) {
+        clearTimeout(playTimeoutRef.current);
+      }
+
+      // Debounce play call to prevent rapid toggling
+      playTimeoutRef.current = setTimeout(async () => {
+        // Auto-play disabled for accessibility
+        // But we can check mute state
+        try {
+          if (playerRef.current) {
+            const muted = await playerRef.current.getMuted();
+            setIsMuted(muted);
+          }
+        } catch (e) { /* ignore */ }
+
+        playTimeoutRef.current = null;
+      }, 300); // 300ms debounce
+    } else {
+      // Clear any pending play timeouts
       if (playTimeoutRef.current) {
         clearTimeout(playTimeoutRef.current);
         playTimeoutRef.current = null;
       }
-    };
-  }, [isVisible]);
 
-  // Toggle mute/unmute handler
-  const handleToggleMute = async () => {
-    if (!playerRef.current) return;
+      // Add delay before pausing to allow scroll snap to complete
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+      }
 
-    try {
-      const currentMuted = await playerRef.current.getMuted();
-      await playerRef.current.setMuted(!currentMuted);
-      setIsMuted(!currentMuted);
-              } catch (err) {
-                // Failed to toggle mute - non-critical, continue silently
-              }
+      pauseTimeoutRef.current = setTimeout(async () => {
+        // Double-check visibility hasn't changed back
+        if (!isVisibleRef.current && playerRef.current && videoContainerRef.current) {
+          const rect = videoContainerRef.current.getBoundingClientRect();
+          const isReallyOutOfView = rect.bottom < 0 || rect.top > window.innerHeight;
+
+          if (isReallyOutOfView) {
+            try {
+              await playerRef.current.pause();
+              isPlayingRef.current = false;
+            } catch (err) {
+              // Ignore pause errors
+            }
+          }
+        }
+        pauseTimeoutRef.current = null;
+      }, 800); // 800ms delay before pausing
+    }
   };
 
-  // Intersection Observer to detect when video section is visible
-  useEffect(() => {
-    if (!videoContainerRef.current) return;
+  controlPlayback();
 
-    const isMobile = window.innerWidth < 768;
-    const threshold = isMobile ? 0.1 : 0.2; // Lower threshold for more lenient detection
-    const rootMargin = isMobile ? '150px 0px' : '200px 0px'; // Larger margin to prevent false triggers during scroll snap
+  return () => {
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+      pauseTimeoutRef.current = null;
+    }
+    if (playTimeoutRef.current) {
+      clearTimeout(playTimeoutRef.current);
+      playTimeoutRef.current = null;
+    }
+  };
+}, [isVisible]);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const visible = entry.isIntersecting;
-          isVisibleRef.current = visible;
-          setIsVisible(visible);
-        });
-      },
-      {
-        threshold: threshold,
-        rootMargin: rootMargin
-      }
-    );
+// Toggle mute/unmute handler
+const handleToggleMute = async () => {
+  if (!playerRef.current) return;
 
-    observer.observe(videoContainerRef.current);
+  try {
+    const currentMuted = await playerRef.current.getMuted();
+    await playerRef.current.setMuted(!currentMuted);
+    setIsMuted(!currentMuted);
+  } catch (err) {
+    // Failed to toggle mute - non-critical, continue silently
+  }
+};
 
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+// Intersection Observer to detect when video section is visible
+useEffect(() => {
+  if (!videoContainerRef.current) return;
 
-  return (
-    <div 
-      ref={videoContainerRef}
-      style={{ 
-        backgroundColor: '#000', 
-        width: '100%', 
-        height: '100%', 
+  const isMobile = window.innerWidth < 768;
+  const threshold = isMobile ? 0.1 : 0.2; // Lower threshold for more lenient detection
+  const rootMargin = isMobile ? '150px 0px' : '200px 0px'; // Larger margin to prevent false triggers during scroll snap
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const visible = entry.isIntersecting;
+        isVisibleRef.current = visible;
+        setIsVisible(visible);
+      });
+    },
+    {
+      threshold: threshold,
+      rootMargin: rootMargin
+    }
+  );
+
+  observer.observe(videoContainerRef.current);
+
+  return () => {
+    observer.disconnect();
+  };
+}, []);
+
+return (
+  <div
+    ref={videoContainerRef}
+    style={{
+      backgroundColor: '#000',
+      width: '100%',
+      height: '100%',
+      minHeight: '400px',
+      position: 'relative',
+      overflow: 'hidden',
+      overflowX: 'hidden', // Always hide horizontal overflow
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingBottom: '0'
+    }}
+  >
+    <iframe
+      ref={iframeRef}
+      src={vimeoUrl}
+      className="w-full h-full absolute inset-0"
+      style={{
+        border: 'none',
+        width: '100%',
+        height: '100%',
         minHeight: '400px',
-        position: 'relative', 
-        overflow: 'hidden',
-        overflowX: 'hidden', // Always hide horizontal overflow
+        backgroundColor: '#000',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        pointerEvents: isScrolling ? 'none' : 'auto', // Disable interactions during scroll to prevent 2x speed issue
+        zIndex: 1 // Ensure iframe is above container but below button
+      }}
+      frameBorder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowFullScreen
+      playsInline
+      loading="eager"
+      title="גילעד דורון - וידאו אימון והסבר על התהליך והשיטה"
+    />
+    {/* Left side overlay to hide white areas */}
+    <div
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: '20%',
+        background: 'linear-gradient(to right, #0A0A0A, transparent)',
+        pointerEvents: 'none',
+        zIndex: 1
+      }}
+    />
+    {/* Right side overlay to hide white areas */}
+    <div
+      style={{
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        bottom: 0,
+        width: '20%',
+        background: 'linear-gradient(to left, #0A0A0A, transparent)',
+        pointerEvents: 'none',
+        zIndex: 1
+      }}
+      aria-hidden="true"
+    />
+    {/* Custom Mute/Unmute Button Overlay */}
+    <button
+      onClick={handleToggleMute}
+      aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
+      className="absolute bottom-8 right-6 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+      style={{
+        minWidth: '48px',
+        minHeight: '48px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom: '0'
+        zIndex: 30, // Ensure button is above iframe and all overlays
+        marginBottom: '0', // Ensure button is within bounds
+        marginRight: '0' // Ensure button is within bounds
       }}
     >
-      <iframe
-        ref={iframeRef}
-        src={vimeoUrl}
-        className="w-full h-full absolute inset-0"
-        style={{ 
-          border: 'none', 
-          width: '100%', 
-          height: '100%', 
-          minHeight: '400px',
-          backgroundColor: '#000',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          pointerEvents: isScrolling ? 'none' : 'auto', // Disable interactions during scroll to prevent 2x speed issue
-          zIndex: 1 // Ensure iframe is above container but below button
-        }}
-        frameBorder="0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowFullScreen
-        playsInline
-        loading="eager"
-        title="גילעד דורון - וידאו אימון והסבר על התהליך והשיטה"
-      />
-      {/* Left side overlay to hide white areas */}
-      <div 
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: '20%',
-          background: 'linear-gradient(to right, #0A0A0A, transparent)',
-          pointerEvents: 'none',
-          zIndex: 1
-        }}
-      />
-      {/* Right side overlay to hide white areas */}
-      <div 
-        style={{
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          bottom: 0,
-          width: '20%',
-          background: 'linear-gradient(to left, #0A0A0A, transparent)',
-          pointerEvents: 'none',
-          zIndex: 1
-        }}
-        aria-hidden="true"
-      />
-      {/* Custom Mute/Unmute Button Overlay */}
-      <button
-        onClick={handleToggleMute}
-        aria-label={isMuted ? 'הפעל קול' : 'השתק קול'}
-        className="absolute bottom-8 right-6 md:bottom-6 md:right-6 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
-        style={{
-          minWidth: '48px',
-          minHeight: '48px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 30, // Ensure button is above iframe and all overlays
-          marginBottom: '0', // Ensure button is within bounds
-          marginRight: '0' // Ensure button is within bounds
-        }}
-      >
-        {isMuted ? (
-          <VolumeX size={24} aria-hidden="true" />
-        ) : (
-          <Volume2 size={24} aria-hidden="true" />
-        )}
-      </button>
-    </div>
-  );
+      {isMuted ? (
+        <VolumeX size={24} aria-hidden="true" />
+      ) : (
+        <Volume2 size={24} aria-hidden="true" />
+      )}
+    </button>
+  </div>
+);
 };
 
 // --- Main App ---
@@ -2111,7 +2074,7 @@ export default function App() {
   const toggleStep = (index: number) => {
     const willExpand = expandedStepIndex !== index;
     setExpandedStepIndex(expandedStepIndex === index ? null : index);
-    
+
     if (willExpand && !hasExpandedAnyStep) {
       setHasExpandedAnyStep(true);
       if (typeof window !== 'undefined') {
@@ -2141,8 +2104,8 @@ export default function App() {
   // ============================================================================
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { 
-      loop: true, 
+    {
+      loop: true,
       align: 'center',
       direction: 'rtl',
       slidesToScroll: 1,
@@ -2185,7 +2148,7 @@ export default function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Only handle keyboard navigation when results section is active
       if (activeStage !== 'proof') return;
-      
+
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
         if (e.key === 'ArrowRight') {
@@ -2222,7 +2185,7 @@ export default function App() {
     const stageObserver = new IntersectionObserver((entries) => {
       // Update the ratios map with current intersection data
       entries.forEach(entry => {
-          if (entry.isIntersecting) {
+        if (entry.isIntersecting) {
           sectionRatios.set(entry.target, entry.intersectionRatio);
         } else {
           sectionRatios.delete(entry.target);
@@ -2232,7 +2195,7 @@ export default function App() {
       // Find the section with the highest intersection ratio (most visible)
       let maxRatio = 0;
       let mostVisibleElement: Element | null = null;
-      
+
       sectionRatios.forEach((ratio, element) => {
         if (ratio > maxRatio) {
           maxRatio = ratio;
@@ -2308,7 +2271,7 @@ export default function App() {
       <MobileProgressBar activeStageIndex={activeStageIndex} />
 
       <JourneyRail activeStage={activeStage} />
-      
+
       <main id="main-content">
         {/* STAGE 1: HERO */}
         <section id="hero" data-stage="hero" data-snap="true" className="stage">
@@ -2318,25 +2281,25 @@ export default function App() {
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-20 lg:pt-24 mobile-hero-spacing">
             <StoryHeader text="החלום שלך מתחיל כאן" />
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mt-8 md:mt-12">
-              <div className="space-y-6 md:space-y-8 text-center md:text-right order-2 md:order-1">
+              <div className="space-y-6 md:space-y-8 text-center md:text-right order-1">
                 <h1 className="hero-headline text-2xl md:text-4xl lg:text-5xl font-bold heading-font leading-tight tracking-tight"><span className="font-normal text-white">מתאמן</span> <span className="text-accent">אבל מרגיש שאתה דורך במקום?</span></h1>
-                <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-gray-300/75 leading-loose font-normal">אתה מנסה, משקיע,<br />אבל משהו בדרך לא מתחבר<br />והתוצאות פשוט לא מגיעות.</p>
-                <div className="mt-10 md:mt-14 max-w-2xl space-y-3 md:space-y-4 flex flex-col items-center md:items-start">
-                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal">
-                    פה לא מנסים שוב. פה נכנסים לתהליך ומגיעים לתוצאה.
+                <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-white leading-loose font-bold">אתה מנסה, משקיע,<br />אבל משהו בדרך לא מתחבר<br />והתוצאות פשוט לא מגיעות.</p>
+                <div className="mt-10 md:mt-14 max-w-2xl space-y-4 flex flex-col items-center md:items-start" style={{ lineHeight: '78px' }}>
+                  <p className="text-lg text-white leading-loose font-normal" style={{ marginTop: '-5px', marginBottom: '0px', lineHeight: '24px' }}>
+                    <span className="text-accent font-bold -mt-[5px] -mb-[5px]">פה לא מנסים שוב.</span> פה נכנסים לתהליך ומגיעים לתוצאה.
                   </p>
-                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal mt-0">
+                  <p className="text-lg text-white leading-loose font-normal mt-0" style={{ marginTop: '0px' }}>
                     אם תעבוד לפי מה שאני אומר לאורך הדרך יש שתי אפשרויות בלבד:
                   </p>
-                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal mt-0">
+                  <p className="text-sm md:text-base text-white leading-loose font-normal mt-0" style={{ marginTop: '0px', marginBottom: '-5px', fontSize: '18px' }}>
                     או שזה התהליך שמביא אותך לתוצאה שאתה מחפש, או שלא תשלם עליו.
                   </p>
-                  <p className="text-sm md:text-base text-gray-400/80 leading-relaxed font-normal">
+                  <p className="text-lg md:text-base text-white leading-loose font-bold" style={{ marginTop: '10px' }}>
                     עוד רגע אסביר בדיוק למה אני מתכוון.
                   </p>
-                  </div>
-                  </div>
-              <div className="delay-100 w-full flex-1 flex flex-col justify-center md:justify-end pb-2 md:pb-0 order-1 md:order-2">
+                </div>
+              </div>
+              <div className="delay-100 w-full flex-1 flex flex-col justify-center md:justify-end pb-2 md:pb-0 order-2">
                 <div className="mobile-form-container">
                   <LeadForm isFooter={true} onPrivacyClick={() => setModalType('privacy')} />
                 </div>
@@ -2350,7 +2313,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 reflection-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 py-2 md:py-10 relative z-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
             <StoryHeader text="למה נתקעת?" />
-            
+
             <div className="text-center max-w-3xl mx-auto mb-2 md:mb-8 space-y-1 md:space-y-4">
               <h2 className="text-xl md:text-3xl lg:text-5xl font-black heading-font leading-tight compact-heading">
                 אתה עובד 'קשה' <span className="text-accent">במקום לעבוד 'נכון'</span>
@@ -2371,7 +2334,7 @@ export default function App() {
                 </h3>
                 <ul className="space-y-1.5 md:space-y-4">
                   {[
-                    "אתה מחליף תוכניות כל שבועיים ומתפלל שמשהו יעבוד",
+                    "אתה מחליף תוכנית כל חודש ומתפלל שמשהו יעבוד",
                     "אתה לא באמת בטוח שאתה בכיוון הנכון",
                     "אתה עובד קשה אבל זה לא מתבטא בתוצאות",
                     "המוטיבציה שלך נחלשת משבוע לשבוע"
@@ -2420,7 +2383,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-2 md:py-4 h-full flex flex-col">
             <StoryHeader text="כשהתהליך נכון – רואים את זה" />
-            
+
             {/* Header Section */}
             <div className="text-center mb-2 md:mb-3 flex-shrink-0">
               <h2 className="text-4xl md:text-6xl lg:text-7xl font-black heading-font leading-tight mb-4">התוצאות מדברות</h2>
@@ -2459,26 +2422,24 @@ export default function App() {
                 <div className="embla__container flex gap-6 md:gap-8 py-8">
                   {CLIENT_RESULTS.map((client, index) => {
                     const isActive = index === selectedIndex;
-                    
+
                     return (
                       <div
                         key={`${client.name}-${client.age}-${index}`}
-                        className={`embla__slide flex-shrink-0 w-[80vw] sm:w-[70vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] transition-all duration-500 ${
-                          isActive 
-                            ? 'opacity-100 z-10 scale-[1.03] md:scale-105' 
+                        className={`embla__slide flex-shrink-0 w-[80vw] sm:w-[70vw] md:w-[35%] lg:w-[38%] md:max-w-[500px] transition-all duration-500 ${isActive
+                            ? 'opacity-100 z-10 scale-[1.03] md:scale-105'
                             : 'opacity-40 scale-95 blur-[1px]'
-                        }`}
+                          }`}
                         style={{
                           perspective: '1000px'
                         }}
                         role="article"
                         aria-label={`תוצאות לקוח: ${client.name}, ${client.profession}, ${client.age}`}
                       >
-                        <div className={`bg-brandGray/50 border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.6)] ${
-                          isActive 
-                            ? 'border-accent shadow-[0_0_40px_rgba(255,107,53,0.3),0_10px_40px_rgba(0,0,0,0.6)]' 
+                        <div className={`bg-brandGray/50 border rounded-2xl pt-2 md:pt-2.5 px-2 md:px-2.5 pb-2 md:pb-2.5 flex flex-col transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.6)] ${isActive
+                            ? 'border-accent shadow-[0_0_40px_rgba(255,107,53,0.3),0_10px_40px_rgba(0,0,0,0.6)]'
                             : 'border-white/5 shadow-none'
-                        }`}>
+                          }`}>
                           {/* Content Wrapper */}
                           <div className="carousel-card-content-wrapper w-full flex flex-col min-h-0 bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-2xl p-2 md:p-3">
                             {/* Header Row: Avatar + Name + Age */}
@@ -2501,12 +2462,12 @@ export default function App() {
 
                             {/* Before/After Image: Fixed aspect ratio with reserved space */}
                             <div className="relative rounded-xl overflow-hidden bg-brandGray/40 backdrop-blur-sm border border-white/10 mb-1.5 md:mb-2 aspect-[2/1] md:aspect-[3/2] min-h-[100px] md:min-h-[140px]">
-                              <img 
+                              <img
                                 src={`${(import.meta as any).env.BASE_URL}assets/results/${client.image}`}
                                 alt={client.imageAlt}
                                 className="w-full h-full object-contain"
                                 loading="lazy"
-                                style={{ 
+                                style={{
                                   display: 'block',
                                   height: '100%',
                                   width: '100%'
@@ -2518,7 +2479,7 @@ export default function App() {
                                 <div className="bg-accent text-white px-2 py-1 rounded-lg text-xs font-bold">אחרי</div>
                               </div>
                             </div>
-                            
+
                             {/* Statistics Row: Compact single row */}
                             <div className="bg-brandGray/40 backdrop-blur-sm border border-white/10 rounded-lg p-1 md:p-1.5 grid grid-cols-3 gap-1 md:gap-1.5 text-center">
                               <div>
@@ -2541,18 +2502,17 @@ export default function App() {
                   })}
                 </div>
               </div>
-                
+
               {/* Dot Indicators */}
               <div className="flex justify-center gap-2 mt-6 md:mt-8 flex-shrink-0" role="tablist" aria-label="ניווט בין תוצאות לקוחות">
                 {CLIENT_RESULTS.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => scrollTo(index)}
-                    className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
-                      index === selectedIndex
+                    className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${index === selectedIndex
                         ? 'bg-accent w-4 md:w-8'
                         : 'bg-white/30 hover:bg-white/50'
-                    }`}
+                      }`}
                     aria-label={`מעבר לתוצאות לקוח ${index + 1}`}
                     aria-selected={index === selectedIndex}
                     role="tab"
@@ -2569,8 +2529,8 @@ export default function App() {
               >
                 בנה לי את הגוף שתמיד רציתי
               </a>
-                  </div>
-                  </div>
+            </div>
+          </div>
         </section>
 
         {/* STAGE 3.5: CLIENT TESTIMONIAL VIDEO */}
@@ -2578,7 +2538,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
             <StoryHeader text="הלקוח מדבר" />
-            
+
             <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-6">
               {/* Testimonial Text - First on mobile, secondary on desktop */}
               <div className="space-y-4 md:space-y-6 text-center md:text-right w-full md:w-auto">
@@ -2593,13 +2553,13 @@ export default function App() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Video - Second on mobile, primary on desktop */}
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
                 {/* Video container with floating shadow */}
-                <div 
+                <div
                   className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
-                  style={{ 
+                  style={{
                     aspectRatio: '9/16', // Match actual video format (portrait)
                     maxHeight: isIOS() ? '85dvh' : '75dvh', // More space for controls on iOS
                     minHeight: '400px',
@@ -2641,18 +2601,18 @@ export default function App() {
                       title: 'המאבק',
                       content: [
                         { text: 'שרפתי שעות בחדר כושר.', isAnchor: false },
-                        { text: 'עשיתי כל תרגיל שמצאתי באינטרנט.', isAnchor: false },
-                        { text: 'אכלתי חלבונים כאילו זה אמור לפתור הכול.', isAnchor: false },
+                        { text: 'עשיתי כל תרגיל שמצאתי באינטרנט.', isAnchor: false, className: '!mt-0' },
+                        { text: 'אכלתי חלבונים כאילו זה אמור לפתור הכול.', isAnchor: false, className: '!mt-0' },
                         { text: 'ושום דבר לא זז.', isAnchor: false },
-                        { text: 'יותר מזה, התחלתי לפקפק בעצמי.', isAnchor: false },
-                        { text: 'הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.', isAnchor: true }
+                        { text: 'יותר מזה, התחלתי לפקפק בעצמי.', isAnchor: false, className: '!mt-0' },
+                        { text: 'הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.', isAnchor: true, className: 'font-bold mt-2.5 mb-5 md:mb-6', style: { marginTop: '10px' } }
                       ]
                     },
                     {
                       title: 'ההבנה',
                       content: [
                         { text: 'רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:', isAnchor: false },
-                        { text: 'הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.', isAnchor: true },
+                        { text: 'הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.', isAnchor: true, className: 'font-bold mt-2.5 mb-2.5', style: { marginTop: '10px' } },
                         { text: 'ברגע שהבנתי את זה, לא השתנה רק הגוף,', isAnchor: false },
                         { text: 'השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.', isAnchor: false }
                       ]
@@ -2662,8 +2622,8 @@ export default function App() {
                       content: [
                         { text: 'ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.', isAnchor: false },
                         { text: 'עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,', isAnchor: false },
-                        { text: 'אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,', isAnchor: true },
-                        { text: 'בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.', isAnchor: false }
+                        { text: 'אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,', isAnchor: true, className: 'font-bold mt-2.5 mb-2.5', style: { marginBottom: '10px' } },
+                        { text: 'בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.', isAnchor: false, className: 'text-xl md:text-2xl lg:text-3xl font-medium text-white mt-0', style: { lineHeight: '28px' } }
                       ]
                     }
                   ].map((section, idx) => {
@@ -2691,68 +2651,68 @@ export default function App() {
                         </button>
                         <div
                           id={`about-section-${idx}`}
-                          className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                            isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
-                          }`}
+                          className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                            }`}
                           aria-live={isExpanded ? "polite" : "off"}
                         >
                           <div className="px-3 pb-3 pt-0 text-gray-300 text-sm leading-loose space-y-3">
-                            {section.content.map((item, pIdx) => (
-                              item.isAnchor ? (
-                                <p key={pIdx} className="text-accent my-4">{item.text}</p>
+                            {section.content.map((item, pIdx) => {
+                              const c = item as { className?: string; style?: React.CSSProperties };
+                              return item.isAnchor ? (
+                                <p key={pIdx} className={"text-accent " + (c.className ?? "my-4")} style={c.style}>{item.text}</p>
                               ) : (
-                                <p key={pIdx}>{item.text}</p>
-                              )
-                            ))}
+                                <p key={pIdx} className={c.className ?? ''} style={c.style}>{item.text}</p>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
                     );
                   })}
                 </div>
-              {/* Desktop: Full text visible */}
-              <div className="hidden md:block space-y-12 md:space-y-16">
-                {/* Block 1: המאבק */}
-                <div className="space-y-4 md:space-y-5">
-                  <h3 className="text-lg md:text-xl font-semibold text-white mb-6 md:mb-6">המאבק שלי</h3>
-                  <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
-                    <p>שרפתי שעות בחדר כושר.</p>
-                    <p>עשיתי כל תרגיל שמצאתי באינטרנט.</p>
-                    <p>אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
-                    <p>ושום דבר לא זז.</p>
-                    <p>יותר מזה, התחלתי לפקפק בעצמי.</p>
-                    <p className="text-accent my-5 md:my-6">הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.</p>
+                {/* Desktop: Full text visible */}
+                <div className="hidden md:block space-y-12 md:space-y-16">
+                  {/* Block 1: המאבק */}
+                  <div className="space-y-4 md:space-y-5">
+                    <h3 className="text-lg md:text-xl font-semibold text-white -mb-2.5">המאבק שלי</h3>
+                    <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                      <p>שרפתי שעות בחדר כושר.</p>
+                      <p className="!mt-0">עשיתי כל תרגיל שמצאתי באינטרנט.</p>
+                      <p className="!mt-0">אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
+                      <p className="!mt-0">ושום דבר לא זז.</p>
+                      <p className="!mt-0">יותר מזה, התחלתי לפקפק בעצמי.</p>
+                      <p className="text-accent font-bold mt-2.5 mb-5 md:mb-6" style={{ marginTop: '10px' }}>הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.</p>
+                    </div>
+                  </div>
+
+                  {/* Block 2: ההבנה */}
+                  <div className="space-y-4 md:space-y-5">
+                    <h3 className="text-lg md:text-xl font-semibold text-white -mb-2.5">ההבנה המכרעת</h3>
+                    <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                      <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
+                      <p className="text-accent font-bold mt-2.5 mb-2.5" style={{ marginTop: '10px' }}>הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
+                      <p className="mt-2.5" style={{ marginTop: '10px' }}>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
+                      <p className="!mt-0">השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.</p>
+                    </div>
+                  </div>
+
+                  {/* Block 3: התוצאה */}
+                  <div className="space-y-4 md:space-y-5">
+                    <h3 className="text-lg md:text-xl font-semibold text-white -mb-2.5">התוצאה הסופית</h3>
+                    <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                      <p>ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.</p>
+                      <p className="!mt-0">עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,</p>
+                      <p className="text-accent font-bold mt-2.5 mb-2.5" style={{ marginTop: '10px', marginBottom: '10px' }}>אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,</p>
+                      <p className="text-xl md:text-2xl lg:text-3xl font-medium text-white mt-0" style={{ lineHeight: '28px', marginTop: 0 }}>בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.</p>
+                    </div>
                   </div>
                 </div>
-                
-                {/* Block 2: ההבנה */}
-                <div className="space-y-4 md:space-y-5">
-                  <h3 className="text-lg md:text-xl font-semibold text-white mb-6 md:mb-6">ההבנה המכרעת</h3>
-                  <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
-                    <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
-                    <p className="text-accent my-5 md:my-6">הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
-                    <p>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
-                    <p>השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.</p>
-                  </div>
-                </div>
-                
-                {/* Block 3: התוצאה */}
-                <div className="space-y-4 md:space-y-5">
-                  <h3 className="text-lg md:text-xl font-semibold text-white mb-6 md:mb-6">התוצאה הסופית</h3>
-                  <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
-                    <p>ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.</p>
-                    <p>עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,</p>
-                    <p className="text-accent my-5 md:my-6">אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,</p>
-                    <p className="text-xl md:text-2xl lg:text-3xl font-medium text-white mt-6 md:mt-8" style={{ lineHeight: '28px' }}>בלי להשתעבד לחדר כושר, ובלי לוותר על החיים מסביב.</p>
-                  </div>
-                </div>
-              </div>
               </div>
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
                 {/* Video container with floating shadow */}
-                <div 
+                <div
                   className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
-                  style={{ 
+                  style={{
                     aspectRatio: '9/16', // Match actual video format (portrait)
                     maxHeight: isIOS() ? '90dvh' : '75dvh', // Even more space for controls on iOS
                     minHeight: '400px',
@@ -2809,7 +2769,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 commitment-overlay" aria-hidden="true"></div>
           <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
             <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
-            
+
             <div className="space-y-3 md:space-y-4">
               <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight text-white mb-2">
                 אני מתחייב לתוצאה<br />כשעובדים יחד כמו שצריך.
@@ -2821,9 +2781,9 @@ export default function App() {
                   <p className="mb-2">כשאתה נכנס לליווי, אנחנו מגדירים יחד תוצאה ברורה מראש.</p>
                   <p className="mb-6">זה תהליך עם דרך ברורה, ועם נקודות בדיקה ידועות מראש.</p>
                   <p className="mb-2">אם עמדת בכל מה שסיכמנו עליו, ובנקודת הבדיקה שהגדרנו מראש היעד עדיין לא הושג —</p>
-                  
+
                   <p className="text-gray-300 font-medium text-lg md:text-xl tracking-wide mt-[18px] mb-3">האחריות עוברת אליי.</p>
-                  
+
                   <p className="font-bold text-white text-[25px] mt-3">במקרה כזה, יש שתי אפשרויות בלבד:</p>
                 </div>
               </div>
@@ -2867,8 +2827,8 @@ export default function App() {
                 { i: <BarChart3 />, t: "מעקב והתאמות שבועיות" },
                 { i: <Clock />, t: "סדר ובהירות בתהליך" }
               ].map((item, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className={`get-card bg-brandDark/20 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-white/5 flex flex-col items-center text-center gap-4 transition-all hover:-translate-y-2 ${idx === 4 ? 'col-span-2 md:col-span-1' : ''}`}
                   style={{ opacity: 0, transform: 'translateY(20px)' }}
                   data-card-index={idx}
@@ -2890,61 +2850,60 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-6 relative mt-2 md:mt-4 min-h-0 mobile-steps-timeline">
               <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true"></div>
               {[
-                { 
-                  s: "01", 
-                  t: "בדיקת התאמה", 
+                {
+                  s: "01",
+                  t: "בדיקת התאמה",
                   d: "שיחה קצרה להבין איפה אתה נמצא ולאן אתה רוצה להגיע.",
                   explanation: "בשיחה נבין יחד את המטרות שלך, הרקע שלך באימונים, והציפיות. זה לא תהליך מכירה - זה תהליך התאמה. אם נראה שזה לא בשבילך, אגיד לך את זה בכנות."
                 },
-                { 
-                  s: "02", 
-                  t: "אבחון ואסטרטגיה", 
+                {
+                  s: "02",
+                  t: "אבחון ואסטרטגיה",
                   d: "איסוף כל הנתונים ובניית אסטרטגיה מותאמת אישית.",
                   explanation: "אני אוסף את כל המידע: רקע רפואי, זמינות, ציוד, העדפות תזונתיות. מזה אני בונה תוכנית שמתאימה בדיוק לחיים שלך - לא תוכנית גנרית שתצטרך להתאים."
                 },
-                { 
-                  s: "03", 
-                  t: "ליווי ומעקב", 
+                {
+                  s: "03",
+                  t: "ליווי ומעקב",
                   d: "עבודה שוטפת, וואטסאפ זמין, ובדיקות התקדמות.",
                   explanation: "זה לא 'תוכנית ששולחים לך'. זה ליווי פעיל: מענה מהיר בוואטסאפ, בדיקות שבועיות, התאמות בזמן אמת. אם משהו לא עובד - אנחנו משנים את זה מיד."
                 },
-                { 
-                  s: "04", 
-                  t: "תוצאה שלא נעלמת", 
+                {
+                  s: "04",
+                  t: "תוצאה שלא נעלמת",
                   d: "אנחנו מוודאים שהגוף נשמר גם אחרי שהתהליך נגמר.",
                   explanation: "המטרה היא לא רק להגיע לתוצאה - אלא לשמור עליה. אני מלמד אותך את העקרונות, בונה הרגלים, ומוודא שאתה יודע איך להמשיך לבד גם אחרי שהליווי נגמר."
                 }
               ].map((item, idx) => {
                 const isExpanded = expandedStepIndex === idx;
-                
+
                 return (
                   <div key={idx} className="mobile-step-wrapper relative">
                     {/* Vertical connector line - only on mobile */}
                     <div className="mobile-timeline-connector" aria-hidden="true"></div>
-                    
+
                     {/* Step content */}
                     <div className="relative z-10 flex flex-row md:flex-col items-start md:items-center text-right md:text-center group bg-transparent p-3 rounded-xl md:border-none">
                       {/* Step number - more dominant on mobile */}
                       <div className="mobile-step-number w-16 h-16 md:w-20 md:h-20 bg-brandGray/30 backdrop-blur-sm border-2 md:border-4 border-brandDark rounded-full flex items-center justify-center text-accent text-xl md:text-2xl font-black mb-0 md:mb-6 mr-4 md:mr-0 group-hover:bg-accent group-hover:text-white transition-all shrink-0" aria-hidden="true">
                         {item.s}
                       </div>
-                      
+
                       {/* Step content */}
-                      <div className="flex-1 md:flex-none">
-                        <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">
-                          <span className="sr-only">שלב {item.s}: </span>
-                          {item.t}
-                        </h3>
-                        <p className="text-gray-400 text-xs md:text-sm leading-relaxed px-1 md:px-2 compact-text line-clamp-3 md:line-clamp-none">{item.d}</p>
-                        
-                        {/* Desktop: Click to expand */}
+                      <div className="flex-1 md:flex-none flex flex-col">
+                        <div className="flex-1 min-h-[4.5rem]">
+                          <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-3 compact-text">
+                            <span className="sr-only">שלב {item.s}: </span>
+                            {item.t}
+                          </h3>
+                          <p className="text-gray-400 text-xs md:text-sm leading-relaxed px-1 md:px-2 compact-text line-clamp-3 md:line-clamp-none">{item.d}</p>
+                        </div>
+
+                        {/* קרא עוד: text + arrow — one control for desktop and mobile */}
                         <button
+                          type="button"
                           onClick={() => toggleStep(idx)}
-                          className={`hidden md:flex items-center justify-center min-w-[44px] min-h-[44px] p-2.5 rounded-full text-accent mx-auto mt-3 transition-all duration-250 ease-out motion-safe:transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-brandGray group ${
-                            isExpanded 
-                              ? 'bg-accent/8 border border-accent/15' 
-                              : 'bg-accent/5 border border-accent/12 hover:bg-accent/8 hover:shadow-[0_0_0_4px_rgba(255,107,53,0.10)]'
-                          } ${!isExpanded && !hasExpandedAnyStep ? 'step-chevron-invite relative' : ''}`}
+                          className={`inline-flex flex-col items-center justify-center gap-0.5 mt-3 text-accent transition-all duration-250 ease-out motion-safe:transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-brandGray hover:opacity-90 active:opacity-80 ${!isExpanded && !hasExpandedAnyStep ? 'step-chevron-invite relative' : ''}`}
                           aria-expanded={isExpanded}
                           aria-controls={`step-content-${idx}`}
                           aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
@@ -2955,58 +2914,25 @@ export default function App() {
                             }
                           }}
                         >
-                          <ChevronDown 
-                            className={`transition-transform duration-250 ease-out motion-safe:transition-transform ${
-                              isExpanded 
-                                ? 'rotate-180' 
-                                : 'group-hover:rotate-12'
-                            }`} 
-                            size={14} 
-                            aria-hidden="true" 
+                          <span className="text-sm font-medium">קרא עוד</span>
+                          <ChevronDown
+                            className={`text-accent transition-transform duration-250 ease-out motion-safe:transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                            size={16}
+                            aria-hidden="true"
                           />
                         </button>
-                        
-                        {/* Mobile: Tap to expand accordion - centered with text content */}
-                        <div className="md:hidden flex justify-center mt-3 px-1">
-                          <button
-                            onClick={() => toggleStep(idx)}
-                            className={`flex items-center justify-center min-w-[44px] min-h-[44px] p-2.5 rounded-full text-accent transition-all duration-250 ease-out motion-safe:transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-brandGray ${
-                              isExpanded 
-                                ? 'bg-accent/8 border border-accent/15' 
-                                : 'bg-accent/5 border border-accent/12 active:bg-accent/8'
-                            } ${!isExpanded && !hasExpandedAnyStep ? 'step-chevron-invite relative' : ''}`}
-                            aria-expanded={isExpanded}
-                            aria-controls={`step-content-${idx}`}
-                            aria-label={isExpanded ? 'סגור הסבר' : 'קרא עוד על שלב זה'}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                toggleStep(idx);
-                              }
-                            }}
-                          >
-                            <ChevronDown 
-                              className={`transition-transform duration-250 ease-out motion-safe:transition-transform ${
-                                isExpanded ? 'rotate-180' : ''
-                              }`} 
-                              size={16} 
-                              aria-hidden="true" 
-                            />
-                          </button>
-                        </div>
-                        
+
                         {/* Expanded explanation */}
-                        <div 
+                        <div
                           id={`step-content-${idx}`}
-                          className={`overflow-hidden transition-all duration-300 ease-out motion-safe:transition-all ${
-                            isExpanded 
-                              ? 'max-h-[500px] opacity-100 mt-3 border-t border-white/8 pt-3' 
+                          className={`overflow-hidden transition-all duration-300 ease-out motion-safe:transition-all ${isExpanded
+                              ? 'max-h-[500px] opacity-100 mt-3 border-t border-white/8 pt-3'
                               : 'max-h-0 opacity-0'
-                          }`}
+                            }`}
                           aria-live={isExpanded ? "polite" : "off"}
                         >
                           <p className="text-gray-300 text-xs md:text-sm leading-relaxed px-2">{item.explanation}</p>
-                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -3028,9 +2954,9 @@ export default function App() {
               <div className="py-4 font-bold text-white uppercase tracking-[0.2em] space-y-2">
                 <div>עוד אימונים.</div>
                 <div>עוד ניסיונות.</div>
-            </div>
+              </div>
               <p className="text-white font-medium">לא כי אתה לא רוצה מספיק. אלא כי בלי דרך נכונה — רוב האנשים פשוט נתקעים.</p>
-                  </div>
+            </div>
             <div className="flex justify-center mt-6 md:mt-8 mb-4">
               <a
                 href="#action"
@@ -3038,8 +2964,8 @@ export default function App() {
               >
                 בוא נבדוק אם זה מתאים לך
               </a>
-                  </div>
-                  </div>
+            </div>
+          </div>
         </section>
 
         {/* STAGE 10: FAQ */}
@@ -3047,16 +2973,16 @@ export default function App() {
           <div className="absolute inset-0 z-0 faq-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col">
             <StoryHeader text="יש לך שאלות? יש לנו תשובות" />
-            
+
             <div className="text-center mb-4 md:mb-6">
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight mb-4">שאלות נפוצות</h2>
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
                 כל מה שרצית לדעת על הליווי, התהליך, והתשובות
-                  </p>
-                </div>
+              </p>
+            </div>
 
             <div className="max-w-4xl mx-auto space-y-2 md:space-y-4 flex-1 w-full min-h-0">
-              {FAQ_ITEMS.map((item, index) => { 
+              {FAQ_ITEMS.map((item, index) => {
                 const isExpanded = expandedFAQIndex === index;
                 return (
                   <div
@@ -3081,9 +3007,8 @@ export default function App() {
                     </button>
                     <div
                       id={`faq-answer-${index}`}
-                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                        isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
-                      }`}
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                        }`}
                       aria-live={isExpanded ? "polite" : "off"}
                     >
                       <div className="px-4 md:px-6 pb-4 md:pb-6 pt-0 text-gray-300">
@@ -3092,12 +3017,12 @@ export default function App() {
                         ) : (
                           item.answer
                         )}
-                </div>
-                  </div>
+                      </div>
+                    </div>
                   </div>
                 );
               })}
-                </div>
+            </div>
             <div className="flex justify-center mt-4 md:mt-6 mb-4">
               <a
                 href="#action"
@@ -3137,15 +3062,15 @@ export default function App() {
         </section>
       </main>
 
-      <footer 
+      <footer
         className="py-12 bg-black/90 border-t border-white/5 text-center text-gray-500 text-sm"
       >
         <div className="container mx-auto px-4">
           <div className="text-xl font-black heading-font text-white mb-6">גילעד <span className="text-accent">דורון</span></div>
-          
-          <a 
-            href="https://www.instagram.com/gilad_doron?igsh=MWx3dmRlNXFzdzd4bQ==" 
-            target="_blank" 
+
+          <a
+            href="https://www.instagram.com/gilad_doron?igsh=MWx3dmRlNXFzdzd4bQ=="
+            target="_blank"
             rel="noopener noreferrer"
             className="inline-block text-gray-500 hover:text-accent transition-colors duration-300 mb-6"
             aria-label="Instagram"
@@ -3166,7 +3091,7 @@ export default function App() {
       <LegalModal type={modalType} onClose={() => setModalType(null)} />
       <ClientStoryModal clientIndex={selectedClientIndex} onClose={closeClientStory} />
       <ExitIntentPopup />
-      
+
       <WhatsAppButton />
       <FloatingCTA />
     </div>

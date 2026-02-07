@@ -11,7 +11,12 @@ export default defineConfig(({ mode }) => {
       base: '/Gilad-landing-page/',
       server: {
         port: 3000,
-        host: '0.0.0.0',
+        host: '127.0.0.1',
+        open: '/Gilad-landing-page/',
+        watch: {
+          usePolling: true,
+          interval: 300,
+        },
       },
       plugins: [
         react(),

@@ -49,6 +49,8 @@ A high-converting RTL Hebrew landing page for online fitness and nutrition coach
 
 4. Open [http://localhost:3000/Gilad-landing-page/](http://localhost:3000/Gilad-landing-page/) in your browser
 
+**Troubleshooting local server (macOS):** If `npm run dev` fails with "bad interpreter" or you see a Gatekeeper warning, see [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).
+
 ## Deployment
 
 **Preferred (CI):** Push to `main` triggers GitHub Actions, which builds with **GitHub Secrets** and deploys to GitHub Pages. The form needs `VITE_EMAILJS_PUBLIC_KEY` set in repo Secrets so the build includes it. No secrets in repo or local deploy needed. In Cursor you can say **"commit and deploy"** and the agent will run `git add`, `git commit`, `git push origin main` for you.
@@ -72,6 +74,7 @@ The site will be available at: `https://yourusername.github.io/Gilad-landing-pag
 ## Available Scripts
 
 - `npm run dev` - Start development server
+- `npm run dev:node` - Start dev server via Node (use if `npm run dev` fails on macOS)
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 - `npm run deploy` - Build and deploy to GitHub Pages
