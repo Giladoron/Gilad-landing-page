@@ -239,6 +239,22 @@ const CLIENT_RESULTS: ClientResult[] = [
       muscleMass: '+2 ק"ג',
       strength: '+80%'
     }
+  },
+  {
+    name: 'בן',
+    profession: 'שירות לאומי',
+    age: 20,
+    quote: 'תהליך מקצועי עם תוצאות ברורות. הליווי התאים בדיוק ללוח הזמנים שלי.',
+    goals: ['בניית שריר', 'שיפור בכושר', 'הרגלי תזונה'],
+    duration: 4,
+    commitment: 100,
+    image: 'result9.webp',
+    imageAlt: 'תוצאות לפני ואחרי - בן',
+    stats: {
+      weight: '-6 ק"ג',
+      muscleMass: '+4 ק"ג',
+      strength: '+250%'
+    }
   }
 ];
 
@@ -766,11 +782,11 @@ const MobileProgressBar: React.FC<{ activeStageIndex: number }> = ({ activeStage
 };
 
 const StoryHeader: React.FC<{ text: string }> = ({ text }) => (
-  <div className="text-center mb-0 mt-4 sm:mt-8 md:mt-0 pt-2 sm:pt-4 md:pt-0 flex flex-col items-center">
+  <div className="text-center mb-6 mt-3 flex flex-col items-center gap-y-3">
     <span className="story-header-text text-gray-400 text-sm md:text-lg lg:text-xl font-medium tracking-wide">
       {text}
     </span>
-    <div className="w-16 h-0.5 bg-accent mt-3" aria-hidden="true" />
+    <div className="w-16 h-0.5 bg-accent" aria-hidden="true" />
   </div>
 );
 
@@ -1269,7 +1285,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
                 className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
-                placeholder="ישראל ישראלי"
+                placeholder="הזן שם מלא"
                 value={formData.fullName}
                 onChange={e => setFormData({ ...formData, fullName: e.target.value })}
               />
@@ -1280,6 +1296,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 id="phone"
                 name="tel"
                 type="tel"
+                dir="rtl"
                 required
                 aria-required="true"
                 autoComplete="tel"
@@ -1287,7 +1304,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
                 className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
-                placeholder="050-0000000"
+                placeholder="הזן טלפון נייד"
                 value={formData.phone}
                 onChange={e => setFormData({ ...formData, phone: e.target.value })}
               />
@@ -1305,7 +1322,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
                 className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
-                placeholder="example@email.com"
+                placeholder="הזן כתובת מייל"
                 value={formData.email}
                 onChange={e => setFormData({ ...formData, email: e.target.value })}
               />
@@ -1655,7 +1672,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         allow="autoplay; fullscreen; picture-in-picture"
         allowFullScreen
         playsInline
-        loading="lazy"
+        loading="eager"
         title="תעודת לקוח - גיא, גיל 25, מספר על התוצאות שהשיג בליווי של גילעד דורון"
       />
       {/* Custom Mute/Unmute Button Overlay */}
@@ -2280,18 +2297,18 @@ export default function App() {
 
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-20 lg:pt-24 mobile-hero-spacing">
             <StoryHeader text="החלום שלך מתחיל כאן" />
-            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mt-8 md:mt-12">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mt-0">
               <div className="space-y-6 md:space-y-8 text-center md:text-right order-1">
                 <h1 className="hero-headline text-2xl md:text-4xl lg:text-5xl font-bold heading-font leading-tight tracking-tight"><span className="font-normal text-white">מתאמן</span> <span className="text-accent">אבל מרגיש שאתה דורך במקום?</span></h1>
                 <p className="hero-subheadline text-lg md:text-xl lg:text-2xl text-white leading-loose font-bold">אתה מנסה, משקיע,<br />אבל משהו בדרך לא מתחבר<br />והתוצאות פשוט לא מגיעות.</p>
                 <div className="mt-10 md:mt-14 max-w-2xl space-y-4 flex flex-col items-center md:items-start" style={{ lineHeight: '78px' }}>
                   <p className="text-lg text-white leading-loose font-normal" style={{ marginTop: '-5px', marginBottom: '0px', lineHeight: '24px' }}>
-                    <span className="text-accent font-bold -mt-[5px] -mb-[5px]">פה לא מנסים שוב.</span> פה נכנסים לתהליך ומגיעים לתוצאה.
+                    <span className="text-accent font-bold -mt-[5px] -mb-[5px]">פה לא מנסים שוב</span> פה נכנסים לתהליך ומגיעים לתוצאה.
                   </p>
-                  <p className="text-lg text-white leading-loose font-normal mt-0" style={{ marginTop: '0px' }}>
+                  <p className="text-lg text-white leading-loose font-normal mt-0" style={{ marginTop: '0px', lineHeight: '24px' }}>
                     אם תעבוד לפי מה שאני אומר לאורך הדרך יש שתי אפשרויות בלבד:
                   </p>
-                  <p className="text-sm md:text-base text-white leading-loose font-normal mt-0" style={{ marginTop: '0px', marginBottom: '-5px', fontSize: '18px' }}>
+                  <p className="text-sm md:text-base text-white leading-loose font-normal mt-0" style={{ marginTop: '-5px', marginBottom: '-5px', fontSize: '18px' }}>
                     או שזה התהליך שמביא אותך לתוצאה שאתה מחפש, או שלא תשלם עליו.
                   </p>
                   <p className="text-lg md:text-base text-white leading-loose font-bold" style={{ marginTop: '10px' }}>
@@ -2539,7 +2556,7 @@ export default function App() {
           <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
             <StoryHeader text="הלקוח מדבר" />
 
-            <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-2 md:mt-6">
+            <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-0">
               {/* Testimonial Text - First on mobile, secondary on desktop */}
               <div className="space-y-4 md:space-y-6 text-center md:text-right w-full md:w-auto">
                 <div>
@@ -2583,12 +2600,12 @@ export default function App() {
           <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
             <StoryHeader text="מי עומד מאחורי התהליך" />
             {/* Full-width headline container */}
-            <div className="w-full max-w-5xl mx-auto mt-6 md:mt-10 mb-8 md:mb-12">
+            <div className="w-full max-w-5xl mx-auto mt-0 mb-8 md:mb-12">
               <div className="space-y-1 text-center md:text-right">
                 <p className="text-accent font-bold tracking-[0.2em] uppercase text-xs compact-text">המאמן שלך</p>
                 <h2 className="w-full text-center md:text-right space-y-4 md:space-y-5">
                   <div className="text-4xl md:text-6xl lg:text-7xl font-black heading-font leading-tight tracking-tight">גילעד דורון</div>
-                  <div className="text-2xl md:text-4xl lg:text-5xl font-semibold heading-font leading-tight tracking-tight w-full">התחלתי בדיוק כמוך — מתאמן שעושה הכול נכון, <span className="text-accent">ועדיין לא רואה תוצאות.</span></div>
+                  <div className="text-2xl md:text-4xl lg:text-5xl font-semibold heading-font leading-tight tracking-tight w-full">כמה מילים עליי, על הדרך שלי ואיך אני חוסך ממך <span className="text-accent">טעויות מיותרות</span></div>
                 </h2>
               </div>
             </div>
@@ -2603,7 +2620,7 @@ export default function App() {
                         { text: 'שרפתי שעות בחדר כושר.', isAnchor: false },
                         { text: 'עשיתי כל תרגיל שמצאתי באינטרנט.', isAnchor: false, className: '!mt-0' },
                         { text: 'אכלתי חלבונים כאילו זה אמור לפתור הכול.', isAnchor: false, className: '!mt-0' },
-                        { text: 'ושום דבר לא זז.', isAnchor: false },
+                        { text: 'ושום דבר לא זז.', isAnchor: false, className: '!mt-0' },
                         { text: 'יותר מזה, התחלתי לפקפק בעצמי.', isAnchor: false, className: '!mt-0' },
                         { text: 'הרגשתי שאני עושה הכול נכון, ובכל זאת התחלתי להאמין שאולי הבעיה בי.', isAnchor: true, className: 'font-bold mt-2.5 mb-5 md:mb-6', style: { marginTop: '10px' } }
                       ]
@@ -2612,7 +2629,7 @@ export default function App() {
                       title: 'ההבנה',
                       content: [
                         { text: 'רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:', isAnchor: false },
-                        { text: 'הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.', isAnchor: true, className: 'font-bold mt-2.5 mb-2.5', style: { marginTop: '10px' } },
+                        { text: 'הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.', isAnchor: true, className: 'font-bold mt-0 mb-2.5' },
                         { text: 'ברגע שהבנתי את זה, לא השתנה רק הגוף,', isAnchor: false },
                         { text: 'השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.', isAnchor: false }
                       ]
@@ -2690,7 +2707,7 @@ export default function App() {
                     <h3 className="text-lg md:text-xl font-semibold text-white -mb-2.5">ההבנה המכרעת</h3>
                     <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
                       <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
-                      <p className="text-accent font-bold mt-2.5 mb-2.5" style={{ marginTop: '10px' }}>הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
+                      <p className="text-accent font-bold mt-0 mb-2.5">הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
                       <p className="mt-2.5" style={{ marginTop: '10px' }}>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
                       <p className="!mt-0">השתנתה גם התחושה שאני שולט בתהליך, ולא נגרר אחריו.</p>
                     </div>
@@ -2736,7 +2753,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 confusion-overlay"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10">
             <StoryHeader text="איפה רוב האנשים נתקעים" />
-            <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-center mt-8 md:mt-12">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-center mt-0">
               <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-[700px] rounded-3xl overflow-hidden shadow-2xl bg-brandGray/20 backdrop-blur-sm flex items-center justify-center">
                 <img 
                   src="/assets/about/whynoprogress.webp" 
@@ -3039,7 +3056,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 cta-overlay" aria-hidden="true"></div>
           <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center">
             <StoryHeader text="הצעד האחרון בדרך שלך" />
-            <div className="grid md:grid-cols-2 gap-6 items-center mt-2 md:mt-4">
+            <div className="grid md:grid-cols-2 gap-6 items-center mt-0">
               <div className="space-y-4 md:space-y-6">
                 <h2 className="text-2xl md:text-5xl lg:text-6xl font-black heading-font leading-tight">מוכן <br /> <span className="text-accent underline decoration-accent underline-offset-8">להתחיל?</span></h2>
                 <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed">השאר פרטים לבדיקת התאמה קצרה וללא התחייבות. נחזור אליך תוך 24 שעות.</p>
