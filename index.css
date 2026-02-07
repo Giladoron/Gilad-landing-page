@@ -15,13 +15,20 @@
     overscroll-behavior-y: contain;
   }
 
-  /* Section snap: only when primary input is fine (desktop). Touch/Android gets free scroll. */
-  @media (pointer: fine) {
+  /* Section snap: only for devices with hover + fine pointer (desktop). Touch/Android gets free scroll. */
+  @media (hover: hover) and (pointer: fine) {
     html {
       scroll-snap-type: y proximity;
     }
   }
-  
+
+  /* Force no scroll-snap on touch/coarse (Android, phones) to avoid magnet UX. */
+  @media (pointer: coarse) {
+    html {
+      scroll-snap-type: none;
+    }
+  }
+
   body {
     @apply bg-brandDark text-white font-sans;
     overflow-x: hidden;
