@@ -1447,7 +1447,7 @@ const isIOS = (): boolean => {
 // Simple testimonial video component with Vimeo Player API and custom floating mute/unmute button
 const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   const [isIOSDevice, setIsIOSDevice] = useState(false);
-  const [isMuted, setIsMuted] = useState(false); // Start unmuted
+  const [isMuted, setIsMuted] = useState(isIOS()); // On iOS, default muted so button matches actual state
   const [isPlaying, setIsPlaying] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false); // Track scroll state to prevent accidental interactions
@@ -1455,6 +1455,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<any>(null);
   const hasInitializedRef = useRef(false);
+  const volumeChangeHandlerRef = useRef<(() => Promise<void>) | null>(null);
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isVisibleRef = useRef(false); // Track visibility in ref to avoid stale closures
   const playTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -1496,6 +1497,35 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
             setIsPlaying(!paused);
             playerRef.current.on('play', () => setIsPlaying(true));
             playerRef.current.on('pause', () => setIsPlaying(false));
+
+            // Volume change listener to keep button in sync
+            const volumeChangeHandler = async () => {
+              try {
+                if (playerRef.current) {
+                  const muted = await playerRef.current.getMuted();
+                  setIsMuted(muted);
+                }
+              } catch (err) {
+                // Ignore errors
+              }
+            };
+            volumeChangeHandlerRef.current = volumeChangeHandler;
+            playerRef.current.on('volumechange', volumeChangeHandler);
+
+            // On iOS, re-sync mute state after delay (first getMuted can be wrong)
+            if (isIOS()) {
+              const iosSyncId = setTimeout(async () => {
+                try {
+                  if (playerRef.current) {
+                    const muted = await playerRef.current.getMuted();
+                    setIsMuted(muted);
+                  }
+                } catch (err) {
+                  // Ignore
+                }
+              }, 700);
+              timeoutIds.push(iosSyncId);
+            }
           } catch (err) {
             // Ignore errors if player not fully ready yet
           }
@@ -1538,6 +1568,13 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       if (iframe) {
         iframe.removeEventListener('load', handleLoad);
       }
+      if (playerRef.current && volumeChangeHandlerRef.current) {
+        try {
+          playerRef.current.off('volumechange', volumeChangeHandlerRef.current);
+        } catch (err) {
+          // Ignore cleanup errors
+        }
+      }
     };
   }, []);
 
@@ -1549,6 +1586,19 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       const currentMuted = await playerRef.current.getMuted();
       await playerRef.current.setMuted(!currentMuted);
       setIsMuted(!currentMuted);
+      // On iOS, re-sync after a short delay in case platform overrides
+      if (isIOS()) {
+        setTimeout(async () => {
+          try {
+            if (playerRef.current) {
+              const muted = await playerRef.current.getMuted();
+              setIsMuted(muted);
+            }
+          } catch (err) {
+            // Ignore
+          }
+        }, 150);
+      }
     } catch (err) {
       // Failed to toggle mute - non-critical, continue silently
     }
@@ -1758,7 +1808,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
 
 const VideoPlayer: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isMuted, setIsMuted] = useState(false); // Start unmuted
+  const [isMuted, setIsMuted] = useState(isIOS()); // On iOS, default muted so button matches actual state
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isIOSDevice, setIsIOSDevice] = useState(false);
@@ -1824,6 +1874,21 @@ const VideoPlayer: React.FC = () => {
 
             // Listen for volume changes
             playerRef.current.on('volumechange', volumeChangeHandler);
+
+            // On iOS, re-sync mute state after delay (first getMuted can be wrong)
+            if (isIOS()) {
+              const iosSyncId = setTimeout(async () => {
+                try {
+                  if (playerRef.current) {
+                    const muted = await playerRef.current.getMuted();
+                    setIsMuted(muted);
+                  }
+                } catch (err) {
+                  // Ignore
+                }
+              }, 700);
+              timeoutIds.push(iosSyncId);
+            }
 
             // Sync play/pause state and listen for changes
             const paused = await playerRef.current.getPaused();
@@ -1989,6 +2054,19 @@ const handleToggleMute = async () => {
     const currentMuted = await playerRef.current.getMuted();
     await playerRef.current.setMuted(!currentMuted);
     setIsMuted(!currentMuted);
+    // On iOS, re-sync after a short delay in case platform overrides
+    if (isIOS()) {
+      setTimeout(async () => {
+        try {
+          if (playerRef.current) {
+            const muted = await playerRef.current.getMuted();
+            setIsMuted(muted);
+          }
+        } catch (err) {
+          // Ignore
+        }
+      }, 150);
+    }
   } catch (err) {
     // Failed to toggle mute - non-critical, continue silently
   }
