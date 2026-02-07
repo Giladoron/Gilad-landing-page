@@ -25,6 +25,8 @@ import {
   Loader2,
   Volume2,
   VolumeX,
+  Play,
+  Pause,
   Instagram
 } from 'lucide-react';
 
@@ -566,7 +568,7 @@ const LEGAL_CONTENT = {
 
 // --- Modal Component ---
 
-const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, onClose }) => {
+const LegalModal: React.FC<{ type: ModalType; onClose: () => void; returnFocusRef?: React.RefObject<HTMLElement | null> }> = ({ type, onClose, returnFocusRef }) => {
   useEffect(() => {
     if (!type) {
       // Ensure scrolling is enabled when modal is closed
@@ -606,7 +608,12 @@ const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, 
           }
         }}
       />
-      <FocusTrap>
+      <FocusTrap
+        focusTrapOptions={{
+          returnFocusOnDeactivate: true,
+          returnFocus: () => (returnFocusRef?.current ?? false) as HTMLElement,
+        }}
+      >
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
           <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
             <h2 id="modal-title" className="text-2xl font-bold heading-font text-white">{title}</h2>
@@ -636,7 +643,7 @@ const LegalModal: React.FC<{ type: ModalType; onClose: () => void }> = ({ type, 
 };
 
 // --- Client Story Modal Component ---
-const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => void }> = ({ clientIndex, onClose }) => {
+const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => void; returnFocusRef?: React.RefObject<HTMLElement | null> }> = ({ clientIndex, onClose, returnFocusRef }) => {
   useEffect(() => {
     if (clientIndex === null) {
       document.body.style.overflow = '';
@@ -674,7 +681,12 @@ const ClientStoryModal: React.FC<{ clientIndex: number | null; onClose: () => vo
           }
         }}
       />
-      <FocusTrap>
+      <FocusTrap
+        focusTrapOptions={{
+          returnFocusOnDeactivate: true,
+          returnFocus: () => (returnFocusRef?.current ?? false) as HTMLElement,
+        }}
+      >
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 p-6 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
           <div className="flex justify-between items-center mb-6 sticky top-0 bg-brandGray/50 backdrop-blur-md py-2">
             <div>
@@ -775,7 +787,7 @@ const MobileProgressBar: React.FC<{ activeStageIndex: number }> = ({ activeStage
   const progress = ((activeStageIndex + 1) / STAGES.length) * 100;
 
   return (
-    <div className="mobile-progress-container" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+    <div className="mobile-progress-container" role="progressbar" aria-label="התקדמות בדף" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
       <div className="mobile-progress-fill" style={{ width: `${progress}%` }} />
     </div>
   );
@@ -969,6 +981,7 @@ const FloatingCTA: React.FC = () => {
 const ExitIntentPopup: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const hasShownRef = useRef(false);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     // Check if already shown in this session
@@ -1017,6 +1030,7 @@ const ExitIntentPopup: React.FC = () => {
       if (isMobile) return; // Explicitly disable for mobile
       if (e.clientY <= 0 && !hasShownRef.current && scrollDepth > 0.5) {
         hasShownRef.current = true;
+        returnFocusRef.current = document.activeElement as HTMLElement | null;
         setIsOpen(true);
         sessionStorage.setItem('exitIntentShown', 'true');
       }
@@ -1080,7 +1094,7 @@ const ExitIntentPopup: React.FC = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="exit-intent-title">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="exit-intent-title" aria-describedby="exit-intent-description">
       <button
         className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-default focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset"
         onClick={handleClose}
@@ -1092,7 +1106,12 @@ const ExitIntentPopup: React.FC = () => {
           }
         }}
       />
-      <FocusTrap>
+      <FocusTrap
+        focusTrapOptions={{
+          returnFocusOnDeactivate: true,
+          returnFocus: () => (returnFocusRef.current ?? false) as HTMLElement,
+        }}
+      >
         <div className="bg-brandGray/60 backdrop-blur-md border border-white/10 rounded-2xl w-full max-w-md relative z-10 p-6 md:p-8 shadow-2xl">
           <button
             onClick={handleClose}
@@ -1105,7 +1124,7 @@ const ExitIntentPopup: React.FC = () => {
             <h2 id="exit-intent-title" className="text-2xl md:text-3xl font-black heading-font text-white">
               רגע לפני שאתה עוזב...
             </h2>
-            <p className="text-gray-300 text-lg">
+            <p id="exit-intent-description" className="text-gray-300 text-lg">
               בוא נבדוק ביחד אם זה מתאים לך
             </p>
             <div className="flex flex-col gap-3">
@@ -1429,6 +1448,7 @@ const isIOS = (): boolean => {
 const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   const [isIOSDevice, setIsIOSDevice] = useState(false);
   const [isMuted, setIsMuted] = useState(false); // Start unmuted
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false); // Track scroll state to prevent accidental interactions
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -1467,11 +1487,15 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
           playerRef.current = new window.Vimeo.Player(iframeRef.current);
           hasInitializedRef.current = true;
 
-          // Check initial mute state
+          // Check initial mute state and play state
           try {
             await new Promise(resolve => setTimeout(resolve, 200));
             const initialMuted = await playerRef.current.getMuted();
             setIsMuted(initialMuted);
+            const paused = await playerRef.current.getPaused();
+            setIsPlaying(!paused);
+            playerRef.current.on('play', () => setIsPlaying(true));
+            playerRef.current.on('pause', () => setIsPlaying(false));
           } catch (err) {
             // Ignore errors if player not fully ready yet
           }
@@ -1527,6 +1551,21 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       setIsMuted(!currentMuted);
     } catch (err) {
       // Failed to toggle mute - non-critical, continue silently
+    }
+  };
+
+  // Toggle play/pause handler
+  const handleTogglePlay = async () => {
+    if (!playerRef.current) return;
+    try {
+      const paused = await playerRef.current.getPaused();
+      if (paused) {
+        await playerRef.current.play();
+      } else {
+        await playerRef.current.pause();
+      }
+    } catch (err) {
+      // Non-critical, continue silently
     }
   };
 
@@ -1675,6 +1714,24 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         loading="eager"
         title="תעודת לקוח - גיא, גיל 25, מספר על התוצאות שהשיג בליווי של גילעד דורון"
       />
+      {/* Play/Pause Button - centered, only when paused */}
+      {!isPlaying && (
+        <button
+          onClick={handleTogglePlay}
+          aria-label="נגן"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+          style={{
+            minWidth: '48px',
+            minHeight: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 30
+          }}
+        >
+          <Play size={24} aria-hidden="true" />
+        </button>
+      )}
       {/* Custom Mute/Unmute Button Overlay */}
       <button
         onClick={handleToggleMute}
@@ -1702,6 +1759,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
 const VideoPlayer: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMuted, setIsMuted] = useState(false); // Start unmuted
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isIOSDevice, setIsIOSDevice] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false); // Track scroll state to prevent accidental interactions
@@ -1766,6 +1824,12 @@ const VideoPlayer: React.FC = () => {
 
             // Listen for volume changes
             playerRef.current.on('volumechange', volumeChangeHandler);
+
+            // Sync play/pause state and listen for changes
+            const paused = await playerRef.current.getPaused();
+            setIsPlaying(!paused);
+            playerRef.current.on('play', () => setIsPlaying(true));
+            playerRef.current.on('pause', () => setIsPlaying(false));
 
             // Mark player as ready
             setIsPlayerReady(true);
@@ -1930,6 +1994,21 @@ const handleToggleMute = async () => {
   }
 };
 
+// Toggle play/pause handler
+const handleTogglePlay = async () => {
+  if (!playerRef.current) return;
+  try {
+    const paused = await playerRef.current.getPaused();
+    if (paused) {
+      await playerRef.current.play();
+    } else {
+      await playerRef.current.pause();
+    }
+  } catch (err) {
+    // Non-critical, continue silently
+  }
+};
+
 // Intersection Observer to detect when video section is visible
 useEffect(() => {
   if (!videoContainerRef.current) return;
@@ -2027,6 +2106,24 @@ return (
       }}
       aria-hidden="true"
     />
+    {/* Play/Pause Button - centered, only when paused */}
+    {!isPlaying && (
+      <button
+        onClick={handleTogglePlay}
+        aria-label="נגן"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+        style={{
+          minWidth: '48px',
+          minHeight: '48px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 30
+        }}
+      >
+        <Play size={24} aria-hidden="true" />
+      </button>
+    )}
     {/* Custom Mute/Unmute Button Overlay */}
     <button
       onClick={handleToggleMute}
@@ -2063,6 +2160,8 @@ export default function App() {
   const [selectedClientIndex, setSelectedClientIndex] = useState<number | null>(null);
   const [expandedStepIndex, setExpandedStepIndex] = useState<number | null>(null);
   const [expandedAboutSection, setExpandedAboutSection] = useState<number | null>(null);
+  const legalModalTriggerRef = useRef<HTMLElement | null>(null);
+  const clientStoryTriggerRef = useRef<HTMLElement | null>(null);
   const [hasExpandedAnyStep, setHasExpandedAnyStep] = useState(() => {
     // Check localStorage on mount
     if (typeof window !== 'undefined') {
@@ -2994,7 +3093,7 @@ export default function App() {
             <div className="text-center mb-4 md:mb-6">
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font leading-tight mb-4">שאלות נפוצות</h2>
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-                כל מה שרצית לדעת על הליווי, התהליך, והתשובות
+                כל מה שרצית לדעת על הליווי והתהליך
               </p>
             </div>
 
@@ -3097,16 +3196,16 @@ export default function App() {
 
           <p className="mb-4">כל הזכויות שמורות &copy; {new Date().getFullYear()} גילעד דורון | ליווי אונליין</p>
           <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-xs md:text-sm">
-            <button onClick={() => setModalType('accessibility')} className="hover:text-white hover:underline transition-all whitespace-nowrap">הצהרת נגישות</button>
-            <button onClick={() => setModalType('privacy')} className="hover:text-white hover:underline transition-all whitespace-nowrap">מדיניות פרטיות</button>
-            <button onClick={() => setModalType('terms')} className="hover:text-white hover:underline transition-all whitespace-nowrap">תקנון שימוש</button>
+            <button onClick={(e) => { legalModalTriggerRef.current = e.currentTarget; setModalType('accessibility'); }} className="hover:text-white hover:underline transition-all whitespace-nowrap">הצהרת נגישות</button>
+            <button onClick={(e) => { legalModalTriggerRef.current = e.currentTarget; setModalType('privacy'); }} className="hover:text-white hover:underline transition-all whitespace-nowrap">מדיניות פרטיות</button>
+            <button onClick={(e) => { legalModalTriggerRef.current = e.currentTarget; setModalType('terms'); }} className="hover:text-white hover:underline transition-all whitespace-nowrap">תקנון שימוש</button>
           </div>
         </div>
       </footer>
 
       {/* Modals */}
-      <LegalModal type={modalType} onClose={() => setModalType(null)} />
-      <ClientStoryModal clientIndex={selectedClientIndex} onClose={closeClientStory} />
+      <LegalModal type={modalType} onClose={() => setModalType(null)} returnFocusRef={legalModalTriggerRef} />
+      <ClientStoryModal clientIndex={selectedClientIndex} onClose={closeClientStory} returnFocusRef={clientStoryTriggerRef} />
       <ExitIntentPopup />
 
       <WhatsAppButton />

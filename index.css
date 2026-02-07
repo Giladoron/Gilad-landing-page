@@ -7,12 +7,19 @@
     scroll-behavior: smooth;
     overflow-x: hidden;
     scroll-padding-top: 0; 
-    /* Snap strictness - Relaxed to proximity for better UX */
-    scroll-snap-type: y proximity;
+    /* Snap only for mouse/trackpad (pointer: fine); disabled on touch to avoid Android "magnet" UX */
+    scroll-snap-type: none;
     height: 100%;
     /* Optimize scrolling performance */
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
+  }
+
+  /* Section snap: only when primary input is fine (desktop). Touch/Android gets free scroll. */
+  @media (pointer: fine) {
+    html {
+      scroll-snap-type: y proximity;
+    }
   }
   
   body {
@@ -143,6 +150,13 @@
   .embla__slide {
     flex: 0 0 auto;
     min-width: 0;
+  }
+
+  /* Carousel: respect prefers-reduced-motion (no scale/opacity transition) */
+  @media (prefers-reduced-motion: reduce) {
+    .embla__slide {
+      transition: none !important;
+    }
   }
 
   /* Safe Area Utilities for iPhone Notch/Home Bar */
