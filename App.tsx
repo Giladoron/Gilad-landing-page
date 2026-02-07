@@ -2771,7 +2771,7 @@ export default function App() {
                             }`}
                           aria-live={isExpanded ? "polite" : "off"}
                         >
-                          <div className="px-3 pb-3 pt-0 text-gray-300 text-sm leading-loose space-y-3">
+                          <div className="px-3 pb-3 pt-3 text-gray-300 text-sm leading-loose space-y-3">
                             {section.content.map((item, pIdx) => {
                               const c = item as { className?: string; style?: React.CSSProperties };
                               return item.isAnchor ? (
@@ -3127,7 +3127,7 @@ export default function App() {
                         }`}
                       aria-live={isExpanded ? "polite" : "off"}
                     >
-                      <div className="px-4 md:px-6 pb-4 md:pb-6 pt-0 text-gray-300">
+                      <div className="px-4 md:px-6 pb-4 md:pb-6 pt-3 md:pt-4 text-gray-300">
                         {typeof item.answer === 'string' ? (
                           <p>{item.answer}</p>
                         ) : (
