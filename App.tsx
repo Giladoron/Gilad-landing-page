@@ -2338,18 +2338,30 @@ export default function App() {
     let stageUpdateTimeout: NodeJS.Timeout | null = null;
     const DEBOUNCE_DELAY = 75; // ms
 
-    // On touch/Android: only update active section when scroll has been idle (avoids jump during momentum)
+    // Option C (touch/Android): momentum state machine — skip active-section updates until scroll idle after release
     const isCoarsePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
     const SCROLL_IDLE_MS = 350;
+    const MOMENTUM_IDLE_MS = 250;
+    const inMomentumRef = { current: false };
     let lastScrollTime = Date.now();
     let scrollTick: ReturnType<typeof requestAnimationFrame> | null = null;
     let scrollIdleApplyTimeout: ReturnType<typeof setTimeout> | null = null;
+    let momentumEndTimeout: ReturnType<typeof setTimeout> | null = null;
+
     const updateScrollTime = () => {
       lastScrollTime = Date.now();
     };
     const handleScrollForIdle = () => {
       if (scrollTick !== null) cancelAnimationFrame(scrollTick);
       scrollTick = requestAnimationFrame(updateScrollTime);
+      if (momentumEndTimeout) clearTimeout(momentumEndTimeout);
+      momentumEndTimeout = setTimeout(() => {
+        momentumEndTimeout = null;
+        inMomentumRef.current = false;
+      }, MOMENTUM_IDLE_MS);
+    };
+    const handleTouchEnd = () => {
+      inMomentumRef.current = true;
     };
 
     const stageObserver = new IntersectionObserver((entries) => {
@@ -2382,7 +2394,25 @@ export default function App() {
       stageUpdateTimeout = setTimeout(() => {
         const stageId = mostVisibleElement?.getAttribute('data-stage') ?? null;
 
-        // On touch: skip updates during momentum so DOM/state changes don't trigger scroll correction
+        // Option C: on touch, skip active-section updates during momentum (from touchend until scroll idle 250ms)
+        if (isCoarsePointer && inMomentumRef.current) {
+          stageUpdateTimeout = null;
+          if (scrollIdleApplyTimeout) clearTimeout(scrollIdleApplyTimeout);
+          scrollIdleApplyTimeout = setTimeout(() => {
+            scrollIdleApplyTimeout = null;
+            if (mostVisibleElement) {
+              const sid = mostVisibleElement.getAttribute('data-stage');
+              if (sid) {
+                setActiveStage(sid);
+                snapElements.forEach(s => s.classList.remove('active-section'));
+                mostVisibleElement.classList.add('active-section');
+                if (sid === 'guarantee') mostVisibleElement.classList.add('guarantee-revealed');
+              }
+            }
+          }, SCROLL_IDLE_MS);
+          return;
+        }
+        // Also skip if last scroll was very recent (backup for timing edge cases)
         if (isCoarsePointer && (Date.now() - lastScrollTime) < SCROLL_IDLE_MS) {
           stageUpdateTimeout = null;
           if (scrollIdleApplyTimeout) clearTimeout(scrollIdleApplyTimeout);
@@ -2418,6 +2448,7 @@ export default function App() {
     if (isCoarsePointer) {
       window.addEventListener('scroll', handleScrollForIdle, { passive: true });
       window.addEventListener('touchmove', handleScrollForIdle, { passive: true });
+      document.addEventListener('touchend', handleTouchEnd, { passive: true });
     }
 
     // Observe all snap elements (using cached reference)
@@ -2451,8 +2482,10 @@ export default function App() {
       if (isCoarsePointer) {
         window.removeEventListener('scroll', handleScrollForIdle);
         window.removeEventListener('touchmove', handleScrollForIdle);
+        document.removeEventListener('touchend', handleTouchEnd);
         if (scrollTick !== null) cancelAnimationFrame(scrollTick);
         if (scrollIdleApplyTimeout) clearTimeout(scrollIdleApplyTimeout);
+        if (momentumEndTimeout) clearTimeout(momentumEndTimeout);
       }
       stageObserver.disconnect();
       if (stageUpdateTimeout) {
