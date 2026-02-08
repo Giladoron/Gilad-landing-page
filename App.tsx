@@ -1591,17 +1591,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
             setIsPlaying(!paused);
             playerRef.current.on('play', () => setIsPlaying(true));
             playerRef.current.on('pause', () => setIsPlaying(false));
-            if (isPerfMode()) {
-              playerRef.current.on('playing', () => {
-                performance.mark('playback-started-testimonial');
-                try {
-                  performance.measure('testimonial-tap-to-playing', 'user-play-testimonial', 'playback-started-testimonial');
-                  const m = performance.getEntriesByName('testimonial-tap-to-playing', 'measure')[0];
-                  if (m) videoPerfPush(`[Testimonial] tap_play→playing: ${Math.round(m.duration)}ms`);
-                } catch (_) {}
-                videoPerfPush('[Testimonial] playback_started');
-              });
-            }
 
             // Volume change listener to keep button in sync
             const volumeChangeHandler = async () => {
@@ -1727,10 +1716,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   // Toggle play/pause handler. On iOS, unmute then play in same gesture so first tap plays with sound.
   const handleTogglePlay = async () => {
     if (!playerRef.current) return;
-    if (isPerfMode()) {
-      performance.mark('user-play-testimonial');
-      videoPerfPush('[Testimonial] user tapped play');
-    }
     try {
       const paused = await playerRef.current.getPaused();
       if (paused) {
@@ -2023,17 +2008,6 @@ const VideoPlayer: React.FC = () => {
             setIsPlaying(!paused);
             playerRef.current.on('play', () => setIsPlaying(true));
             playerRef.current.on('pause', () => setIsPlaying(false));
-            if (isPerfMode()) {
-              playerRef.current.on('playing', () => {
-                performance.mark('playback-started-about');
-                try {
-                  performance.measure('about-tap-to-playing', 'user-play-about', 'playback-started-about');
-                  const m = performance.getEntriesByName('about-tap-to-playing', 'measure')[0];
-                  if (m) videoPerfPush(`[About] tap_play→playing: ${Math.round(m.duration)}ms`);
-                } catch (_) {}
-                videoPerfPush('[About] playback_started');
-              });
-            }
 
             // Mark player as ready
             setIsPlayerReady(true);
@@ -2237,10 +2211,6 @@ const handleToggleMute = async () => {
 // Toggle play/pause handler. On iOS, unmute then play in same gesture so first tap plays with sound.
 const handleTogglePlay = async () => {
   if (!playerRef.current) return;
-  if (isPerfMode()) {
-    performance.mark('user-play-about');
-    videoPerfPush('[About] user tapped play');
-  }
   try {
     const paused = await playerRef.current.getPaused();
     if (paused) {
