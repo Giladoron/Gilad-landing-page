@@ -1435,93 +1435,6 @@ const isIOS = (): boolean => {
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 };
 
-// --- Performance Debug Mode (?perf=1) — temporary, remove after diagnosis ---
-const isPerfMode = (): boolean =>
-  typeof window !== 'undefined' && window.location.search.includes('perf=1');
-
-type VideoPerfLine = { t: number; text: string };
-const videoPerfLines: VideoPerfLine[] = [];
-const videoPerfListeners = new Set<() => void>();
-const videoPerfPush = (text: string) => {
-  videoPerfLines.push({ t: Date.now(), text });
-  videoPerfListeners.forEach((cb) => cb());
-};
-const videoPerfSubscribe = (cb: () => void) => {
-  videoPerfListeners.add(cb);
-  return () => videoPerfListeners.delete(cb);
-};
-const videoPerfGetLines = () => videoPerfLines.slice();
-
-function videoPerfCaptureNetwork(label: string): void {
-  try {
-    const conn = (navigator as { connection?: { effectiveType?: string; downlink?: number; rtt?: number } }).connection;
-    if (conn) {
-      videoPerfPush(`${label} connection: ${conn.effectiveType ?? '?'} downlink=${conn.downlink ?? '?'} rtt=${conn.rtt ?? '?'}`);
-    } else {
-      videoPerfPush(`${label} connection: unsupported`);
-    }
-    const resources = performance.getEntriesByType('resource').filter((e) => e.name.includes('vimeo'));
-    resources
-      .sort((a, b) => (b.duration || 0) - (a.duration || 0))
-      .slice(0, 10)
-      .forEach((e) => {
-        const url = e.name.replace(/^https?:\/\//, '').slice(0, 50);
-        const size = e.transferSize != null ? `${Math.round(e.transferSize / 1024)}KB` : '?';
-        videoPerfPush(`${label} res: ${url} ${Math.round(e.duration)}ms ${size}`);
-      });
-  } catch (_) {}
-}
-
-const VideoPerfDebug: React.FC = () => {
-  const [lines, setLines] = useState<VideoPerfLine[]>([]);
-  useEffect(() => {
-    setLines(videoPerfGetLines());
-    return videoPerfSubscribe(() => setLines(videoPerfGetLines()));
-  }, []);
-  const copyToClipboard = () => {
-    const text = lines.map((l) => `[${l.t}] ${l.text}`).join('\n');
-    void navigator.clipboard?.writeText(text);
-  };
-  if (!isPerfMode()) return null;
-  return (
-    <div
-      aria-label="Video performance debug"
-      style={{
-        position: 'fixed',
-        bottom: 8,
-        right: 8,
-        left: 8,
-        maxHeight: '40vh',
-        overflow: 'auto',
-        zIndex: 99999,
-        background: 'rgba(0,0,0,0.85)',
-        color: '#0f0',
-        fontFamily: 'monospace',
-        fontSize: 10,
-        padding: 8,
-        borderRadius: 4,
-        border: '1px solid #333',
-        direction: 'ltr',
-        textAlign: 'left'
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-        <strong>VideoPerf ?perf=1</strong>
-        <button
-          type="button"
-          onClick={copyToClipboard}
-          style={{ background: '#333', color: '#fff', border: 'none', padding: '2px 6px', borderRadius: 4, fontSize: 10 }}
-        >
-          Copy
-        </button>
-      </div>
-      {lines.map((l, i) => (
-        <div key={i}>{l.text}</div>
-      ))}
-    </div>
-  );
-};
-
 // Simple testimonial video component with Vimeo Player API and custom floating mute/unmute button
 const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   const [isIOSDevice, setIsIOSDevice] = useState(false);
@@ -1544,15 +1457,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
     setIsIOSDevice(isIOS());
   }, []);
 
-  // Performance debug: remount detection (?perf=1)
-  useEffect(() => {
-    if (!isPerfMode()) return;
-    videoPerfPush('[Testimonial] mounted');
-    return () => {
-      videoPerfPush('[Testimonial] unmounted');
-    };
-  }, []);
-
   // Sync refs when state changes
   useEffect(() => {
     isVisibleRef.current = isVisible;
@@ -1564,11 +1468,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
   // Initialize Vimeo Player when iframe loads (similar to VideoPlayer)
   useEffect(() => {
     if (!iframeRef.current || hasInitializedRef.current) return;
-
-    if (isPerfMode()) {
-      performance.mark('video-mounted-testimonial');
-      videoPerfPush('[Testimonial] video-mounted');
-    }
 
     let retryCount = 0;
     const maxRetries = 50; // 5 seconds max wait
@@ -1609,17 +1508,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
             // Ignore errors if player not fully ready yet
           }
 
-          // Performance debug: player ready
-          if (isPerfMode()) {
-            performance.mark('player-ready-testimonial');
-            try {
-              performance.measure('testimonial-iframe-to-ready', 'iframe-load-testimonial', 'player-ready-testimonial');
-              const m = performance.getEntriesByName('testimonial-iframe-to-ready', 'measure')[0];
-              if (m) videoPerfPush(`[Testimonial] iframe_load→player_ready: ${Math.round(m.duration)}ms`);
-            } catch (_) {}
-            videoPerfPush('[Testimonial] player_ready');
-          }
-
           // Note: Testimonial video does NOT autoplay - user must click play button
 
           // Clear all timeouts once initialized
@@ -1638,16 +1526,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
     // Wait for iframe to load first
     const iframe = iframeRef.current;
     const handleLoad = () => {
-      if (isPerfMode()) {
-        performance.mark('iframe-load-testimonial');
-        try {
-          performance.measure('testimonial-mounted-to-iframe-load', 'video-mounted-testimonial', 'iframe-load-testimonial');
-          const m = performance.getEntriesByName('testimonial-mounted-to-iframe-load', 'measure')[0];
-          if (m) videoPerfPush(`[Testimonial] mounted→iframe_load: ${Math.round(m.duration)}ms`);
-        } catch (_) {}
-        videoPerfPush('[Testimonial] iframe_load');
-        videoPerfCaptureNetwork('Testimonial');
-      }
       // Small delay to ensure Vimeo player is ready
       const id = setTimeout(initPlayer, 300);
       timeoutIds.push(id);
@@ -1662,15 +1540,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       }
     }, 500);
     timeoutIds.push(initialTimeoutId);
-
-    // Performance debug: 5s fallback network capture if iframe load never fires
-    if (isPerfMode()) {
-      const networkFallbackId = setTimeout(() => {
-        videoPerfPush('[Testimonial] network (5s fallback)');
-        videoPerfCaptureNetwork('Testimonial-5s');
-      }, 5000);
-      timeoutIds.push(networkFallbackId);
-    }
 
     return () => {
       timeoutIds.forEach(id => clearTimeout(id));
@@ -1854,7 +1723,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
       <iframe
         ref={iframeRef}
         src={vimeoUrl}
-        className="w-full h-full absolute inset-0 block"
+        className="w-full h-full absolute inset-0"
         style={{
           border: 'none',
           width: '100%',
@@ -1865,9 +1734,8 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
           top: 0,
           left: 0,
           bottom: 0,
-          display: 'block',
-          pointerEvents: isScrolling ? 'none' : 'auto',
-          zIndex: 1
+          pointerEvents: isScrolling ? 'none' : 'auto', // Disable interactions during scroll to prevent 2x speed issue
+          zIndex: 1 // Ensure iframe is above container but below button
         }}
         frameBorder="0"
         allow="autoplay; fullscreen; picture-in-picture"
@@ -1941,15 +1809,6 @@ const VideoPlayer: React.FC = () => {
     setIsIOSDevice(isIOS());
   }, []);
 
-  // Performance debug: remount detection (?perf=1)
-  useEffect(() => {
-    if (!isPerfMode()) return;
-    videoPerfPush('[About] mounted');
-    return () => {
-      videoPerfPush('[About] unmounted');
-    };
-  }, []);
-
   // Vimeo embed URL - single URL that won't change
   // Added playsinline and responsive for better mobile support
   const baseUrl = "https://player.vimeo.com/video/1152174898?context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&h=6e172adfe8&s=e8675d0eb6c47f57274868162088cbf80f997c1c_1767884558";
@@ -1958,11 +1817,6 @@ const VideoPlayer: React.FC = () => {
   // Initialize Vimeo Player when iframe loads
   useEffect(() => {
     if (!iframeRef.current || hasInitializedRef.current) return;
-
-    if (isPerfMode()) {
-      performance.mark('video-mounted-about');
-      videoPerfPush('[About] video-mounted');
-    }
 
     let retryCount = 0;
     const maxRetries = 50; // 5 seconds max wait
@@ -2012,17 +1866,6 @@ const VideoPlayer: React.FC = () => {
             // Mark player as ready
             setIsPlayerReady(true);
 
-            // Performance debug: player ready
-            if (isPerfMode()) {
-              performance.mark('player-ready-about');
-              try {
-                performance.measure('about-iframe-to-ready', 'iframe-load-about', 'player-ready-about');
-                const m = performance.getEntriesByName('about-iframe-to-ready', 'measure')[0];
-                if (m) videoPerfPush(`[About] iframe_load→player_ready: ${Math.round(m.duration)}ms`);
-              } catch (_) {}
-              videoPerfPush('[About] player_ready');
-            }
-
             // If section is already visible when player initializes, sync mute state (non-iOS only; iOS keeps default until first play)
             if (isVisibleRef.current && !isIOS()) {
               setTimeout(async () => {
@@ -2059,16 +1902,6 @@ const VideoPlayer: React.FC = () => {
     // Wait for iframe to load first
     const iframe = iframeRef.current;
     const handleLoad = () => {
-      if (isPerfMode()) {
-        performance.mark('iframe-load-about');
-        try {
-          performance.measure('about-mounted-to-iframe-load', 'video-mounted-about', 'iframe-load-about');
-          const m = performance.getEntriesByName('about-mounted-to-iframe-load', 'measure')[0];
-          if (m) videoPerfPush(`[About] mounted→iframe_load: ${Math.round(m.duration)}ms`);
-        } catch (_) {}
-        videoPerfPush('[About] iframe_load');
-        videoPerfCaptureNetwork('About');
-      }
       // Small delay to ensure Vimeo player is ready
       const id = setTimeout(initPlayer, 300);
       timeoutIds.push(id);
@@ -2083,15 +1916,6 @@ const VideoPlayer: React.FC = () => {
       }
     }, 1000);
     timeoutIds.push(initialTimeoutId);
-
-    // Performance debug: 5s fallback network capture if iframe load never fires
-    if (isPerfMode()) {
-      const networkFallbackId = setTimeout(() => {
-        videoPerfPush('[About] network (5s fallback)');
-        videoPerfCaptureNetwork('About-5s');
-      }, 5000);
-      timeoutIds.push(networkFallbackId);
-    }
 
     return () => {
       timeoutIds.forEach(id => clearTimeout(id));
@@ -2274,7 +2098,7 @@ return (
     <iframe
       ref={iframeRef}
       src={vimeoUrl}
-      className="w-full h-full absolute inset-0 block"
+      className="w-full h-full absolute inset-0"
       style={{
         border: 'none',
         width: '100%',
@@ -2285,9 +2109,8 @@ return (
         top: 0,
         left: 0,
         bottom: 0,
-        display: 'block',
-        pointerEvents: isScrolling ? 'none' : 'auto',
-        zIndex: 1
+        pointerEvents: isScrolling ? 'none' : 'auto', // Disable interactions during scroll to prevent 2x speed issue
+        zIndex: 1 // Ensure iframe is above container but below button
       }}
       frameBorder="0"
       allow="autoplay; fullscreen; picture-in-picture"
@@ -2671,25 +2494,8 @@ export default function App() {
     };
   }, []);
 
-  // Performance debug: page-start and first-render marks when ?perf=1
-  useEffect(() => {
-    if (!isPerfMode()) return;
-    performance.mark('page-start');
-    videoPerfPush('page-start marked');
-    const raf = requestAnimationFrame(() => {
-      performance.mark('first-render');
-      try {
-        performance.measure('page-to-first-render', 'page-start', 'first-render');
-        const m = performance.getEntriesByName('page-to-first-render', 'measure')[0];
-        if (m) videoPerfPush(`page→first-render: ${Math.round(m.duration)}ms`);
-      } catch (_) {}
-    });
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
   return (
     <div className="min-h-screen selection:bg-accent selection:text-white">
-      {isPerfMode() && <VideoPerfDebug />}
       <div className="global-parallax-bg" aria-hidden="true" />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[9999] focus:bg-accent focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-brandDark">
         דלג לתוכן הראשי
@@ -2980,17 +2786,17 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Video - Second on mobile, primary on desktop. Stable dimensions (no dvh) to prevent Android layout shift on scroll. */}
+              {/* Video - Second on mobile, primary on desktop */}
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
+                {/* Video container with floating shadow */}
                 <div
                   className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
                   style={{
-                    aspectRatio: '9/16',
-                    maxHeight: '600px', // px only: avoids viewport-dependent resize on Android (no dvh)
+                    aspectRatio: '9/16', // Match actual video format (portrait)
+                    maxHeight: isIOS() ? '85dvh' : '75dvh', // More space for controls on iOS
                     minHeight: '400px',
                     maxWidth: '100%',
                     margin: '0 auto',
-                    contain: 'layout paint',
                     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 107, 53, 0.15)'
                   }}
                 >
@@ -3135,16 +2941,15 @@ export default function App() {
                 </div>
               </div>
               <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
-                {/* Video container: stable dimensions (no dvh) to prevent Android layout shift on scroll. */}
+                {/* Video container with floating shadow */}
                 <div
                   className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
                   style={{
-                    aspectRatio: '9/16',
-                    maxHeight: '600px', // px only: avoids viewport-dependent resize on Android (no dvh)
+                    aspectRatio: '9/16', // Match actual video format (portrait)
+                    maxHeight: isIOS() ? '90dvh' : '75dvh', // Even more space for controls on iOS
                     minHeight: '400px',
                     maxWidth: '100%',
                     margin: '0 auto',
-                    contain: 'layout paint',
                     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 107, 53, 0.15)'
                   }}
                 >
