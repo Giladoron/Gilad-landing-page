@@ -36,7 +36,7 @@ Deploy runs via **GitHub Actions** on push to `main`. The workflow needs these *
 | `VITE_RECIPIENT_EMAIL` | No | Your email | Default in code: `gilad042@gmail.com`. Add only to override. |
 | `GEMINI_API_KEY` | No | — | Referenced in workflow but not used by the app. Can leave unset. |
 
-**Minimum for deploy:** add **`VITE_EMAILJS_PUBLIC_KEY`**; the rest are optional (code has defaults).
+**Minimum for deploy:** add **`VITE_EMAILJS_PUBLIC_KEY`**; the rest are optional (code has defaults). The app implements these defaults for service ID, template ID, and recipient email, so only the public key is required.
 
 ### 1.4 Turn on GitHub Pages
 

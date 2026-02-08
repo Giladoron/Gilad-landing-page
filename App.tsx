@@ -68,16 +68,14 @@ declare global {
 }
 
 // --- EmailJS Configuration ---
-// Load from environment variables only (no hardcoded fallbacks for security)
-const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-if (!EMAILJS_SERVICE_ID) console.error('VITE_EMAILJS_SERVICE_ID is required');
-const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-if (!EMAILJS_TEMPLATE_ID) console.error('VITE_EMAILJS_TEMPLATE_ID is required');
+// Only PUBLIC_KEY is required (no fallback for security). Others have in-code defaults.
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_fphe5xu';
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_8p1hgtg';
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 if (!EMAILJS_PUBLIC_KEY) {
   console.error('VITE_EMAILJS_PUBLIC_KEY environment variable is required');
 }
-const RECIPIENT_EMAIL = import.meta.env.VITE_RECIPIENT_EMAIL;
+const RECIPIENT_EMAIL = import.meta.env.VITE_RECIPIENT_EMAIL || 'gilad042@gmail.com';
 
 // --- Constants ---
 
@@ -1203,11 +1201,6 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
 
       // Check if EmailJS public key is configured
       if (!EMAILJS_PUBLIC_KEY) {
-        throw new Error('תצורת EmailJS חסרה. אנא פנה לתמיכה.');
-      }
-
-      if (!RECIPIENT_EMAIL) {
-        console.error('VITE_RECIPIENT_EMAIL is required');
         throw new Error('תצורת EmailJS חסרה. אנא פנה לתמיכה.');
       }
 
