@@ -2339,6 +2339,20 @@ export default function App() {
     let stageUpdateTimeout: NodeJS.Timeout | null = null;
     const DEBOUNCE_DELAY = 75; // ms
 
+    // On touch/Android: only update active section when scroll has been idle (avoids jump during momentum)
+    const isCoarsePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+    const SCROLL_IDLE_MS = 350;
+    let lastScrollTime = Date.now();
+    let scrollTick: ReturnType<typeof requestAnimationFrame> | null = null;
+    let scrollIdleApplyTimeout: ReturnType<typeof setTimeout> | null = null;
+    const updateScrollTime = () => {
+      lastScrollTime = Date.now();
+    };
+    const handleScrollForIdle = () => {
+      if (scrollTick !== null) cancelAnimationFrame(scrollTick);
+      scrollTick = requestAnimationFrame(updateScrollTime);
+    };
+
     const stageObserver = new IntersectionObserver((entries) => {
       // Update the ratios map with current intersection data
       entries.forEach(entry => {
@@ -2367,6 +2381,24 @@ export default function App() {
 
       // Debounce state updates and DOM manipulation
       stageUpdateTimeout = setTimeout(() => {
+        // On touch: skip updates during momentum so DOM/state changes don't trigger scroll correction
+        if (isCoarsePointer && (Date.now() - lastScrollTime) < SCROLL_IDLE_MS) {
+          stageUpdateTimeout = null;
+          if (scrollIdleApplyTimeout) clearTimeout(scrollIdleApplyTimeout);
+          scrollIdleApplyTimeout = setTimeout(() => {
+            scrollIdleApplyTimeout = null;
+            if (mostVisibleElement) {
+              const stageId = mostVisibleElement.getAttribute('data-stage');
+              if (stageId) {
+                setActiveStage(stageId);
+                snapElements.forEach(s => s.classList.remove('active-section'));
+                mostVisibleElement.classList.add('active-section');
+                if (stageId === 'guarantee') mostVisibleElement.classList.add('guarantee-revealed');
+              }
+            }
+          }, SCROLL_IDLE_MS);
+          return;
+        }
         // Only update if we found a visible section
         if (mostVisibleElement) {
           const stageId = mostVisibleElement.getAttribute('data-stage');
@@ -2381,8 +2413,14 @@ export default function App() {
             }
           }
         }
+        stageUpdateTimeout = null;
       }, DEBOUNCE_DELAY);
     }, stageOptions);
+
+    if (isCoarsePointer) {
+      window.addEventListener('scroll', handleScrollForIdle, { passive: true });
+      window.addEventListener('touchmove', handleScrollForIdle, { passive: true });
+    }
 
     // Observe all snap elements (using cached reference)
     snapElements.forEach((el) => stageObserver.observe(el));
@@ -2412,6 +2450,12 @@ export default function App() {
     }
 
     return () => {
+      if (isCoarsePointer) {
+        window.removeEventListener('scroll', handleScrollForIdle);
+        window.removeEventListener('touchmove', handleScrollForIdle);
+        if (scrollTick !== null) cancelAnimationFrame(scrollTick);
+        if (scrollIdleApplyTimeout) clearTimeout(scrollIdleApplyTimeout);
+      }
       stageObserver.disconnect();
       if (stageUpdateTimeout) {
         clearTimeout(stageUpdateTimeout);

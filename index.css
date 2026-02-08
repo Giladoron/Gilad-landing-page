@@ -192,12 +192,21 @@
 .stage {
   @apply relative w-full flex flex-col;
   /* Relaxed constraint */
-  min-height: 100dvh; 
-  scroll-snap-align: start;
+  min-height: 100dvh;
+  /* No scroll-snap by default: touch/Android gets free scroll (avoids momentum jump). */
+  scroll-snap-align: none;
   scroll-snap-stop: normal;
   /* Flex centering to maintain vertical balance */
   justify-content: center;
   /* overflow: hidden; - Removed to allow natural content overflow */
+}
+
+/* Section snap points only for desktop (fine pointer). Prevents Android "teleport" after finger release. */
+@media (hover: hover) and (pointer: fine) {
+  .stage {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
 }
 
 /* DEBUG MODE: Uncomment to visually verify grade layer is applied */
