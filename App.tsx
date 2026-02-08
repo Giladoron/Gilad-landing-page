@@ -314,8 +314,7 @@ const FAQ_ITEMS: FAQItem[] = [
     question: 'בוא נדבר תכלס: אתם באמת מבטיחים תוצאות?',
     answer: (
       <div className="space-y-2 text-gray-300">
-        <p>כן. ב-100%. אם יישמת את התוכנית ולא הגעת למה שסיכמנו – אני ממשיך ללוות אותך בחינם עד שזה קורה, או שאתה מקבל החזר כספי מלא.</p>
-        <p>האחריות על התוצאה היא עלי, לא רק עליך.</p>
+        <p>כן. אם יישמת את התוכנית ולא הגעת למה שסיכמנו – אני ממשיך ללוות אותך בחינם עד שזה קורה, או שאתה מקבל החזר כספי מלא.</p>
       </div>
     )
   },
@@ -1485,7 +1484,9 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
           try {
             await new Promise(resolve => setTimeout(resolve, 200));
             const initialMuted = await playerRef.current.getMuted();
-            setIsMuted(initialMuted);
+            if (!isIOS()) {
+              setIsMuted(initialMuted);
+            }
             const paused = await playerRef.current.getPaused();
             setIsPlaying(!paused);
             playerRef.current.on('play', () => setIsPlaying(true));
@@ -1504,21 +1505,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
             };
             volumeChangeHandlerRef.current = volumeChangeHandler;
             playerRef.current.on('volumechange', volumeChangeHandler);
-
-            // On iOS, re-sync mute state after delay (first getMuted can be wrong)
-            if (isIOS()) {
-              const iosSyncId = setTimeout(async () => {
-                try {
-                  if (playerRef.current) {
-                    const muted = await playerRef.current.getMuted();
-                    setIsMuted(muted);
-                  }
-                } catch (err) {
-                  // Ignore
-                }
-              }, 700);
-              timeoutIds.push(iosSyncId);
-            }
           } catch (err) {
             // Ignore errors if player not fully ready yet
           }
@@ -1597,12 +1583,14 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
     }
   };
 
-  // Toggle play/pause handler
+  // Toggle play/pause handler. On iOS, unmute then play in same gesture so first tap plays with sound.
   const handleTogglePlay = async () => {
     if (!playerRef.current) return;
     try {
       const paused = await playerRef.current.getPaused();
       if (paused) {
+        await playerRef.current.setMuted(false);
+        setIsMuted(false);
         await playerRef.current.play();
       } else {
         await playerRef.current.pause();
@@ -1846,9 +1834,11 @@ const VideoPlayer: React.FC = () => {
             // Wait a bit for player to be fully ready
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            // Check initial mute state
+            // Check initial mute state (on iOS keep default so we don't show unmuted before first play)
             const initialMuted = await playerRef.current.getMuted();
-            setIsMuted(initialMuted);
+            if (!isIOS()) {
+              setIsMuted(initialMuted);
+            }
 
             // Create handler function for volume changes
             const volumeChangeHandler = async () => {
@@ -1868,21 +1858,6 @@ const VideoPlayer: React.FC = () => {
             // Listen for volume changes
             playerRef.current.on('volumechange', volumeChangeHandler);
 
-            // On iOS, re-sync mute state after delay (first getMuted can be wrong)
-            if (isIOS()) {
-              const iosSyncId = setTimeout(async () => {
-                try {
-                  if (playerRef.current) {
-                    const muted = await playerRef.current.getMuted();
-                    setIsMuted(muted);
-                  }
-                } catch (err) {
-                  // Ignore
-                }
-              }, 700);
-              timeoutIds.push(iosSyncId);
-            }
-
             // Sync play/pause state and listen for changes
             const paused = await playerRef.current.getPaused();
             setIsPlaying(!paused);
@@ -1892,20 +1867,13 @@ const VideoPlayer: React.FC = () => {
             // Mark player as ready
             setIsPlayerReady(true);
 
-            // If section is already visible when player initializes, start playing
-            // If section is already visible when player initializes, DO NOT start playing automatically (accessibility)
-            // But we can still update mute state
-            if (isVisibleRef.current) {
+            // If section is already visible when player initializes, sync mute state (non-iOS only; iOS keeps default until first play)
+            if (isVisibleRef.current && !isIOS()) {
               setTimeout(async () => {
                 try {
                   if (playerRef.current && isVisibleRef.current) {
-                    // Get initial mute state from player
-                    try {
-                      const muted = await playerRef.current.getMuted();
-                      setIsMuted(muted);
-                    } catch (err) {
-                      // Ignore
-                    }
+                    const muted = await playerRef.current.getMuted();
+                    setIsMuted(muted);
                   }
                 } catch (err) {
                   // Ignore
@@ -2065,12 +2033,14 @@ const handleToggleMute = async () => {
   }
 };
 
-// Toggle play/pause handler
+// Toggle play/pause handler. On iOS, unmute then play in same gesture so first tap plays with sound.
 const handleTogglePlay = async () => {
   if (!playerRef.current) return;
   try {
     const paused = await playerRef.current.getPaused();
     if (paused) {
+      await playerRef.current.setMuted(false);
+      setIsMuted(false);
       await playerRef.current.play();
     } else {
       await playerRef.current.pause();
