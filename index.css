@@ -209,6 +209,22 @@
   }
 }
 
+/* Android/touch: force scroll-snap off (Option A fix for momentum jump). Desktop keeps snap via (pointer: fine). */
+@media (pointer: coarse) {
+  html,
+  body {
+    scroll-snap-type: none !important;
+  }
+  .stage {
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
+  }
+  main,
+  #root {
+    scroll-snap-type: none !important;
+  }
+}
+
 /* DEBUG MODE: Uncomment to visually verify grade layer is applied */
 /* .stage::before {
   background: var(--grade-tint-debug, rgba(0, 255, 0, 0.35)) !important;

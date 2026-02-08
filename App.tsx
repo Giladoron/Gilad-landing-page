@@ -29,7 +29,6 @@ import {
   Pause,
   Instagram
 } from 'lucide-react';
-
 // --- Types ---
 
 interface FormData {
@@ -2381,6 +2380,8 @@ export default function App() {
 
       // Debounce state updates and DOM manipulation
       stageUpdateTimeout = setTimeout(() => {
+        const stageId = mostVisibleElement?.getAttribute('data-stage') ?? null;
+
         // On touch: skip updates during momentum so DOM/state changes don't trigger scroll correction
         if (isCoarsePointer && (Date.now() - lastScrollTime) < SCROLL_IDLE_MS) {
           stageUpdateTimeout = null;
@@ -2388,29 +2389,26 @@ export default function App() {
           scrollIdleApplyTimeout = setTimeout(() => {
             scrollIdleApplyTimeout = null;
             if (mostVisibleElement) {
-              const stageId = mostVisibleElement.getAttribute('data-stage');
-              if (stageId) {
-                setActiveStage(stageId);
+              const sid = mostVisibleElement.getAttribute('data-stage');
+              if (sid) {
+                setActiveStage(sid);
                 snapElements.forEach(s => s.classList.remove('active-section'));
                 mostVisibleElement.classList.add('active-section');
-                if (stageId === 'guarantee') mostVisibleElement.classList.add('guarantee-revealed');
+                if (sid === 'guarantee') mostVisibleElement.classList.add('guarantee-revealed');
               }
             }
           }, SCROLL_IDLE_MS);
           return;
         }
         // Only update if we found a visible section
-        if (mostVisibleElement) {
-          const stageId = mostVisibleElement.getAttribute('data-stage');
-          if (stageId) {
-            setActiveStage(stageId);
-            // Use cached querySelectorAll result
-            snapElements.forEach(s => s.classList.remove('active-section'));
-            mostVisibleElement.classList.add('active-section');
+        if (mostVisibleElement && stageId) {
+          setActiveStage(stageId);
+          // Use cached querySelectorAll result
+          snapElements.forEach(s => s.classList.remove('active-section'));
+          mostVisibleElement.classList.add('active-section');
 
-            if (stageId === 'guarantee') {
-              mostVisibleElement.classList.add('guarantee-revealed');
-            }
+          if (stageId === 'guarantee') {
+            mostVisibleElement.classList.add('guarantee-revealed');
           }
         }
         stageUpdateTimeout = null;
