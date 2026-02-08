@@ -209,15 +209,18 @@
   }
 }
 
-/* Android/touch: force scroll-snap off (Option A fix for momentum jump). Desktop keeps snap via (pointer: fine). */
+/* Android/touch: Option A (scroll-snap off) + Option B (scroll anchoring off) for momentum jump. */
 @media (pointer: coarse) {
   html,
   body {
     scroll-snap-type: none !important;
+    overflow-anchor: none;
   }
-  .stage {
+  .stage,
+  [data-snap="true"] {
     scroll-snap-align: none !important;
     scroll-snap-stop: normal !important;
+    overflow-anchor: none;
   }
   main,
   #root {
