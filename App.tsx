@@ -1481,9 +1481,7 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
           try {
             await new Promise(resolve => setTimeout(resolve, 200));
             const initialMuted = await playerRef.current.getMuted();
-            if (!isIOS()) {
-              setIsMuted(initialMuted);
-            }
+            setIsMuted(initialMuted);
             const paused = await playerRef.current.getPaused();
             setIsPlaying(!paused);
             playerRef.current.on('play', () => setIsPlaying(true));
@@ -1798,9 +1796,7 @@ const VideoPlayer: React.FC = () => {
 
             // Check initial mute state (on iOS keep default so we don't show unmuted before first play)
             const initialMuted = await playerRef.current.getMuted();
-            if (!isIOS()) {
-              setIsMuted(initialMuted);
-            }
+            setIsMuted(initialMuted);
 
             // Create handler function for volume changes
             const volumeChangeHandler = async () => {
@@ -1830,7 +1826,7 @@ const VideoPlayer: React.FC = () => {
             setIsPlayerReady(true);
 
             // If section is already visible when player initializes, sync mute state (non-iOS only; iOS keeps default until first play)
-            if (isVisibleRef.current && !isIOS()) {
+            if (isVisibleRef.current) {
               setTimeout(async () => {
                 try {
                   if (playerRef.current && isVisibleRef.current) {
