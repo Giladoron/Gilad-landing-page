@@ -215,6 +215,12 @@
     scroll-snap-align: start;
     scroll-snap-stop: normal;
   }
+  /* Restore full-viewport height for "מה אתה מקבל בליווי?" and "4 steps" on desktop */
+  section#get.stage,
+  section#how.stage {
+    min-height: 100dvh;
+    justify-content: center;
+  }
 }
 
 /* Android/touch: Option A (scroll-snap off) + Option B (scroll anchoring off) for momentum jump. */
