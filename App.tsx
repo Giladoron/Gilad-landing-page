@@ -2477,7 +2477,7 @@ export default function App() {
           <div className="absolute inset-0 z-0 hero-overlay" aria-hidden="true"></div>
           <Navbar />
 
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center pt-24 md:pt-20 lg:pt-24 mobile-hero-spacing">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col justify-center pt-24 md:pt-20 lg:pt-24">
             <StoryHeader text="החלום שלך מתחיל כאן" />
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mt-0">
               <div className="space-y-6 md:space-y-8 text-center md:text-right order-1">
@@ -2510,7 +2510,7 @@ export default function App() {
         {/* STAGE 2: REFLECTIVE DIAGNOSIS */}
         <section id="diagnosis" data-stage="diagnosis" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 reflection-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 py-2 md:py-10 relative z-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="למה נתקעת?" />
 
             <div className="text-center max-w-3xl mx-auto mb-2 md:mb-8 space-y-1 md:space-y-4">
@@ -2580,7 +2580,7 @@ export default function App() {
         {/* STAGE 3: PROOF */}
         <section id="proof" data-stage="proof" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-2 md:py-4 h-full flex flex-col">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col">
             <StoryHeader text="כשהתהליך נכון – רואים את זה" />
 
             {/* Header Section */}
@@ -2735,7 +2735,7 @@ export default function App() {
         {/* STAGE 3.5: CLIENT TESTIMONIAL VIDEO */}
         <section id="client-testimonial-video" data-stage="client-testimonial-video" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 max-w-5xl relative z-10 h-full flex flex-col justify-center">
             <StoryHeader text="הלקוח מדבר" />
 
             <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-0">
@@ -2779,7 +2779,7 @@ export default function App() {
         {/* STAGE 4: ABOUT */}
         <section id="about" data-stage="about" data-snap="true" className="stage">
           <div className="absolute inset-0 z-0 about-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 max-w-5xl relative z-10 py-2 md:py-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 max-w-5xl relative z-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="מי עומד מאחורי התהליך" />
             {/* Full-width headline container */}
             <div className="w-full max-w-5xl mx-auto mt-0 mb-8 md:mb-12">
@@ -2966,7 +2966,7 @@ export default function App() {
         {/* STAGE 6: GUARANTEE */}
         <section id="guarantee" data-stage="guarantee" data-snap="true" className="stage stage-guarantee">
           <div className="absolute inset-0 z-0 commitment-overlay" aria-hidden="true"></div>
-          <div className="guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
+          <div className="section-content-padding guarantee-content-wrapper container mx-auto px-4 md:px-12 max-w-4xl text-center flex flex-col justify-center h-full space-y-3 md:space-y-4 relative z-10">
             <StoryHeader text="לא הבטחות. לא דיבורים. אחריות אמיתית." />
 
             <div className="space-y-3 md:space-y-4">
@@ -3008,7 +3008,7 @@ export default function App() {
         {/* STAGE 7: SOLUTION (GET) */}
         <section id="get" data-stage="get" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 get-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-10 h-full flex flex-col justify-center mobile-section-spacing">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col justify-center">
             <StoryHeader text="מכאן מתחיל הסדר" />
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-black heading-font text-center mb-6 md:mb-8">מה אתה מקבל בליווי?</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4" id="get-cards-container">
@@ -3036,7 +3036,7 @@ export default function App() {
         {/* STAGE 8: SOLUTION (HOW) */}
         <section id="how" data-stage="how" data-snap="true" className="stage section-with-fitness-bg">
           <div className="absolute inset-0 z-0 process-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-0 md:py-10 h-full flex flex-col justify-center pb-safe mobile-section-spacing">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col justify-center pb-safe">
             <StoryHeader text="ככה נראה תהליך שעובד" />
             <h2 className="text-xl md:text-3xl lg:text-5xl font-black heading-font text-center mb-4 md:mb-10 compact-heading">4 צעדים לתוצאה</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-6 relative mt-2 md:mt-4 min-h-0 mobile-steps-timeline">
@@ -3137,7 +3137,7 @@ export default function App() {
         {/* STAGE 9: WAITING COST */}
         <section id="waiting" data-stage="waiting" data-snap="true" className="stage stage-alt-2 text-center">
           <div className="absolute inset-0 z-0 waiting-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 relative z-10 max-w-4xl">
+          <div className="section-content-padding container mx-auto px-4 relative z-10 max-w-4xl">
             <StoryHeader text="זה הרגע שרוב האנשים עוצרים" />
             <h2 className="text-4xl md:text-6xl font-black heading-font mb-4">המחיר של להמשיך לחכות?</h2>
             <div className="text-5xl md:text-7xl font-black text-accent mb-12 block animate-pulse">הוא גבוה מדי</div>
@@ -3163,7 +3163,7 @@ export default function App() {
         {/* STAGE 10: FAQ */}
         <section id="faq" data-stage="faq" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 faq-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-6 md:py-10 h-full flex flex-col">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col">
             <StoryHeader text="יש לך שאלות? יש לנו תשובות" />
 
             <div className="text-center mb-4 md:mb-6">
@@ -3229,7 +3229,7 @@ export default function App() {
         {/* STAGE 11: ACTION */}
         <section id="action" data-stage="action" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 cta-overlay" aria-hidden="true"></div>
-          <div className="container mx-auto px-4 md:px-12 relative z-10 py-4 md:py-6 h-full flex flex-col justify-center">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 relative z-10 h-full flex flex-col justify-center">
             <StoryHeader text="הצעד האחרון בדרך שלך" />
             <div className="grid md:grid-cols-2 gap-6 items-center mt-0">
               <div className="space-y-4 md:space-y-6">

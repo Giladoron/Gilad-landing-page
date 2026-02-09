@@ -201,6 +201,16 @@
   /* overflow: hidden; - Removed to allow natural content overflow */
 }
 
+/* Normalized vertical spacing for section content wrappers */
+.section-content-padding {
+  padding-block: 3rem;
+}
+@media (min-width: 768px) {
+  .section-content-padding {
+    padding-block: 2.5rem;
+  }
+}
+
 /* Section snap points only for desktop (fine pointer). Prevents Android "teleport" after finger release. */
 @media (hover: hover) and (pointer: fine) {
   .stage {
