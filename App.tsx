@@ -3031,7 +3031,7 @@ export default function App() {
                             }
                           }}
                         >
-                          <span className="text-sm font-medium">קרא עוד</span>
+                          {!isExpanded && <span className="text-sm font-medium">קרא עוד</span>}
                           <ChevronDown
                             className={`text-accent transition-transform duration-250 ease-out motion-safe:transition-transform ${isExpanded ? 'rotate-180' : ''}`}
                             size={16}
