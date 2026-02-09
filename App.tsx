@@ -1582,20 +1582,15 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
     }
   };
 
-  // Toggle play/pause handler. On iOS, unmute then play in same gesture so first tap plays with sound.
-  const handleTogglePlay = async () => {
+  // Toggle play/pause handler. On iOS, play() must run in the same synchronous turn as the tap (no await before play()).
+  const handleTogglePlay = () => {
     if (!playerRef.current) return;
-    try {
-      const paused = await playerRef.current.getPaused();
-      if (paused) {
-        await playerRef.current.setMuted(false);
-        setIsMuted(false);
-        await playerRef.current.play();
-      } else {
-        await playerRef.current.pause();
-      }
-    } catch (err) {
-      // Non-critical, continue silently
+    if (!isPlaying) {
+      playerRef.current.setMuted(false);
+      setIsMuted(false);
+      playerRef.current.play();
+    } else {
+      playerRef.current.pause();
     }
   };
 
@@ -2032,20 +2027,15 @@ const handleToggleMute = async () => {
   }
 };
 
-// Toggle play/pause handler. On iOS, unmute then play in same gesture so first tap plays with sound.
-const handleTogglePlay = async () => {
+// Toggle play/pause handler. On iOS, play() must run in the same synchronous turn as the tap (no await before play()).
+const handleTogglePlay = () => {
   if (!playerRef.current) return;
-  try {
-    const paused = await playerRef.current.getPaused();
-    if (paused) {
-      await playerRef.current.setMuted(false);
-      setIsMuted(false);
-      await playerRef.current.play();
-    } else {
-      await playerRef.current.pause();
-    }
-  } catch (err) {
-    // Non-critical, continue silently
+  if (!isPlaying) {
+    playerRef.current.setMuted(false);
+    setIsMuted(false);
+    playerRef.current.play();
+  } else {
+    playerRef.current.pause();
   }
 };
 
