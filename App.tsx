@@ -2490,7 +2490,7 @@ export default function App() {
                   <p className="text-lg text-white leading-loose font-normal mt-0" style={{ marginTop: '0px', lineHeight: '24px' }}>
                     אם תעבוד לפי מה שאני אומר לאורך הדרך יש שתי אפשרויות בלבד:
                   </p>
-                  <p className="text-sm md:text-base text-white leading-loose font-normal mt-0" style={{ marginTop: '-5px', marginBottom: '-5px', fontSize: '18px' }}>
+                  <p className="text-sm md:text-base text-white leading-6 font-normal mt-0" style={{ fontSize: '18px' }}>
                     או שזה התהליך שמביא אותך לתוצאה שאתה מחפש, או שלא תשלם עליו.
                   </p>
                   <p className="text-lg md:text-base text-white leading-loose font-bold" style={{ marginTop: '10px' }}>
@@ -2754,7 +2754,7 @@ export default function App() {
               </div>
 
               {/* Video - Second on mobile, primary on desktop */}
-              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6">
+              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6 pb-4">
                 {/* Video container with floating shadow */}
                 <div
                   className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
