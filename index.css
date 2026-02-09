@@ -188,16 +188,14 @@
   animation: fadeInGuarantee 0.25s forwards;
 }
 
-/* Base styles for stage - Natural Scrolling */
+/* Base styles for stage - Content-sized for equal inter-section gaps */
 .stage {
   @apply relative w-full flex flex-col;
-  /* Relaxed constraint */
-  min-height: 100dvh;
+  min-height: auto;
   /* No scroll-snap by default: touch/Android gets free scroll (avoids momentum jump). */
   scroll-snap-align: none;
   scroll-snap-stop: normal;
-  /* Flex centering to maintain vertical balance */
-  justify-content: center;
+  justify-content: flex-start;
   /* overflow: hidden; - Removed to allow natural content overflow */
 }
 

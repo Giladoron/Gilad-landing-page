@@ -2721,7 +2721,7 @@ export default function App() {
             </div>
 
             {/* CTA Button - Always visible at bottom */}
-            <div className="flex justify-center mt-6 md:mt-8 mb-20 md:mb-2 flex-shrink-0 relative z-20">
+            <div className="flex justify-center mt-6 md:mt-8 mb-0 flex-shrink-0 relative z-20">
               <a
                 href="#action"
                 className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105 shadow-lg relative z-20 pointer-events-auto"
@@ -2735,7 +2735,7 @@ export default function App() {
         {/* STAGE 3.5: CLIENT TESTIMONIAL VIDEO */}
         <section id="client-testimonial-video" data-stage="client-testimonial-video" data-snap="true" className="stage stage-alt-1">
           <div className="absolute inset-0 z-0 proof-overlay" aria-hidden="true"></div>
-          <div className="section-content-padding container mx-auto px-4 md:px-12 max-w-5xl relative z-10 h-full flex flex-col justify-center">
+          <div className="section-content-padding container mx-auto px-4 md:px-12 max-w-5xl relative z-10 flex flex-col">
             <StoryHeader text="הלקוח מדבר" />
 
             <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-8 items-center mt-0">
@@ -3149,7 +3149,7 @@ export default function App() {
               </div>
               <p className="text-white font-medium">לא כי אתה לא רוצה מספיק. אלא כי בלי דרך נכונה — רוב האנשים פשוט נתקעים.</p>
             </div>
-            <div className="flex justify-center mt-6 md:mt-8 mb-4">
+            <div className="flex justify-center mt-6 md:mt-8 mb-0">
               <a
                 href="#action"
                 className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105"
@@ -3215,7 +3215,7 @@ export default function App() {
                 );
               })}
             </div>
-            <div className="flex justify-center mt-4 md:mt-6 mb-4">
+            <div className="flex justify-center mt-4 md:mt-6 mb-0">
               <a
                 href="#action"
                 className="bg-accent hover:brightness-110 text-white px-8 py-4 rounded-full text-lg font-bold transition-all hover:scale-105 shadow-lg"
