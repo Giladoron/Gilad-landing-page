@@ -2854,7 +2854,7 @@ export default function App() {
                             }`}
                           aria-live={isExpanded ? "polite" : "off"}
                         >
-                          <div className="px-3 pb-3 pt-3 text-gray-300 text-sm leading-loose space-y-3">
+                          <div className="px-3 pb-3 pt-3 text-white text-sm leading-loose space-y-3">
                             {section.content.map((item, pIdx) => {
                               const c = item as { className?: string; style?: React.CSSProperties };
                               return item.isAnchor ? (
@@ -2874,7 +2874,7 @@ export default function App() {
                   {/* Block 1: המאבק */}
                   <div className="space-y-4 md:space-y-5">
                     <h3 className="text-lg md:text-xl font-semibold text-white -mb-2.5">המאבק שלי</h3>
-                    <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                    <div className="text-sm md:text-xl text-white leading-loose compact-text space-y-3 md:space-y-4">
                       <p>שרפתי שעות בחדר כושר.</p>
                       <p className="!mt-0">עשיתי כל תרגיל שמצאתי באינטרנט.</p>
                       <p className="!mt-0">אכלתי חלבונים כאילו זה אמור לפתור הכול.</p>
@@ -2887,7 +2887,7 @@ export default function App() {
                   {/* Block 2: ההבנה */}
                   <div className="space-y-4 md:space-y-5">
                     <h3 className="text-lg md:text-xl font-semibold text-white -mb-2.5">ההבנה המכרעת</h3>
-                    <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                    <div className="text-sm md:text-xl text-white leading-loose compact-text space-y-3 md:space-y-4">
                       <p>רק כשעצרתי הבנתי משהו שאף אחד לא אמר לי אז:</p>
                       <p className="text-accent font-bold mt-0 mb-2.5">הבעיה לא הייתה בכמה עבדתי, אלא באיך שזה היה בנוי.</p>
                       <p className="mt-2.5" style={{ marginTop: '10px' }}>ברגע שהבנתי את זה, לא השתנה רק הגוף,</p>
@@ -2898,7 +2898,7 @@ export default function App() {
                   {/* Block 3: התוצאה */}
                   <div className="space-y-4 md:space-y-5">
                     <h3 className="text-lg md:text-xl font-semibold text-white -mb-2.5">התוצאה הסופית</h3>
-                    <div className="text-sm md:text-xl text-gray-300 leading-loose compact-text space-y-3 md:space-y-4">
+                    <div className="text-sm md:text-xl text-white leading-loose compact-text space-y-3 md:space-y-4">
                       <p>ברגע שבניתי לעצמי מערכת נכונה, הדברים התחילו להתחבר.</p>
                       <p className="!mt-0">עליתי 25 קילו של מסת שריר טהורה (מ־55 ל־80 ק״ג) ובניתי גוף שלא חלמתי שאוכל להגיע אליו,</p>
                       <p className="text-accent font-bold mt-2.5 mb-2.5" style={{ marginTop: '10px', marginBottom: '10px' }}>אבל לא פחות חשוב מזה, בניתי ביטחון וערך עצמי שלא היו שם קודם,</p>
