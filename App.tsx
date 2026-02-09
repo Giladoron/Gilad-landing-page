@@ -25,8 +25,6 @@ import {
   Loader2,
   Volume2,
   VolumeX,
-  Play,
-  Pause,
   Instagram
 } from 'lucide-react';
 // --- Types ---
@@ -1582,23 +1580,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
     }
   };
 
-  // Toggle play/pause handler. On iOS, unmute then play in same gesture so first tap plays with sound.
-  const handleTogglePlay = async () => {
-    if (!playerRef.current) return;
-    try {
-      const paused = await playerRef.current.getPaused();
-      if (paused) {
-        await playerRef.current.setMuted(false);
-        setIsMuted(false);
-        await playerRef.current.play();
-      } else {
-        await playerRef.current.pause();
-      }
-    } catch (err) {
-      // Non-critical, continue silently
-    }
-  };
-
   // Pause video when scrolling out of view (but do NOT autoplay - user must click play)
   useEffect(() => {
     if (!playerRef.current) return;
@@ -1744,24 +1725,6 @@ const ClientTestimonialVideo: React.FC<{ videoId: string }> = ({ videoId }) => {
         loading="eager"
         title="תעודת לקוח - גיא, גיל 25, מספר על התוצאות שהשיג בליווי של גילעד דורון"
       />
-      {/* Play/Pause Button - centered, only when paused */}
-      {!isPlaying && (
-        <button
-          onClick={handleTogglePlay}
-          aria-label="נגן"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
-          style={{
-            minWidth: '48px',
-            minHeight: '48px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 30
-          }}
-        >
-          <Play size={24} aria-hidden="true" />
-        </button>
-      )}
       {/* Custom Mute/Unmute Button Overlay */}
       <button
         onClick={handleToggleMute}
@@ -2032,23 +1995,6 @@ const handleToggleMute = async () => {
   }
 };
 
-// Toggle play/pause handler. On iOS, unmute then play in same gesture so first tap plays with sound.
-const handleTogglePlay = async () => {
-  if (!playerRef.current) return;
-  try {
-    const paused = await playerRef.current.getPaused();
-    if (paused) {
-      await playerRef.current.setMuted(false);
-      setIsMuted(false);
-      await playerRef.current.play();
-    } else {
-      await playerRef.current.pause();
-    }
-  } catch (err) {
-    // Non-critical, continue silently
-  }
-};
-
 // Intersection Observer to detect when video section is visible
 useEffect(() => {
   if (!videoContainerRef.current) return;
@@ -2146,24 +2092,6 @@ return (
       }}
       aria-hidden="true"
     />
-    {/* Play/Pause Button - centered, only when paused */}
-    {!isPlaying && (
-      <button
-        onClick={handleTogglePlay}
-        aria-label="נגן"
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
-        style={{
-          minWidth: '48px',
-          minHeight: '48px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 30
-        }}
-      >
-        <Play size={24} aria-hidden="true" />
-      </button>
-    )}
     {/* Custom Mute/Unmute Button Overlay */}
     <button
       onClick={handleToggleMute}
