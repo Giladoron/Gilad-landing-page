@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+
 import useEmblaCarousel from 'embla-carousel-react';
 import FocusTrap from 'focus-trap-react';
 import {
@@ -2678,7 +2679,7 @@ export default function App() {
               </div>
 
               {/* Video - Second on mobile, primary on desktop */}
-              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6 pb-4">
+              <div className="relative w-full flex-1 min-h-0 flex items-center justify-center flex-col gap-4 md:gap-6 pb-[29px] mb-5">
                 {/* Video container with floating shadow */}
                 <div
                   className={`w-full rounded-2xl md:rounded-3xl ${isIOS() ? '' : 'overflow-hidden'} relative z-10 border border-white/10`}
