@@ -3271,6 +3271,7 @@ export default function App() {
           </a>
 
           <p className="mb-4">כל הזכויות שמורות &copy; {new Date().getFullYear()} גילעד דורון | ליווי אונליין</p>
+          <p className="mb-4 text-gray-600 text-xs" aria-hidden="true">גרסה 1.0</p>
           <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-xs md:text-sm">
             <button onClick={(e) => { legalModalTriggerRef.current = e.currentTarget; setModalType('accessibility'); }} className="hover:text-white hover:underline transition-all whitespace-nowrap">הצהרת נגישות</button>
             <button onClick={(e) => { legalModalTriggerRef.current = e.currentTarget; setModalType('privacy'); }} className="hover:text-white hover:underline transition-all whitespace-nowrap">מדיניות פרטיות</button>
