@@ -8,11 +8,11 @@ export default defineConfig(({ mode }) => {
     const buildVersion = Date.now().toString();
     
     return {
-      base: '/Gilad-landing-page/',
+      base: '/',
       server: {
         port: 3000,
         host: '127.0.0.1',
-        open: '/Gilad-landing-page/',
+        open: '/',
         watch: {
           usePolling: true,
           interval: 300,
