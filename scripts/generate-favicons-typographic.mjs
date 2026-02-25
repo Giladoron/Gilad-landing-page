@@ -13,20 +13,21 @@ const publicDir = join(__dirname, "..", "public");
 
 const BG = "#0A0A0A";
 const FG = "#FF6B35";
-const MARGIN = 0.06; // keep glyph size the same
-const OPTICAL_NUDGE_Y = 2;
+const MARGIN = 0.04;
+const CORNER_RADIUS = 25;
+// Minimal Y offset so top and bottom padding are equal (nudge up; ~1–2 px at 48px)
+const Y_OFFSET = -2;
 
-// Transparent canvas + pure black circle
 const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="50" fill="${BG}"/>
+  <rect width="100" height="100" rx="${CORNER_RADIUS}" ry="${CORNER_RADIUS}" fill="${BG}"/>
   <text
     x="50"
-    y="${50 + OPTICAL_NUDGE_Y}"
+    y="${50 + Y_OFFSET}"
     fill="${FG}"
     font-family="system-ui, -apple-system, sans-serif"
     font-weight="bold"
-    font-size="${(1 - 2 * MARGIN) * 100 * 0.95}"
+    font-size="${(1 - 2 * MARGIN) * 100 * 1.05}"
     text-anchor="middle"
     dominant-baseline="middle"
   >G</text>
@@ -35,11 +36,7 @@ const svg = `
 const svgBuffer = Buffer.from(svg);
 
 async function pngAtSize(size) {
-  // Render SVG as RGBA PNG, preserving transparency (no flatten/matte)
-  return sharp(svgBuffer)
-    .resize(size, size)
-    .png()
-    .toBuffer();
+  return sharp(svgBuffer).resize(size, size).png().toBuffer();
 }
 
 const sizes = [
