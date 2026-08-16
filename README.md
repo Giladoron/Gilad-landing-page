@@ -31,20 +31,23 @@ A high-converting RTL Hebrew landing page for online fitness and nutrition coach
 ### Installation
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Set up environment variables in `.env.local`:
+
    ```env
    VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
    VITE_EMAILJS_SERVICE_ID=your_service_id (optional, has default)
    VITE_EMAILJS_TEMPLATE_ID=your_template_id (optional, has default)
    VITE_RECIPIENT_EMAIL=your_email (optional, has default)
-   VITE_LEAD_API_URL=https://your-worker.workers.dev
+   VITE_LEAD_API_URL=https://api.giladoron.com/lead
    ```
 
 3. Run the development server:
+
    ```bash
    npm run dev
    ```
@@ -62,6 +65,7 @@ For CRM delivery, deploy the Worker in [`worker/`](worker/) and add its public U
 - **New GitHub account?** Add repository secrets (at least `VITE_EMAILJS_PUBLIC_KEY`) and enable Pages from `gh-pages` branch. See **`docs/DEPLOY_FROM_NEW_ACCOUNT.md`** for step-by-step.
 
 **Manual (optional):** From your machine (requires `.env.local` with EmailJS key):
+
 ```bash
 npm run deploy
 ```

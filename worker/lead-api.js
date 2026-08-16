@@ -215,9 +215,18 @@ const createMondayLead = async (payload, env) => {
 
 export default {
   async fetch(request, env) {
+    const { pathname } = new URL(request.url);
     const requestOrigin = request.headers.get('Origin') || '';
     const allowedOrigins = parseAllowedOrigins(env);
     const origin = allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0];
+
+    if (pathname === '/health' && request.method === 'GET') {
+      return jsonResponse({ ok: true }, 200, origin);
+    }
+
+    if (pathname !== '/lead') {
+      return jsonResponse({ ok: false }, 404, origin);
+    }
 
     if (request.method === 'OPTIONS') {
       if (!allowedOrigins.includes(requestOrigin)) {
@@ -232,6 +241,10 @@ export default {
 
     if (!allowedOrigins.includes(requestOrigin)) {
       return jsonResponse({ ok: false }, 403, origin);
+    }
+
+    if (!request.headers.get('Content-Type')?.toLowerCase().startsWith('application/json')) {
+      return jsonResponse({ ok: false, error: 'unsupported_media_type' }, 415, origin);
     }
 
     if (!env.MONDAY_API_TOKEN) {
@@ -266,6 +279,11 @@ export default {
     const validation = validatePayload(rawPayload);
     if (validation.error) {
       return jsonResponse({ ok: false, error: validation.error }, 422, origin);
+    }
+
+    const submissionIdHeader = trimString(request.headers.get('X-Submission-Id'), 100);
+    if (submissionIdHeader !== validation.payload.submissionId) {
+      return jsonResponse({ ok: false, error: 'submission_id_mismatch' }, 422, origin);
     }
 
     try {

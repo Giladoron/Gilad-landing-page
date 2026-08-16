@@ -73,11 +73,12 @@ test('accepts an allowed website request and creates the monday item', async con
 
   const submissionId = '55a46310-b9aa-4635-9076-9768b526af99';
   const response = await worker.fetch(
-    new Request('https://gilad-lead-intake.example.workers.dev', {
+    new Request('https://api.giladoron.com/lead', {
       method: 'POST',
       headers: {
         Origin: 'https://giladoron.com',
         'Content-Type': 'application/json',
+        'X-Submission-Id': submissionId,
       },
       body: JSON.stringify({
         submissionId,
@@ -116,4 +117,46 @@ test('accepts an allowed website request and creates the monday item', async con
   assert.equal(mondayBody.variables.boardId, '5102324737');
   assert.equal(mondayBody.variables.groupId, 'topics');
   assert.equal(mondayBody.variables.itemName, 'ליד בדיקה');
+});
+
+test('exposes a minimal health check without calling monday', async () => {
+  const response = await worker.fetch(new Request('https://api.giladoron.com/health'), {
+    ALLOWED_ORIGINS: 'https://giladoron.com',
+  });
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { ok: true });
+});
+
+test('rejects a submission when the idempotency header does not match', async () => {
+  const response = await worker.fetch(
+    new Request('https://api.giladoron.com/lead', {
+      method: 'POST',
+      headers: {
+        Origin: 'https://giladoron.com',
+        'Content-Type': 'application/json',
+        'X-Submission-Id': 'different-id',
+      },
+      body: JSON.stringify({
+        submissionId: 'payload-id',
+        fullName: 'ליד בדיקה',
+        phone: '050-123-4567',
+        email: '',
+        contactPref: 'whatsapp',
+        contactConsent: true,
+        marketingConsent: false,
+        website: '',
+      }),
+    }),
+    {
+      MONDAY_API_TOKEN: 'test-token',
+      ALLOWED_ORIGINS: 'https://giladoron.com',
+    }
+  );
+
+  assert.equal(response.status, 422);
+  assert.deepEqual(await response.json(), {
+    ok: false,
+    error: 'submission_id_mismatch',
+  });
 });
