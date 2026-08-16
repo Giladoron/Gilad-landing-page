@@ -4,6 +4,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import FocusTrap from 'focus-trap-react';
 import {
+  createLeadSubmission,
+  isLeadApiConfigured,
+  submitLeadToCrm
+} from './leadSubmission';
+import {
   CheckCircle2,
   XCircle,
   ArrowLeft,
@@ -36,6 +41,8 @@ interface FormData {
   email: string;
   contactPref: 'phone' | 'whatsapp';
   consent: boolean;
+  marketingConsent: boolean;
+  website: string;
 }
 
 type ModalType = 'accessibility' | 'privacy' | 'terms' | null;
@@ -58,6 +65,7 @@ declare global {
     readonly VITE_EMAILJS_TEMPLATE_ID?: string;
     readonly VITE_EMAILJS_PUBLIC_KEY?: string;
     readonly VITE_RECIPIENT_EMAIL?: string;
+    readonly VITE_LEAD_API_URL?: string;
   }
 
   interface ImportMeta {
@@ -371,8 +379,8 @@ const LEGAL_CONTENT = {
         <ul className="list-disc pr-6 space-y-2">
           <li><strong>שם מלא</strong> – לצורך יצירת קשר אישי</li>
           <li><strong>מספר טלפון</strong> – לצורך יצירת קשר</li>
-          <li><strong>כתובת אימייל</strong> – לצורך יצירת קשר ותקשורת</li>
-          <li><strong>העדפת התקשרות</strong> – דרך העדפתך ליצירת קשר (טלפון או וואטסאפ). בבחירה ביצירת קשר באמצעות וואטסאפ, המידע שיימסר יועבר לפלטפורמת WhatsApp, המופעלת על ידי Meta Platforms Inc., ועשוי להיות כפוף למדיניות הפרטיות של WhatsApp.</li>
+          <li><strong>כתובת אימייל (אופציונלית)</strong> – לצורך יצירת קשר ותקשורת, ולשליחת תכנים שיווקיים רק אם ניתנה לכך הסכמה נפרדת</li>
+          <li><strong>העדפת התקשרות</strong> – דרך העדפתך להמשך הטיפול (שיחת טלפון או וואטסאפ). לאחר הגשת הטופס עשויה להישלח הודעת WhatsApp קצרה לצורך תיאום שיחת התאמה. המידע יועבר לפלטפורמת WhatsApp, המופעלת על ידי Meta Platforms Inc., ויהיה כפוף למדיניות הפרטיות שלה.</li>
         </ul>
         <p>אנו גם אוספים מידע טכני מסוים באופן אוטומטי כאשר אתה מבקר באתר:</p>
         <ul className="list-disc pr-6 space-y-2">
@@ -389,6 +397,7 @@ const LEGAL_CONTENT = {
         <p>אנו משתמשים במידע שלך למטרות הבאות בלבד:</p>
         <ul className="list-disc pr-6 space-y-2">
           <li>יצירת קשר ראשוני ובדיקת התאמה לליווי</li>
+          <li>שליחת תוכן ועדכונים באימייל, רק למי שסימן הסכמה נפרדת לכך</li>
           <li>מתן השירות המקצועי שסוכם עליו (תוכנית אימונים ותזונה מותאמת אישית)</li>
           <li>תקשורת שוטפת במהלך תקופת הליווי</li>
           <li>שיפור חוויית השימוש באתר</li>
@@ -400,10 +409,12 @@ const LEGAL_CONTENT = {
         <p>אנו משתפים מידע עם ספקי שירותים צד שלישי הבאים, הנדרשים לפעילות האתר והשירותים:</p>
         <ul className="list-disc pr-6 space-y-2">
           <li><strong>EmailJS</strong> – משמש לשליחת הודעות אימייל. המידע מועבר דרך שרתי EmailJS לכתובת האימייל שלנו. קרא את <a href="https://www.emailjs.com/legal/privacy-policy/" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">מדיניות הפרטיות של EmailJS</a>.</li>
+          <li><strong>monday.com</strong> – משמש לניהול הפניות ותהליך המכירה במערכת CRM. פרטי הטופס נשמרים בכרטיס הליד המתאים.</li>
+          <li><strong>Cloudflare</strong> – משמש כשכבת תיווך מאובטחת להעברת פרטי הטופס אל מערכת ה-CRM, בלי לחשוף מפתחות גישה באתר.</li>
           <li><strong>Vimeo</strong> – וידאו מוטמע באתר דרך Vimeo. Vimeo עשויה להשתמש בעוגיות וכלי מעקב למטרות אנליטיקה ושיפור השירות. קרא את <a href="https://vimeo.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">מדיניות הפרטיות של Vimeo</a>.</li>
           <li><strong>Google Fonts</strong> – גופנים נטענים דרך Google Fonts. Google עשויה לאסוף מידע על גישה לאתר (כתובת IP, סוג דפדפן). קרא את <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">מדיניות הפרטיות של Google</a>.</li>
         </ul>
-        <p>ספקי שירותים אלה מחויבים להגן על המידע שלך ולהשתמש בו רק למטרות שנמסרו להם. ייתכן כי חלק מהמידע יעובד או יאוחסן בשרתים הממוקמים מחוץ לישראל, בהתאם למיקום שרתי ספקי השירותים (כגון EmailJS, Vimeo, Google). אנו נוקטים באמצעים סבירים כדי להבטיח רמת הגנה נאותה על המידע.</p>
+        <p>ספקי שירותים אלה מחויבים להגן על המידע שלך ולהשתמש בו רק למטרות שנמסרו להם. ייתכן כי חלק מהמידע יעובד או יאוחסן בשרתים הממוקמים מחוץ לישראל, בהתאם למיקום שרתי ספקי השירותים (כגון EmailJS, monday.com, Cloudflare, Vimeo ו-Google). אנו נוקטים באמצעים סבירים כדי להבטיח רמת הגנה נאותה על המידע.</p>
 
         <p className="font-bold text-white text-lg mt-6">6. עוגיות ואחסון בדפדפן</p>
         <p>האתר משתמש ב:</p>
@@ -425,7 +436,7 @@ const LEGAL_CONTENT = {
         <p>אנו נוקטים באמצעי אבטחה סבירים כדי להגן על המידע שלך:</p>
         <ul className="list-disc pr-6 space-y-2">
           <li>העברת מידע מוצפנת באמצעות HTTPS</li>
-          <li>שימוש בשירותי צד שלישי מאובטחים (EmailJS) עם תקני אבטחה תעשייתיים</li>
+          <li>שימוש בשירותי צד שלישי מאובטחים (EmailJS, monday.com ו-Cloudflare) עם תקני אבטחה תעשייתיים</li>
           <li>גישה מוגבלת למידע – רק לאנשים הזקוקים לו למתן השירות</li>
         </ul>
         <p>למרות מאמצינו להגן על המידע, אין אמצעי אבטחה מושלמים. אנו לא יכולים להבטיח אבטחה מוחלטת של המידע במעבר באינטרנט.</p>
@@ -1179,7 +1190,9 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
     phone: '',
     email: '',
     contactPref: 'phone',
-    consent: false
+    consent: false,
+    marketingConsent: false,
+    website: ''
   });
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1191,23 +1204,23 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
     setError(null);
 
     try {
-      // Check if EmailJS is loaded
-      if (!window.emailjs) {
-        throw new Error('EmailJS לא נטען. אנא רענן את הדף.');
+      if (formData.website.trim()) {
+        setSubmitted(true);
+        return;
       }
 
-      // Check if EmailJS public key is configured
-      if (!EMAILJS_PUBLIC_KEY) {
-        throw new Error('תצורת EmailJS חסרה. אנא פנה לתמיכה.');
-      }
-
-      // Prepare template parameters
+      const leadSubmission = createLeadSubmission(formData);
       const templateParams = {
         to_email: RECIPIENT_EMAIL,
         fullName: formData.fullName,
         phone: formData.phone,
         email: formData.email,
         contactPref: formData.contactPref === 'phone' ? 'טלפון' : 'וואטסאפ',
+        marketingConsent: formData.marketingConsent ? 'כן' : 'לא',
+        landingPage: leadSubmission.landingPage,
+        utmSource: leadSubmission.utmSource,
+        utmMedium: leadSubmission.utmMedium,
+        utmCampaign: leadSubmission.utmCampaign,
         message: `בקשת התאמה חדשה מ-${formData.fullName}`,
         date: new Date().toLocaleDateString('he-IL', {
           year: 'numeric',
@@ -1218,13 +1231,43 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
         })
       };
 
-      // Send email via EmailJS
-      await window.emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
+      const deliveryTasks: Array<{ channel: string; promise: Promise<unknown> }> = [];
+
+      if (window.emailjs && EMAILJS_PUBLIC_KEY) {
+        deliveryTasks.push({
+          channel: 'email',
+          promise: window.emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            templateParams,
+            EMAILJS_PUBLIC_KEY
+          )
+        });
+      }
+
+      if (isLeadApiConfigured) {
+        deliveryTasks.push({
+          channel: 'crm',
+          promise: submitLeadToCrm(leadSubmission)
+        });
+      }
+
+      if (deliveryTasks.length === 0) {
+        throw new Error('מערכת שליחת הטופס אינה מוגדרת. אנא פנה אליי בוואטסאפ.');
+      }
+
+      const deliveryResults = await Promise.allSettled(deliveryTasks.map(task => task.promise));
+      const hasSuccessfulDelivery = deliveryResults.some(result => result.status === 'fulfilled');
+
+      deliveryResults.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.error(`Lead delivery failed (${deliveryTasks[index].channel}):`, result.reason);
+        }
+      });
+
+      if (!hasSuccessfulDelivery) {
+        throw new Error('לא הצלחנו לשלוח את הפרטים. אנא נסה שוב או פנה אליי בוואטסאפ.');
+      }
 
       // Success - reset form and show success message
       setSubmitted(true);
@@ -1233,7 +1276,9 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
         phone: '',
         email: '',
         contactPref: 'phone',
-        consent: false
+        consent: false,
+        marketingConsent: false,
+        website: ''
       });
     } catch (err) {
       // Handle errors
@@ -1281,6 +1326,18 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+            <div className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+              <label htmlFor="website">אתר</label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={formData.website}
+                onChange={e => setFormData({ ...formData, website: e.target.value })}
+              />
+            </div>
             <div>
               <label htmlFor="fullName" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>שם מלא</label>
               <input
@@ -1319,21 +1376,26 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
               />
             </div>
             <div>
-              <label htmlFor="email" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>אימייל</label>
+              <label htmlFor="email" className={`block text-[10px] md:text-xs font-medium mb-1.5 md:mb-2 ${isFooter ? 'text-gray-300' : 'text-gray-700'}`}>אימייל <span className="font-normal opacity-70">(לא חובה)</span></label>
               <input
                 id="email"
                 name="email"
                 type="email"
-                required
-                aria-required="true"
                 autoComplete="email"
                 disabled={isSubmitting}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? "form-error" : undefined}
                 className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg border text-sm md:text-base focus:ring-2 focus:ring-accent outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isFooter ? 'bg-white/5 border-white/10 text-white/90 placeholder:text-white/40' : 'bg-gray-50 border-gray-200 text-brandDark'}`}
-                placeholder="הזן כתובת מייל"
+                placeholder="הזן כתובת מייל, אם נוח לך"
                 value={formData.email}
-                onChange={e => setFormData({ ...formData, email: e.target.value })}
+                onChange={e => {
+                  const email = e.target.value;
+                  setFormData({
+                    ...formData,
+                    email,
+                    marketingConsent: email ? formData.marketingConsent : false
+                  });
+                }}
               />
             </div>
             <fieldset className="flex gap-4 py-1">
@@ -1348,7 +1410,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                   checked={formData.contactPref === 'phone'}
                   onChange={() => setFormData({ ...formData, contactPref: 'phone' })}
                 />
-                <span className="text-sm">טלפון</span>
+                <span className="text-sm">שיחת טלפון</span>
               </label>
               <label htmlFor="contactPref-whatsapp" className={`flex items-center gap-2 cursor-pointer ${isFooter ? 'text-white/80' : 'text-brandDark'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <input
@@ -1377,7 +1439,7 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 onChange={e => setFormData({ ...formData, consent: e.target.checked })}
               />
               <label htmlFor="consent" className={`text-xs opacity-60 cursor-pointer ${isFooter ? 'text-gray-300' : 'text-gray-700'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                אני מאשר/ת יצירת קשר בהתאם ל{' '}
+                אני מאשר/ת שגילעד יחזור אליי בנוגע לבקשה, לרבות בהודעת WhatsApp, בהתאם ל{' '}
                 {onPrivacyClick ? (
                   <button
                     type="button"
@@ -1393,6 +1455,19 @@ const LeadForm: React.FC<{ isFooter?: boolean; onPrivacyClick?: () => void }> = 
                 ) : (
                   <span className="underline">מדיניות פרטיות</span>
                 )}
+              </label>
+            </div>
+            <div className="flex items-start gap-2 pt-1">
+              <input
+                type="checkbox"
+                id="marketingConsent"
+                disabled={isSubmitting || !formData.email}
+                className="mt-1 accent-accent disabled:opacity-40 disabled:cursor-not-allowed"
+                checked={formData.marketingConsent}
+                onChange={e => setFormData({ ...formData, marketingConsent: e.target.checked })}
+              />
+              <label htmlFor="marketingConsent" className={`text-xs opacity-60 cursor-pointer ${isFooter ? 'text-gray-300' : 'text-gray-700'} ${isSubmitting || !formData.email ? 'opacity-40 cursor-not-allowed' : ''}`}>
+                אני רוצה לקבל מדי פעם תוכן ועדכונים באימייל. אפשר להסיר את ההרשמה בכל עת.
               </label>
             </div>
             <button
@@ -3215,5 +3290,3 @@ export default function App() {
     </div>
   );
 }
-
-
