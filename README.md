@@ -7,6 +7,7 @@ A high-converting RTL Hebrew landing page for online fitness and nutrition coach
 - **Mobile-first design** optimized for Hebrew (RTL)
 - **Premium cinematic design** with dark theme and orange accent
 - **Lead form integration** via EmailJS
+- **CRM lead capture** via a private Cloudflare Worker and monday.com, with EmailJS retained as a fallback
 - **Client results carousel** with before/after photos
 - **Video testimonials** via Vimeo
 - **Accessibility compliant** (WCAG standards)
@@ -30,19 +31,23 @@ A high-converting RTL Hebrew landing page for online fitness and nutrition coach
 ### Installation
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Set up environment variables in `.env.local`:
+
    ```env
    VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
    VITE_EMAILJS_SERVICE_ID=your_service_id (optional, has default)
    VITE_EMAILJS_TEMPLATE_ID=your_template_id (optional, has default)
    VITE_RECIPIENT_EMAIL=your_email (optional, has default)
+   VITE_LEAD_API_URL=https://api.giladoron.com/lead
    ```
 
 3. Run the development server:
+
    ```bash
    npm run dev
    ```
@@ -55,9 +60,12 @@ A high-converting RTL Hebrew landing page for online fitness and nutrition coach
 
 **Preferred (CI):** Push to `main` triggers GitHub Actions, which builds with **GitHub Secrets** and deploys to GitHub Pages. The form needs `VITE_EMAILJS_PUBLIC_KEY` set in repo Secrets so the build includes it. No secrets in repo or local deploy needed. In Cursor you can say **"commit and deploy"** and the agent will run `git add`, `git commit`, `git push origin main` for you.
 
+For CRM delivery, deploy the Worker in [`worker/`](worker/) and add its public URL as the repository secret `VITE_LEAD_API_URL`. Store `MONDAY_API_TOKEN` only as a Cloudflare Worker secret; never expose it in Vite or GitHub Pages.
+
 - **New GitHub account?** Add repository secrets (at least `VITE_EMAILJS_PUBLIC_KEY`) and enable Pages from `gh-pages` branch. See **`docs/DEPLOY_FROM_NEW_ACCOUNT.md`** for step-by-step.
 
 **Manual (optional):** From your machine (requires `.env.local` with EmailJS key):
+
 ```bash
 npm run deploy
 ```

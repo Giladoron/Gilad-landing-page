@@ -1,0 +1,28 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "gilad-lead-intake",
+  "main": "./lead-api.js",
+  "compatibility_date": "2026-08-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "api.giladoron.com",
+      "custom_domain": true,
+    },
+  ],
+  "vars": {
+    "MONDAY_API_VERSION": "2026-07",
+    "MONDAY_BOARD_ID": "5102324737",
+    "MONDAY_GROUP_ID": "topics",
+    "ALLOWED_ORIGINS": "https://giladoron.com,https://www.giladoron.com",
+  },
+  "secrets": {
+    "required": ["MONDAY_API_TOKEN"],
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
+}
