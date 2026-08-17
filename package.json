@@ -9,7 +9,7 @@
     "build": "vite build",
     "test:lead-api": "node --test worker/lead-api.test.mjs",
     "worker:check": "wrangler deploy --dry-run --config worker/wrangler.jsonc",
-    "worker:deploy": "wrangler deploy --config worker/wrangler.jsonc",
+    "worker:deploy": "node worker/deploy-worker.mjs",
     "worker:types": "wrangler types worker/worker-configuration.d.ts --config worker/wrangler.jsonc",
     "preview": "vite preview",
     "deploy": "npm run build && gh-pages -d dist",
